@@ -1,0 +1,50 @@
+{
+  "todos": [
+    {
+      "content": "Part A: Изучить текущую конфигурацию nanobot и docker-compose",
+      "id": "1",
+      "status": "in_progress"
+    },
+    {
+      "content": "Part A: Раскомментировать и настроить nanobot сервис в docker-compose.yml",
+      "id": "2",
+      "status": "pending"
+    },
+    {
+      "content": "Part A: Обновить nanobot/pyproject.toml и entrypoint.py",
+      "id": "3",
+      "status": "pending"
+    },
+    {
+      "content": "Part A: Собрать и запустить nanobot сервис",
+      "id": "4",
+      "status": "pending"
+    },
+    {
+      "content": "Part B: Добавить nanobot-websocket-channel submodule",
+      "id": "5",
+      "status": "pending"
+    },
+    {
+      "content": "Part B: Настроить webchat канал и mcp-webchat",
+      "id": "6",
+      "status": "pending"
+    },
+    {
+      "content": "Part B: Настроить Caddy и Flutter клиент",
+      "id": "7",
+      "status": "pending"
+    },
+    {
+      "content": "Part B: Протестировать WebSocket и Flutter клиент",
+      "id": "8",
+      "status": "pending"
+    },
+    {
+      "content": "Обновить REPORT.md результатами",
+      "id": "9",
+      "status": "pending"
+    }
+  ],
+  "sessionId": "1a2fbe0c-4663-4408-a8bf-3e04408091bf"
+}

@@ -1,0 +1,35 @@
+{
+  "todos": [
+    {
+      "content": "Создать интерфейс Text с методом write()",
+      "id": "1",
+      "status": "completed"
+    },
+    {
+      "content": "Реализовать класс PlainText",
+      "id": "2",
+      "status": "completed"
+    },
+    {
+      "content": "Создать абстрактный класс TextDecorator",
+      "id": "3",
+      "status": "completed"
+    },
+    {
+      "content": "Реализовать декораторы Bold, Italic, Underline",
+      "id": "4",
+      "status": "completed"
+    },
+    {
+      "content": "Написать main() для демонстрации",
+      "id": "5",
+      "status": "completed"
+    },
+    {
+      "content": "Скомпилировать и проверить",
+      "id": "6",
+      "status": "in_progress"
+    }
+  ],
+  "sessionId": "596e5cb4-5eab-4ebe-a15e-cb0514e15e4b"
+}

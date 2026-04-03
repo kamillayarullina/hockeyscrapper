@@ -1,0 +1,30 @@
+{
+  "todos": [
+    {
+      "content": "Создать nanobot/config.json с правильной конфигурацией",
+      "id": "1",
+      "status": "completed"
+    },
+    {
+      "content": "Создать .env.docker.secret с необходимыми переменными",
+      "id": "2",
+      "status": "in_progress"
+    },
+    {
+      "content": "Исправить конфликт версий ruff в qwen-code-api/pyproject.toml",
+      "id": "3",
+      "status": "pending"
+    },
+    {
+      "content": "Обновить REPORT.md с секциями Task 2A и Task 2B",
+      "id": "4",
+      "status": "pending"
+    },
+    {
+      "content": "Запушить изменения на ВМ и проверить развёртывание",
+      "id": "5",
+      "status": "pending"
+    }
+  ],
+  "sessionId": "c3d2fd23-478a-461e-97e3-07bfe04be580"
+}

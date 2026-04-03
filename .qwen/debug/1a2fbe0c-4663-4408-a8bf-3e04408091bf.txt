@@ -1,0 +1,762 @@
+2026-04-02T12:41:24.604Z [INFO] Config initialization started
+2026-04-02T12:41:24.605Z [DEBUG] Hook system disabled, skipping initialization
+2026-04-02T12:41:24.605Z [DEBUG] Extension manager initialized
+2026-04-02T12:41:24.605Z [INFO] [SKILL_MANAGER] Starting skill directory watchers...
+2026-04-02T12:41:24.606Z [INFO] [SKILL_MANAGER] Refreshing skills cache...
+2026-04-02T12:41:24.606Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-04-02T12:41:24.606Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: c:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-04-02T12:41:24.618Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory c:\Users\user\se-toolkit-lab-8\.qwen\skills: ENOTDIR: not a directory, scandir 'c:\Users\user\se-toolkit-lab-8\.qwen\skills'
+2026-04-02T12:41:24.618Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-04-02T12:41:24.618Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-04-02T12:41:24.618Z [DEBUG] [SKILL_MANAGER] Found 13 entries in c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-04-02T12:41:24.620Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: cleanup-file-review (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\cleanup-file-review\SKILL.md
+2026-04-02T12:41:24.621Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: commit (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\commit\SKILL.md
+2026-04-02T12:41:24.621Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-empty-sections (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-empty-sections\SKILL.md
+2026-04-02T12:41:24.622Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-incomplete-sections (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-incomplete-sections\SKILL.md
+2026-04-02T12:41:24.623Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-new-patterns (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-new-patterns\SKILL.md
+2026-04-02T12:41:24.624Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-broken-links (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-broken-links\SKILL.md
+2026-04-02T12:41:24.625Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-file (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-file\SKILL.md
+2026-04-02T12:41:24.626Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-static (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-static\SKILL.md
+2026-04-02T12:41:24.627Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-report (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-report\SKILL.md
+2026-04-02T12:41:24.628Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-transcript (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-transcript\SKILL.md
+2026-04-02T12:41:24.629Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: ideate-lab (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\ideate-lab\SKILL.md
+2026-04-02T12:41:24.630Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: pr (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\pr\SKILL.md
+2026-04-02T12:41:24.630Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-04-02T12:41:24.630Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review-file (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\review-file\SKILL.md
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.qwen\skills
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.qwen\skills
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Found 0 entries in C:\Users\user\.qwen\skills
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.agents\skills
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory C:\Users\user\.agents\skills: ENOENT: no such file or directory, scandir 'C:\Users\user\.agents\skills'
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension-level skills from 0 extensions
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.agents\skills
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-04-02T12:41:24.632Z [DEBUG] [SKILL_MANAGER] Loading bundled skills from: c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled
+2026-04-02T12:41:24.632Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled
+2026-04-02T12:41:24.631Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension level skills
+2026-04-02T12:41:24.632Z [DEBUG] [SKILL_MANAGER] Found 2 entries in c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled
+2026-04-02T12:41:24.635Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: qc-helper (bundled) from c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled\qc-helper\SKILL.md
+2026-04-02T12:41:24.637Z [DEBUG] [SKILL_MANAGER] Loaded 2 bundled skills
+2026-04-02T12:41:24.637Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review (bundled) from c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled\review\SKILL.md
+2026-04-02T12:41:24.638Z [DEBUG] [SKILL_MANAGER] Loaded 2 bundled level skills
+2026-04-02T12:41:24.638Z [INFO] [SKILL_MANAGER] Skills cache refreshed: 15 total skills loaded
+2026-04-02T12:41:24.639Z [INFO] [SKILL_MANAGER] Skill directory watchers started
+2026-04-02T12:41:24.640Z [DEBUG] Skill manager initialized
+2026-04-02T12:41:24.640Z [DEBUG] Permission manager initialized
+2026-04-02T12:41:24.640Z [DEBUG] [MEMORY_DISCOVERY] Loading server hierarchical memory for CWD: c:\Users\user\se-toolkit-lab-8 (importFormat: tree)
+2026-04-02T12:41:24.645Z [DEBUG] [MEMORY_DISCOVERY] Searching for QWEN.md starting from CWD: c:\Users\user\se-toolkit-lab-8
+2026-04-02T12:41:24.646Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: c:\Users\user\se-toolkit-lab-8
+2026-04-02T12:41:24.650Z [DEBUG] [MEMORY_DISCOVERY] Searching for AGENTS.md starting from CWD: c:\Users\user\se-toolkit-lab-8
+2026-04-02T12:41:24.651Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: c:\Users\user\se-toolkit-lab-8
+2026-04-02T12:41:24.660Z [DEBUG] [MEMORY_DISCOVERY] Final ordered QWEN.md,AGENTS.md paths to read: ["c:\\Users\\user\\se-toolkit-lab-8\\QWEN.md","c:\\Users\\user\\se-toolkit-lab-8\\AGENTS.md","C:\\Users\\user\\.qwen\\output-language.md"]
+2026-04-02T12:41:24.694Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: c:\Users\user\se-toolkit-lab-8\AGENTS.md (Length: 14)
+2026-04-02T12:41:24.697Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: c:\Users\user\se-toolkit-lab-8\QWEN.md (Length: 9)
+2026-04-02T12:41:24.707Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: C:\Users\user\.qwen\output-language.md (Length: 812)
+2026-04-02T12:41:24.707Z [DEBUG] Hierarchical memory loaded
+2026-04-02T12:41:24.709Z [DEBUG] [SKILL_MANAGER] Processing 0 user level skills
+2026-04-02T12:41:24.709Z [DEBUG] [SKILL_MANAGER] Processing 13 project level skills
+2026-04-02T12:41:24.709Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-04-02T12:41:24.709Z [DEBUG] [SKILL_MANAGER] Listing skills
+2026-04-02T12:41:24.709Z [INFO] [SKILL_MANAGER] Listed 15 unique skills
+2026-04-02T12:41:24.709Z [DEBUG] [SKILL_MANAGER] Processing 0 extension level skills
+2026-04-02T12:41:24.709Z [DEBUG] [SKILL_MANAGER] Processing 2 bundled level skills
+2026-04-02T12:41:24.880Z [DEBUG] ToolRegistry created: ["agent","skill","list_directory","read_file","grep_search","glob","edit","write_file","run_shell_command","save_memory","todo_write","ask_user_question","exit_plan_mode","web_fetch","web_search"] (15 tools)
+2026-04-02T12:41:24.880Z [INFO] Tool registry initialized with 15 tools
+2026-04-02T12:41:24.900Z [INFO] Gemini client initialized
+2026-04-02T12:41:24.914Z [INFO] Config initialization completed
+2026-04-02T12:41:24.979Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-04-02T12:41:24.979Z [DEBUG] [SKILL_MANAGER] Listing skills at level: bundled
+2026-04-02T12:41:24.979Z [INFO] [SKILL_MANAGER] Listed 2 unique skills
+2026-04-02T12:41:25.006Z [DEBUG] [BUNDLED_SKILL_LOADER] Loaded 2 bundled skill(s) as slash commands
+2026-04-02T12:41:24.979Z [DEBUG] [SKILL_MANAGER] Processing 2 bundled level skills
+2026-04-02T12:41:26.162Z [DEBUG] [IDE] [cleanupStaleLockFiles] Removing lock file "55703.lock" - ppid 12548 no longer exists
+2026-04-02T12:41:26.164Z [DEBUG] [IDE] [cleanupStaleLockFiles] Cleaned up 1 stale lock file(s)
+2026-04-02T12:44:41.574Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 500 call qwen chat auth error
+2026-04-02T12:44:41.681Z [ERROR] [RETRY] Attempt 1 failed with status 500. Retrying with backoff... Error: 500 call qwen chat auth error
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148744:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T12:44:48.670Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T12:44:48.893Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T12:44:49.320Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T12:44:49.418Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T12:44:55.989Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: Request was aborted.
+2026-04-02T12:45:11.417Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T12:45:11.555Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T12:45:57.191Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T12:45:57.321Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T12:46:07.216Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T12:46:07.357Z [WARN] [RETRY] Attempt 2 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T12:46:19.203Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T12:46:19.337Z [WARN] [RETRY] Attempt 3 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T12:51:52.534Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T12:51:52.657Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T12:52:37.935Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T12:52:38.055Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T12:55:03.765Z [INFO] Config initialization started
+2026-04-02T12:55:03.765Z [DEBUG] Extension manager initialized
+2026-04-02T12:55:03.765Z [DEBUG] Hook system disabled, skipping initialization
+2026-04-02T12:55:03.765Z [INFO] [SKILL_MANAGER] Starting skill directory watchers...
+2026-04-02T12:55:03.768Z [INFO] [SKILL_MANAGER] Refreshing skills cache...
+2026-04-02T12:55:03.768Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-04-02T12:55:03.768Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: c:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-04-02T12:55:03.770Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory c:\Users\user\se-toolkit-lab-8\.qwen\skills: ENOTDIR: not a directory, scandir 'c:\Users\user\se-toolkit-lab-8\.qwen\skills'
+2026-04-02T12:55:03.770Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-04-02T12:55:03.770Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-04-02T12:55:03.770Z [DEBUG] [SKILL_MANAGER] Found 13 entries in c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-04-02T12:55:03.772Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: cleanup-file-review (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\cleanup-file-review\SKILL.md
+2026-04-02T12:55:03.772Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: commit (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\commit\SKILL.md
+2026-04-02T12:55:03.773Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-empty-sections (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-empty-sections\SKILL.md
+2026-04-02T12:55:03.776Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-incomplete-sections (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-incomplete-sections\SKILL.md
+2026-04-02T12:55:03.777Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-new-patterns (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-new-patterns\SKILL.md
+2026-04-02T12:55:03.778Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-broken-links (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-broken-links\SKILL.md
+2026-04-02T12:55:03.779Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-file (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-file\SKILL.md
+2026-04-02T12:55:03.780Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-static (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-static\SKILL.md
+2026-04-02T12:55:03.781Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-report (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-report\SKILL.md
+2026-04-02T12:55:03.782Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-transcript (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-transcript\SKILL.md
+2026-04-02T12:55:03.783Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: ideate-lab (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\ideate-lab\SKILL.md
+2026-04-02T12:55:03.784Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: pr (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\pr\SKILL.md
+2026-04-02T12:55:03.785Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review-file (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\review-file\SKILL.md
+2026-04-02T12:55:03.785Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-04-02T12:55:03.785Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-04-02T12:55:03.785Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.qwen\skills
+2026-04-02T12:55:03.785Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.qwen\skills
+2026-04-02T12:55:03.786Z [DEBUG] [SKILL_MANAGER] Found 0 entries in C:\Users\user\.qwen\skills
+2026-04-02T12:55:03.786Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.agents\skills
+2026-04-02T12:55:03.786Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.agents\skills
+2026-04-02T12:55:03.786Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory C:\Users\user\.agents\skills: ENOENT: no such file or directory, scandir 'C:\Users\user\.agents\skills'
+2026-04-02T12:55:03.786Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-04-02T12:55:03.786Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-04-02T12:55:03.786Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension-level skills from 0 extensions
+2026-04-02T12:55:03.786Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension level skills
+2026-04-02T12:55:03.787Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled
+2026-04-02T12:55:03.787Z [DEBUG] [SKILL_MANAGER] Loading bundled skills from: c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled
+2026-04-02T12:55:03.788Z [DEBUG] [SKILL_MANAGER] Found 2 entries in c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled
+2026-04-02T12:55:03.790Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: qc-helper (bundled) from c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled\qc-helper\SKILL.md
+2026-04-02T12:55:03.794Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review (bundled) from c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled\review\SKILL.md
+2026-04-02T12:55:03.794Z [DEBUG] [SKILL_MANAGER] Loaded 2 bundled skills
+2026-04-02T12:55:03.794Z [INFO] [SKILL_MANAGER] Skills cache refreshed: 15 total skills loaded
+2026-04-02T12:55:03.794Z [DEBUG] [SKILL_MANAGER] Loaded 2 bundled level skills
+2026-04-02T12:55:03.795Z [INFO] [SKILL_MANAGER] Skill directory watchers started
+2026-04-02T12:55:03.795Z [DEBUG] Skill manager initialized
+2026-04-02T12:55:03.795Z [DEBUG] Permission manager initialized
+2026-04-02T12:55:03.795Z [DEBUG] [MEMORY_DISCOVERY] Loading server hierarchical memory for CWD: c:\Users\user\se-toolkit-lab-8 (importFormat: tree)
+2026-04-02T12:55:03.796Z [DEBUG] [MEMORY_DISCOVERY] Searching for QWEN.md starting from CWD: c:\Users\user\se-toolkit-lab-8
+2026-04-02T12:55:03.796Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: c:\Users\user\se-toolkit-lab-8
+2026-04-02T12:55:03.798Z [DEBUG] [MEMORY_DISCOVERY] Searching for AGENTS.md starting from CWD: c:\Users\user\se-toolkit-lab-8
+2026-04-02T12:55:03.800Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: c:\Users\user\se-toolkit-lab-8
+2026-04-02T12:55:03.802Z [DEBUG] [MEMORY_DISCOVERY] Final ordered QWEN.md,AGENTS.md paths to read: ["c:\\Users\\user\\se-toolkit-lab-8\\QWEN.md","c:\\Users\\user\\se-toolkit-lab-8\\AGENTS.md","C:\\Users\\user\\.qwen\\output-language.md"]
+2026-04-02T12:55:03.806Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: c:\Users\user\se-toolkit-lab-8\QWEN.md (Length: 9)
+2026-04-02T12:55:03.806Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: c:\Users\user\se-toolkit-lab-8\AGENTS.md (Length: 14)
+2026-04-02T12:55:03.807Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: C:\Users\user\.qwen\output-language.md (Length: 812)
+2026-04-02T12:55:03.808Z [DEBUG] Hierarchical memory loaded
+2026-04-02T12:55:03.808Z [DEBUG] [SKILL_MANAGER] Listing skills
+2026-04-02T12:55:03.808Z [DEBUG] [SKILL_MANAGER] Processing 13 project level skills
+2026-04-02T12:55:03.808Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-04-02T12:55:03.808Z [DEBUG] [SKILL_MANAGER] Processing 0 user level skills
+2026-04-02T12:55:03.808Z [DEBUG] [SKILL_MANAGER] Processing 0 extension level skills
+2026-04-02T12:55:03.808Z [DEBUG] [SKILL_MANAGER] Processing 2 bundled level skills
+2026-04-02T12:55:03.809Z [DEBUG] ToolRegistry created: ["agent","skill","list_directory","read_file","grep_search","glob","edit","write_file","run_shell_command","save_memory","todo_write","ask_user_question","exit_plan_mode","web_fetch","web_search"] (15 tools)
+2026-04-02T12:55:03.808Z [INFO] [SKILL_MANAGER] Listed 15 unique skills
+2026-04-02T12:55:03.809Z [INFO] Tool registry initialized with 15 tools
+2026-04-02T12:55:03.816Z [INFO] Gemini client initialized
+2026-04-02T12:55:03.817Z [INFO] Config initialization completed
+2026-04-02T12:55:03.926Z [DEBUG] [SKILL_MANAGER] Listing skills at level: bundled
+2026-04-02T12:55:03.926Z [DEBUG] [SKILL_MANAGER] Processing 2 bundled level skills
+2026-04-02T12:55:03.926Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-04-02T12:55:03.926Z [INFO] [SKILL_MANAGER] Listed 2 unique skills
+2026-04-02T12:55:03.927Z [DEBUG] [BUNDLED_SKILL_LOADER] Loaded 2 bundled skill(s) as slash commands
+2026-04-02T12:58:50.165Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T12:59:00.033Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T12:59:00.164Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T12:59:17.096Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T12:59:17.230Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:01:37.341Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:01:37.447Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:08:25.478Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:08:25.606Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:09:07.085Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:09:07.220Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:09:27.323Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:09:27.459Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:11:10.305Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:11:10.433Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:11:21.213Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:11:21.346Z [WARN] [RETRY] Attempt 2 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:12:05.637Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:12:05.755Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:12:14.477Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:12:14.613Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:15:34.900Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:15:35.027Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:16:53.011Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:16:53.141Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:19:02.814Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:19:02.673Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:20:06.841Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:20:06.968Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:23:55.584Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:23:55.766Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:25:11.881Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:25:11.995Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:31:43.843Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:32:47.109Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:32:47.222Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:35:14.976Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:35:15.083Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:35:27.152Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:35:27.295Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:37:37.019Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:37:37.129Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:41:16.396Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:41:16.522Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:41:29.940Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:41:30.068Z [WARN] [RETRY] Attempt 2 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:50:01.118Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:50:01.238Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:51:09.309Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:51:09.441Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:51:22.315Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:51:22.433Z [WARN] [RETRY] Attempt 2 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:51:33.027Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:51:33.301Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:51:33.406Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:51:33.514Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:52:08.389Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:52:08.518Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:52:19.349Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:52:19.480Z [WARN] [RETRY] Attempt 2 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:53:39.790Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:53:39.690Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T13:53:59.086Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:53:59.230Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:54:10.336Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T13:54:10.475Z [WARN] [RETRY] Attempt 2 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T13:55:50.994Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:01:35.414Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:01:35.519Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:03:35.771Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:03:35.899Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:06:22.157Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T14:06:22.298Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T14:07:13.858Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T14:07:13.955Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T14:07:48.978Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:07:49.123Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:11:37.991Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:11:38.095Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:14:52.324Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T14:14:52.461Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T14:15:12.324Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:15:12.465Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T14:25:18.218Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T14:25:18.334Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T14:25:43.377Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T14:25:43.516Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T14:26:36.125Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T14:26:36.263Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T14:28:10.120Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T14:28:10.252Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T16:42:37.611Z [INFO] Config initialization started
+2026-04-02T16:42:37.611Z [INFO] [SKILL_MANAGER] Starting skill directory watchers...
+2026-04-02T16:42:37.611Z [DEBUG] Hook system disabled, skipping initialization
+2026-04-02T16:42:37.611Z [DEBUG] Extension manager initialized
+2026-04-02T16:42:37.618Z [INFO] [SKILL_MANAGER] Refreshing skills cache...
+2026-04-02T16:42:37.618Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: c:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-04-02T16:42:37.618Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-04-02T16:42:37.619Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory c:\Users\user\se-toolkit-lab-8\.qwen\skills: ENOTDIR: not a directory, scandir 'c:\Users\user\se-toolkit-lab-8\.qwen\skills'
+2026-04-02T16:42:37.619Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-04-02T16:42:37.619Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-04-02T16:42:37.621Z [DEBUG] [SKILL_MANAGER] Found 13 entries in c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-04-02T16:42:37.622Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: cleanup-file-review (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\cleanup-file-review\SKILL.md
+2026-04-02T16:42:37.623Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: commit (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\commit\SKILL.md
+2026-04-02T16:42:37.623Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-empty-sections (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-empty-sections\SKILL.md
+2026-04-02T16:42:37.624Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-incomplete-sections (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-incomplete-sections\SKILL.md
+2026-04-02T16:42:37.625Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-new-patterns (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-new-patterns\SKILL.md
+2026-04-02T16:42:37.625Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-broken-links (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-broken-links\SKILL.md
+2026-04-02T16:42:37.626Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-file (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-file\SKILL.md
+2026-04-02T16:42:37.627Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-static (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-static\SKILL.md
+2026-04-02T16:42:37.627Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-report (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-report\SKILL.md
+2026-04-02T16:42:37.628Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-transcript (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-transcript\SKILL.md
+2026-04-02T16:42:37.629Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: ideate-lab (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\ideate-lab\SKILL.md
+2026-04-02T16:42:37.629Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: pr (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\pr\SKILL.md
+2026-04-02T16:42:37.629Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review-file (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\review-file\SKILL.md
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.qwen\skills
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.qwen\skills
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Found 0 entries in C:\Users\user\.qwen\skills
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.agents\skills
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.agents\skills
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory C:\Users\user\.agents\skills: ENOENT: no such file or directory, scandir 'C:\Users\user\.agents\skills'
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension-level skills from 0 extensions
+2026-04-02T16:42:37.630Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension level skills
+2026-04-02T16:42:37.631Z [DEBUG] [SKILL_MANAGER] Loading bundled skills from: c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled
+2026-04-02T16:42:37.631Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled
+2026-04-02T16:42:37.631Z [DEBUG] [SKILL_MANAGER] Found 2 entries in c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled
+2026-04-02T16:42:37.632Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: qc-helper (bundled) from c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled\qc-helper\SKILL.md
+2026-04-02T16:42:37.633Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review (bundled) from c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64\dist\qwen-cli\bundled\review\SKILL.md
+2026-04-02T16:42:37.634Z [DEBUG] [SKILL_MANAGER] Loaded 2 bundled skills
+2026-04-02T16:42:37.634Z [DEBUG] [SKILL_MANAGER] Loaded 2 bundled level skills
+2026-04-02T16:42:37.634Z [INFO] [SKILL_MANAGER] Skills cache refreshed: 15 total skills loaded
+2026-04-02T16:42:37.634Z [INFO] [SKILL_MANAGER] Skill directory watchers started
+2026-04-02T16:42:37.634Z [DEBUG] Skill manager initialized
+2026-04-02T16:42:37.635Z [DEBUG] Permission manager initialized
+2026-04-02T16:42:37.635Z [DEBUG] [MEMORY_DISCOVERY] Loading server hierarchical memory for CWD: c:\Users\user\se-toolkit-lab-8 (importFormat: tree)
+2026-04-02T16:42:37.635Z [DEBUG] [MEMORY_DISCOVERY] Searching for QWEN.md starting from CWD: c:\Users\user\se-toolkit-lab-8
+2026-04-02T16:42:37.638Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: c:\Users\user\se-toolkit-lab-8
+2026-04-02T16:42:37.641Z [DEBUG] [MEMORY_DISCOVERY] Searching for AGENTS.md starting from CWD: c:\Users\user\se-toolkit-lab-8
+2026-04-02T16:42:37.642Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: c:\Users\user\se-toolkit-lab-8
+2026-04-02T16:42:37.644Z [DEBUG] [MEMORY_DISCOVERY] Final ordered QWEN.md,AGENTS.md paths to read: ["c:\\Users\\user\\se-toolkit-lab-8\\QWEN.md","c:\\Users\\user\\se-toolkit-lab-8\\AGENTS.md","C:\\Users\\user\\.qwen\\output-language.md"]
+2026-04-02T16:42:37.645Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: c:\Users\user\se-toolkit-lab-8\QWEN.md (Length: 9)
+2026-04-02T16:42:37.645Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: c:\Users\user\se-toolkit-lab-8\AGENTS.md (Length: 14)
+2026-04-02T16:42:37.646Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-04-02T16:42:37.646Z [DEBUG] [SKILL_MANAGER] Listing skills
+2026-04-02T16:42:37.646Z [DEBUG] [SKILL_MANAGER] Processing 13 project level skills
+2026-04-02T16:42:37.646Z [DEBUG] [SKILL_MANAGER] Processing 0 user level skills
+2026-04-02T16:42:37.646Z [DEBUG] [SKILL_MANAGER] Processing 0 extension level skills
+2026-04-02T16:42:37.646Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: C:\Users\user\.qwen\output-language.md (Length: 812)
+2026-04-02T16:42:37.646Z [INFO] [SKILL_MANAGER] Listed 15 unique skills
+2026-04-02T16:42:37.647Z [DEBUG] ToolRegistry created: ["agent","skill","list_directory","read_file","grep_search","glob","edit","write_file","run_shell_command","save_memory","todo_write","ask_user_question","exit_plan_mode","web_fetch","web_search"] (15 tools)
+2026-04-02T16:42:37.646Z [DEBUG] [SKILL_MANAGER] Processing 2 bundled level skills
+2026-04-02T16:42:37.646Z [DEBUG] Hierarchical memory loaded
+2026-04-02T16:42:37.647Z [INFO] Tool registry initialized with 15 tools
+2026-04-02T16:42:37.657Z [INFO] Gemini client initialized
+2026-04-02T16:42:37.657Z [INFO] Config initialization completed
+2026-04-02T16:42:38.141Z [INFO] [SKILL_MANAGER] Listed 2 unique skills
+2026-04-02T16:42:38.140Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-04-02T16:42:38.140Z [DEBUG] [SKILL_MANAGER] Listing skills at level: bundled
+2026-04-02T16:42:38.140Z [DEBUG] [SKILL_MANAGER] Processing 2 bundled level skills
+2026-04-02T16:42:38.142Z [DEBUG] [BUNDLED_SKILL_LOADER] Loaded 2 bundled skill(s) as slash commands
+2026-04-02T16:45:53.402Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T16:47:07.641Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T16:47:07.746Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T16:48:23.110Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T16:48:23.259Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T16:48:42.627Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: terminated
+2026-04-02T16:54:06.550Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T16:54:06.651Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T16:59:26.729Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T16:59:26.830Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:06:40.204Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:06:40.316Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:12:23.618Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:12:23.792Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:15:35.378Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T17:15:35.475Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T17:16:27.321Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:16:27.427Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:16:50.276Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T17:16:50.400Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T17:17:43.612Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:18:48.160Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:20:17.653Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:21:24.892Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:25:51.625Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T17:25:51.772Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T17:26:31.439Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:29:11.513Z [ERROR] [OPENAI_ERROR] OpenAI API Streaming Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+2026-04-02T17:29:11.616Z [WARN] [RETRY] Attempt 1 failed with status 429. Retrying with backoff... Error: 429 You exceeded your current quota, please check your plan and billing details. For details, see: https://help.aliyun.com/zh/model-studio/error-code#token-limit
+    at APIError.generate (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:148741:18)
+    at OpenAI.makeStatusError (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155757:25)
+    at OpenAI.makeRequest (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:155892:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156703:27
+    at async ContentGenerationPipeline.executeWithErrorHandling (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:156879:26)
+    at async attemptOperation (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159694:18)
+    at async QwenContentGenerator.executeWithCredentialManagement (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:159697:18)
+    at async LoggingContentGenerator.generateContentStream (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:146921:21)
+    at async retryWithBackoff (file:///c:/Users/user/.vscode/extensions/qwenlm.qwen-code-vscode-ide-companion-0.13.2-win32-x64/dist/qwen-cli/cli.js:171554:22)
+2026-04-02T17:29:51.103Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-04-02T17:36:43.425Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.

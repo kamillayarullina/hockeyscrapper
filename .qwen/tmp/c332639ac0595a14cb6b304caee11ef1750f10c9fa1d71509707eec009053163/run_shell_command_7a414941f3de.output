@@ -1,0 +1,657 @@
+Command: py c:\Users\user\se-toolkit-lab-8\full-check-nanobot.py
+Directory: (root)
+Output: ============================================================
+ПОЛНАЯ ПРОВЕРКА NANOBOT
+============================================================
+
+1. ПОЛНЫЕ логи nanobot контейнера:
+/app/nanobot/entrypoint.py:13: PydanticDeprecatedSince20: Support for class-base
+d `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to
+ be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.
+dev/2.12/migration/
+  class Settings(BaseSettings):
+Obtaining file:///app/mcp
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Requirement already satisfied: httpx<1.0.0,>=0.28.0 in /usr/local/lib/python3.12
+/site-packages (from lms-mcp==1.0.0) (0.28.1)
+Requirement already satisfied: mcp<2.0.0,>=1.26.0 in /usr/local/lib/python3.12/s
+ite-packages (from lms-mcp==1.0.0) (1.27.0)
+Requirement already satisfied: pydantic<3.0.0,>=2.12.0 in /usr/local/lib/python3
+.12/site-packages (from lms-mcp==1.0.0) (2.12.5)
+Requirement already satisfied: anyio in /usr/local/lib/python3.12/site-packages 
+(from httpx<1.0.0,>=0.28.0->lms-mcp==1.0.0) (4.13.0)
+Requirement already satisfied: certifi in /usr/local/lib/python3.12/site-package
+s (from httpx<1.0.0,>=0.28.0->lms-mcp==1.0.0) (2026.2.25)
+Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.12/site-p
+ackages (from httpx<1.0.0,>=0.28.0->lms-mcp==1.0.0) (1.0.9)
+Requirement already satisfied: idna in /usr/local/lib/python3.12/site-packages (
+from httpx<1.0.0,>=0.28.0->lms-mcp==1.0.0) (3.11)
+Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.12/site-packa
+ges (from httpcore==1.*->httpx<1.0.0,>=0.28.0->lms-mcp==1.0.0) (0.16.0)
+Requirement already satisfied: httpx-sse>=0.4 in /usr/local/lib/python3.12/site-
+packages (from mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (0.4.3)
+Requirement already satisfied: jsonschema>=4.20.0 in /usr/local/lib/python3.12/s
+ite-packages (from mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (4.26.0)
+Requirement already satisfied: pydantic-settings>=2.5.2 in /usr/local/lib/python
+3.12/site-packages (from mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (2.13.1)
+Requirement already satisfied: pyjwt>=2.10.1 in /usr/local/lib/python3.12/site-p
+ackages (from pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (2.12.1
+)
+Requirement already satisfied: python-multipart>=0.0.9 in /usr/local/lib/python3
+.12/site-packages (from mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (0.0.22)
+Requirement already satisfied: sse-starlette>=1.6.1 in /usr/local/lib/python3.12
+/site-packages (from mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (3.3.4)
+Requirement already satisfied: starlette>=0.27 in /usr/local/lib/python3.12/site
+-packages (from mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (1.0.0)
+Requirement already satisfied: typing-extensions>=4.9.0 in /usr/local/lib/python
+3.12/site-packages (from mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (4.15.0)
+Requirement already satisfied: typing-inspection>=0.4.1 in /usr/local/lib/python
+3.12/site-packages (from mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (0.4.2)
+Requirement already satisfied: uvicorn>=0.31.1 in /usr/local/lib/python3.12/site
+-packages (from mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (0.42.0)
+Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.
+12/site-packages (from pydantic<3.0.0,>=2.12.0->lms-mcp==1.0.0) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in /usr/local/lib/python3.1
+2/site-packages (from pydantic<3.0.0,>=2.12.0->lms-mcp==1.0.0) (2.41.5)
+Requirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.12/site-p
+ackages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (26.1.0)  
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/loca
+l/lib/python3.12/site-packages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->lms
+-mcp==1.0.0) (2025.9.1)
+Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.12/
+site-packages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (0.3
+7.0)
+Requirement already satisfied: rpds-py>=0.25.0 in /usr/local/lib/python3.12/site
+-packages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (0.30.0)
+Requirement already satisfied: python-dotenv>=0.21.0 in /usr/local/lib/python3.1
+2/site-packages (from pydantic-settings>=2.5.2->mcp<2.0.0,>=1.26.0->lms-mcp==1.0
+.0) (1.2.2)
+Requirement already satisfied: cryptography>=3.4.0 in /usr/local/lib/python3.12/
+site-packages (from pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (
+46.0.6)
+Requirement already satisfied: click>=7.0 in /usr/local/lib/python3.12/site-pack
+ages (from uvicorn>=0.31.1->mcp<2.0.0,>=1.26.0->lms-mcp==1.0.0) (8.3.1)
+Requirement already satisfied: cffi>=2.0.0 in /usr/local/lib/python3.12/site-pac
+kages (from cryptography>=3.4.0->pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1.26.0->lms-
+mcp==1.0.0) (2.0.0)
+Requirement already satisfied: pycparser in /usr/local/lib/python3.12/site-packa
+ges (from cffi>=2.0.0->cryptography>=3.4.0->pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1
+.26.0->lms-mcp==1.0.0) (3.0)
+Building wheels for collected packages: lms-mcp
+  Building editable for lms-mcp (pyproject.toml): started
+  Building editable for lms-mcp (pyproject.toml): finished with status 'done'   
+  Created wheel for lms-mcp: filename=lms_mcp-1.0.0-0.editable-py3-none-any.whl 
+size=2717 sha256=a75db8f32943c2077e9a809a7ff169557c01de348dbd424d607c9a2d2e64af5
+7
+  Stored in directory: /tmp/pip-ephem-wheel-cache-ry7nd8_h/wheels/18/41/75/73624
+28ffdc00b213a7ecf160e166fd11ca0a0e897eca912b7
+Successfully built lms-mcp
+Installing collected packages: lms-mcp
+Successfully installed lms-mcp-1.0.0
+WARNING: Running pip as the 'root' user can result in broken permissions and con
+flicting behaviour with the system package manager, possibly rendering your syst
+em unusable. It is recommended to use a virtual environment instead: https://pip
+.pypa.io/warnings/venv. Use the --root-user-action option if you know what you a
+re doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.0.1 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+Obtaining file:///app/nanobot-websocket-channel/nanobot-channel-protocol        
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'     
+Requirement already satisfied: pydantic<3.0.0,>=2.12.0 in /usr/local/lib/python3
+.12/site-packages (from nanobot-channel-protocol==0.1.0) (2.12.5)
+Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.
+12/site-packages (from pydantic<3.0.0,>=2.12.0->nanobot-channel-protocol==0.1.0)
+ (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in /usr/local/lib/python3.1
+2/site-packages (from pydantic<3.0.0,>=2.12.0->nanobot-channel-protocol==0.1.0) 
+(2.41.5)
+Requirement already satisfied: typing-extensions>=4.14.1 in /usr/local/lib/pytho
+n3.12/site-packages (from pydantic<3.0.0,>=2.12.0->nanobot-channel-protocol==0.1
+.0) (4.15.0)
+Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python
+3.12/site-packages (from pydantic<3.0.0,>=2.12.0->nanobot-channel-protocol==0.1.
+0) (0.4.2)
+Building wheels for collected packages: nanobot-channel-protocol
+  Building editable for nanobot-channel-protocol (pyproject.toml): started      
+  Building editable for nanobot-channel-protocol (pyproject.toml): finished with
+ status 'done'
+  Created wheel for nanobot-channel-protocol: filename=nanobot_channel_protocol-
+0.1.0-0.editable-py3-none-any.whl size=1479 sha256=a00cd64d5c01e1b97459b8c9495d8
+a6ea5d4b104f0b965381decff11b64f7d82
+  Stored in directory: /tmp/pip-ephem-wheel-cache-c4fm70nb/wheels/98/cc/86/eceb1
+74229d817da9cab6b5d96e4a7d9b8a9fd80124327f1e3
+Successfully built nanobot-channel-protocol
+Installing collected packages: nanobot-channel-protocol
+Successfully installed nanobot-channel-protocol-0.1.0
+WARNING: Running pip as the 'root' user can result in broken permissions and con
+flicting behaviour with the system package manager, possibly rendering your syst
+em unusable. It is recommended to use a virtual environment instead: https://pip
+.pypa.io/warnings/venv. Use the --root-user-action option if you know what you a
+re doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.0.1 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+Obtaining file:///app/nanobot-websocket-channel/mcp-webchat
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'     
+Requirement already satisfied: httpx<1.0.0,>=0.28.0 in /usr/local/lib/python3.12
+/site-packages (from mcp-webchat==0.1.0) (0.28.1)
+Requirement already satisfied: mcp<2.0.0,>=1.26.0 in /usr/local/lib/python3.12/s
+ite-packages (from mcp-webchat==0.1.0) (1.27.0)
+Requirement already satisfied: nanobot-channel-protocol in /usr/local/lib/python
+3.12/site-packages (from mcp-webchat==0.1.0) (0.1.0)
+Requirement already satisfied: anyio in /usr/local/lib/python3.12/site-packages 
+(from httpx<1.0.0,>=0.28.0->mcp-webchat==0.1.0) (4.13.0)
+Requirement already satisfied: certifi in /usr/local/lib/python3.12/site-package
+s (from httpx<1.0.0,>=0.28.0->mcp-webchat==0.1.0) (2026.2.25)
+Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.12/site-p
+ackages (from httpx<1.0.0,>=0.28.0->mcp-webchat==0.1.0) (1.0.9)
+Requirement already satisfied: idna in /usr/local/lib/python3.12/site-packages (
+from httpx<1.0.0,>=0.28.0->mcp-webchat==0.1.0) (3.11)
+Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.12/site-packa
+ges (from httpcore==1.*->httpx<1.0.0,>=0.28.0->mcp-webchat==0.1.0) (0.16.0)     
+Requirement already satisfied: httpx-sse>=0.4 in /usr/local/lib/python3.12/site-
+packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (0.4.3)
+Requirement already satisfied: jsonschema>=4.20.0 in /usr/local/lib/python3.12/s
+ite-packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (4.26.0)
+Requirement already satisfied: pydantic-settings>=2.5.2 in /usr/local/lib/python
+3.12/site-packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (2.13.1)       
+Requirement already satisfied: pydantic<3.0.0,>=2.11.0 in /usr/local/lib/python3
+.12/site-packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (2.12.5)        
+Requirement already satisfied: pyjwt>=2.10.1 in /usr/local/lib/python3.12/site-p
+ackages (from pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (2.
+12.1)
+Requirement already satisfied: python-multipart>=0.0.9 in /usr/local/lib/python3
+.12/site-packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (0.0.22)        
+Requirement already satisfied: sse-starlette>=1.6.1 in /usr/local/lib/python3.12
+/site-packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (3.3.4)
+Requirement already satisfied: starlette>=0.27 in /usr/local/lib/python3.12/site
+-packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (1.0.0)
+Requirement already satisfied: typing-extensions>=4.9.0 in /usr/local/lib/python
+3.12/site-packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (4.15.0)       
+Requirement already satisfied: typing-inspection>=0.4.1 in /usr/local/lib/python
+3.12/site-packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (0.4.2)        
+Requirement already satisfied: uvicorn>=0.31.1 in /usr/local/lib/python3.12/site
+-packages (from mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (0.42.0)
+Requirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.12/site-p
+ackages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (26.1.
+0)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/loca
+l/lib/python3.12/site-packages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->mcp
+-webchat==0.1.0) (2025.9.1)
+Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.12/
+site-packages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) 
+(0.37.0)
+Requirement already satisfied: rpds-py>=0.25.0 in /usr/local/lib/python3.12/site
+-packages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (0.3
+0.0)
+Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.
+12/site-packages (from pydantic<3.0.0,>=2.11.0->mcp<2.0.0,>=1.26.0->mcp-webchat=
+=0.1.0) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in /usr/local/lib/python3.1
+2/site-packages (from pydantic<3.0.0,>=2.11.0->mcp<2.0.0,>=1.26.0->mcp-webchat==
+0.1.0) (2.41.5)
+Requirement already satisfied: python-dotenv>=0.21.0 in /usr/local/lib/python3.1
+2/site-packages (from pydantic-settings>=2.5.2->mcp<2.0.0,>=1.26.0->mcp-webchat=
+=0.1.0) (1.2.2)
+Requirement already satisfied: cryptography>=3.4.0 in /usr/local/lib/python3.12/
+site-packages (from pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.
+0) (46.0.6)
+Requirement already satisfied: click>=7.0 in /usr/local/lib/python3.12/site-pack
+ages (from uvicorn>=0.31.1->mcp<2.0.0,>=1.26.0->mcp-webchat==0.1.0) (8.3.1)     
+Requirement already satisfied: cffi>=2.0.0 in /usr/local/lib/python3.12/site-pac
+kages (from cryptography>=3.4.0->pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1.26.0->mcp-
+webchat==0.1.0) (2.0.0)
+Requirement already satisfied: pycparser in /usr/local/lib/python3.12/site-packa
+ges (from cffi>=2.0.0->cryptography>=3.4.0->pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1
+.26.0->mcp-webchat==0.1.0) (3.0)
+Building wheels for collected packages: mcp-webchat
+  Building editable for mcp-webchat (pyproject.toml): started
+  Building editable for mcp-webchat (pyproject.toml): finished with status 'done
+'
+  Created wheel for mcp-webchat: filename=mcp_webchat-0.1.0-0.editable-py3-none-
+any.whl size=1332 sha256=15b2959739b3a851e572603efc761a9bd696b14d9ddafcca1de8250
+8c15b7009
+  Stored in directory: /tmp/pip-ephem-wheel-cache-972t6gfn/wheels/da/cb/b2/ab1f1
+30fb720327f10e55bd3d636d5442b48824b21805e21c3
+Successfully built mcp-webchat
+Installing collected packages: mcp-webchat
+Successfully installed mcp-webchat-0.1.0
+WARNING: Running pip as the 'root' user can result in broken permissions and con
+flicting behaviour with the system package manager, possibly rendering your syst
+em unusable. It is recommended to use a virtual environment instead: https://pip
+.pypa.io/warnings/venv. Use the --root-user-action option if you know what you a
+re doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.0.1 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+Obtaining file:///app/nanobot-websocket-channel/nanobot-webchat
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'     
+Requirement already satisfied: aiohttp<4.0.0,>=3.13.0 in /usr/local/lib/python3.
+12/site-packages (from nanobot-webchat==1.0.0) (3.13.5)
+Requirement already satisfied: nanobot-channel-protocol in /usr/local/lib/python
+3.12/site-packages (from nanobot-webchat==1.0.0) (0.1.0)
+Requirement already satisfied: nanobot-ai in /usr/local/lib/python3.12/site-pack
+ages (from nanobot-webchat==1.0.0) (0.1.4.post6)
+Requirement already satisfied: websockets>=15.0 in /usr/local/lib/python3.12/sit
+e-packages (from nanobot-webchat==1.0.0) (16.0)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in /usr/local/lib/python3
+.12/site-packages (from aiohttp<4.0.0,>=3.13.0->nanobot-webchat==1.0.0) (2.6.1) 
+Requirement already satisfied: aiosignal>=1.4.0 in /usr/local/lib/python3.12/sit
+e-packages (from aiohttp<4.0.0,>=3.13.0->nanobot-webchat==1.0.0) (1.4.0)        
+Requirement already satisfied: attrs>=17.3.0 in /usr/local/lib/python3.12/site-p
+ackages (from aiohttp<4.0.0,>=3.13.0->nanobot-webchat==1.0.0) (26.1.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /usr/local/lib/python3.12/si
+te-packages (from aiohttp<4.0.0,>=3.13.0->nanobot-webchat==1.0.0) (1.8.0)       
+Requirement already satisfied: multidict<7.0,>=4.5 in /usr/local/lib/python3.12/
+site-packages (from aiohttp<4.0.0,>=3.13.0->nanobot-webchat==1.0.0) (6.7.1)     
+Requirement already satisfied: propcache>=0.2.0 in /usr/local/lib/python3.12/sit
+e-packages (from aiohttp<4.0.0,>=3.13.0->nanobot-webchat==1.0.0) (0.4.1)        
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /usr/local/lib/python3.12/si
+te-packages (from aiohttp<4.0.0,>=3.13.0->nanobot-webchat==1.0.0) (1.23.0)      
+Requirement already satisfied: anthropic<1.0.0,>=0.45.0 in /usr/local/lib/python
+3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.88.0)
+Requirement already satisfied: chardet<6.0.0,>=3.0.2 in /usr/local/lib/python3.1
+2/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (5.2.0)
+Requirement already satisfied: croniter<7.0.0,>=6.0.0 in /usr/local/lib/python3.
+12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (6.2.2)
+Requirement already satisfied: ddgs<10.0.0,>=9.5.5 in /usr/local/lib/python3.12/
+site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (9.12.0)
+Requirement already satisfied: dingtalk-stream<1.0.0,>=0.24.0 in /usr/local/lib/
+python3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.24.3)     
+Requirement already satisfied: httpx<1.0.0,>=0.28.0 in /usr/local/lib/python3.12
+/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.28.1)
+Requirement already satisfied: json-repair<1.0.0,>=0.57.0 in /usr/local/lib/pyth
+on3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.58.7)
+Requirement already satisfied: lark-oapi<2.0.0,>=1.5.0 in /usr/local/lib/python3
+.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (1.5.3)
+Requirement already satisfied: loguru<1.0.0,>=0.7.3 in /usr/local/lib/python3.12
+/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.7.3)
+Requirement already satisfied: mcp<2.0.0,>=1.26.0 in /usr/local/lib/python3.12/s
+ite-packages (from nanobot-ai->nanobot-webchat==1.0.0) (1.27.0)
+Requirement already satisfied: msgpack<2.0.0,>=1.1.0 in /usr/local/lib/python3.1
+2/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (1.1.2)
+Requirement already satisfied: oauth-cli-kit<1.0.0,>=0.1.3 in /usr/local/lib/pyt
+hon3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.1.3)
+Requirement already satisfied: openai>=2.8.0 in /usr/local/lib/python3.12/site-p
+ackages (from nanobot-ai->nanobot-webchat==1.0.0) (2.30.0)
+Requirement already satisfied: prompt-toolkit<4.0.0,>=3.0.50 in /usr/local/lib/p
+ython3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (3.0.52)      
+Requirement already satisfied: pydantic-settings<3.0.0,>=2.12.0 in /usr/local/li
+b/python3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (2.13.1)   
+Requirement already satisfied: pydantic<3.0.0,>=2.12.0 in /usr/local/lib/python3
+.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (2.12.5)
+Requirement already satisfied: python-socketio<6.0.0,>=5.16.0 in /usr/local/lib/
+python3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (5.16.1)     
+Requirement already satisfied: python-socks<3.0.0,>=2.8.0 in /usr/local/lib/pyth
+on3.12/site-packages (from python-socks[asyncio]<3.0.0,>=2.8.0->nanobot-ai->nano
+bot-webchat==1.0.0) (2.8.1)
+Requirement already satisfied: python-telegram-bot<23.0,>=22.6 in /usr/local/lib
+/python3.12/site-packages (from python-telegram-bot[socks]<23.0,>=22.6->nanobot-
+ai->nanobot-webchat==1.0.0) (22.7)
+Requirement already satisfied: qq-botpy<2.0.0,>=1.2.0 in /usr/local/lib/python3.
+12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (1.2.1)
+Requirement already satisfied: questionary<3.0.0,>=2.0.0 in /usr/local/lib/pytho
+n3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (2.1.1)
+Requirement already satisfied: readability-lxml<1.0.0,>=0.8.4 in /usr/local/lib/
+python3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.8.4.1)    
+Requirement already satisfied: rich<15.0.0,>=14.0.0 in /usr/local/lib/python3.12
+/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (14.3.3)
+Requirement already satisfied: slack-sdk<4.0.0,>=3.39.0 in /usr/local/lib/python
+3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (3.41.0)
+Requirement already satisfied: slackify-markdown<1.0.0,>=0.2.0 in /usr/local/lib
+/python3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.2.2)     
+Requirement already satisfied: socksio<2.0.0,>=1.0.0 in /usr/local/lib/python3.1
+2/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (1.0.0)
+Requirement already satisfied: tiktoken<1.0.0,>=0.12.0 in /usr/local/lib/python3
+.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.12.0)
+Requirement already satisfied: typer<1.0.0,>=0.20.0 in /usr/local/lib/python3.12
+/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (0.24.1)
+Requirement already satisfied: websocket-client<2.0.0,>=1.9.0 in /usr/local/lib/
+python3.12/site-packages (from nanobot-ai->nanobot-webchat==1.0.0) (1.9.0)      
+Requirement already satisfied: typing-extensions>=4.2 in /usr/local/lib/python3.
+12/site-packages (from aiosignal>=1.4.0->aiohttp<4.0.0,>=3.13.0->nanobot-webchat
+==1.0.0) (4.15.0)
+Requirement already satisfied: anyio<5,>=3.5.0 in /usr/local/lib/python3.12/site
+-packages (from anthropic<1.0.0,>=0.45.0->nanobot-ai->nanobot-webchat==1.0.0) (4
+.13.0)
+Requirement already satisfied: distro<2,>=1.7.0 in /usr/local/lib/python3.12/sit
+e-packages (from anthropic<1.0.0,>=0.45.0->nanobot-ai->nanobot-webchat==1.0.0) (
+1.9.0)
+Requirement already satisfied: docstring-parser<1,>=0.15 in /usr/local/lib/pytho
+n3.12/site-packages (from anthropic<1.0.0,>=0.45.0->nanobot-ai->nanobot-webchat=
+=1.0.0) (0.17.0)
+Requirement already satisfied: jiter<1,>=0.4.0 in /usr/local/lib/python3.12/site
+-packages (from anthropic<1.0.0,>=0.45.0->nanobot-ai->nanobot-webchat==1.0.0) (0
+.13.0)
+Requirement already satisfied: sniffio in /usr/local/lib/python3.12/site-package
+s (from anthropic<1.0.0,>=0.45.0->nanobot-ai->nanobot-webchat==1.0.0) (1.3.1)   
+Requirement already satisfied: python-dateutil in /usr/local/lib/python3.12/site
+-packages (from croniter<7.0.0,>=6.0.0->nanobot-ai->nanobot-webchat==1.0.0) (2.9
+.0.post0)
+Requirement already satisfied: click>=8.1.8 in /usr/local/lib/python3.12/site-pa
+ckages (from ddgs<10.0.0,>=9.5.5->nanobot-ai->nanobot-webchat==1.0.0) (8.3.1)   
+Requirement already satisfied: primp>=1.2.0 in /usr/local/lib/python3.12/site-pa
+ckages (from ddgs<10.0.0,>=9.5.5->nanobot-ai->nanobot-webchat==1.0.0) (1.2.1)   
+Requirement already satisfied: lxml>=4.9.4 in /usr/local/lib/python3.12/site-pac
+kages (from ddgs<10.0.0,>=9.5.5->nanobot-ai->nanobot-webchat==1.0.0) (6.0.2)    
+Requirement already satisfied: requests>=2.27.1 in /usr/local/lib/python3.12/sit
+e-packages (from dingtalk-stream<1.0.0,>=0.24.0->nanobot-ai->nanobot-webchat==1.
+0.0) (2.33.1)
+Requirement already satisfied: certifi in /usr/local/lib/python3.12/site-package
+s (from httpx<1.0.0,>=0.28.0->nanobot-ai->nanobot-webchat==1.0.0) (2026.2.25)   
+Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.12/site-p
+ackages (from httpx<1.0.0,>=0.28.0->nanobot-ai->nanobot-webchat==1.0.0) (1.0.9) 
+Requirement already satisfied: idna in /usr/local/lib/python3.12/site-packages (
+from httpx<1.0.0,>=0.28.0->nanobot-ai->nanobot-webchat==1.0.0) (3.11)
+Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.12/site-packa
+ges (from httpcore==1.*->httpx<1.0.0,>=0.28.0->nanobot-ai->nanobot-webchat==1.0.
+0) (0.16.0)
+Requirement already satisfied: requests-toolbelt in /usr/local/lib/python3.12/si
+te-packages (from lark-oapi<2.0.0,>=1.5.0->nanobot-ai->nanobot-webchat==1.0.0) (
+1.0.0)
+Requirement already satisfied: pycryptodome in /usr/local/lib/python3.12/site-pa
+ckages (from lark-oapi<2.0.0,>=1.5.0->nanobot-ai->nanobot-webchat==1.0.0) (3.23.
+0)
+Requirement already satisfied: httpx-sse>=0.4 in /usr/local/lib/python3.12/site-
+packages (from mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-webchat==1.0.0) (0.4.3)  
+Requirement already satisfied: jsonschema>=4.20.0 in /usr/local/lib/python3.12/s
+ite-packages (from mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-webchat==1.0.0) (4.26
+.0)
+Requirement already satisfied: pyjwt>=2.10.1 in /usr/local/lib/python3.12/site-p
+ackages (from pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-web
+chat==1.0.0) (2.12.1)
+Requirement already satisfied: python-multipart>=0.0.9 in /usr/local/lib/python3
+.12/site-packages (from mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-webchat==1.0.0) 
+(0.0.22)
+Requirement already satisfied: sse-starlette>=1.6.1 in /usr/local/lib/python3.12
+/site-packages (from mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-webchat==1.0.0) (3.
+3.4)
+Requirement already satisfied: starlette>=0.27 in /usr/local/lib/python3.12/site
+-packages (from mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-webchat==1.0.0) (1.0.0) 
+Requirement already satisfied: typing-inspection>=0.4.1 in /usr/local/lib/python
+3.12/site-packages (from mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-webchat==1.0.0)
+ (0.4.2)
+Requirement already satisfied: uvicorn>=0.31.1 in /usr/local/lib/python3.12/site
+-packages (from mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-webchat==1.0.0) (0.42.0)
+Requirement already satisfied: platformdirs>=4.0.0 in /usr/local/lib/python3.12/
+site-packages (from oauth-cli-kit<1.0.0,>=0.1.3->nanobot-ai->nanobot-webchat==1.
+0.0) (4.9.4)
+Requirement already satisfied: tqdm>4 in /usr/local/lib/python3.12/site-packages
+ (from openai>=2.8.0->nanobot-ai->nanobot-webchat==1.0.0) (4.67.3)
+Requirement already satisfied: wcwidth in /usr/local/lib/python3.12/site-package
+s (from prompt-toolkit<4.0.0,>=3.0.50->nanobot-ai->nanobot-webchat==1.0.0) (0.6.
+0)
+Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.
+12/site-packages (from pydantic<3.0.0,>=2.12.0->nanobot-ai->nanobot-webchat==1.0
+.0) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in /usr/local/lib/python3.1
+2/site-packages (from pydantic<3.0.0,>=2.12.0->nanobot-ai->nanobot-webchat==1.0.
+0) (2.41.5)
+Requirement already satisfied: python-dotenv>=0.21.0 in /usr/local/lib/python3.1
+2/site-packages (from pydantic-settings<3.0.0,>=2.12.0->nanobot-ai->nanobot-webc
+hat==1.0.0) (1.2.2)
+Requirement already satisfied: bidict>=0.21.0 in /usr/local/lib/python3.12/site-
+packages (from python-socketio<6.0.0,>=5.16.0->nanobot-ai->nanobot-webchat==1.0.
+0) (0.23.1)
+Requirement already satisfied: python-engineio>=4.11.0 in /usr/local/lib/python3
+.12/site-packages (from python-socketio<6.0.0,>=5.16.0->nanobot-ai->nanobot-webc
+hat==1.0.0) (4.13.1)
+Requirement already satisfied: PyYAML in /usr/local/lib/python3.12/site-packages
+ (from qq-botpy<2.0.0,>=1.2.0->nanobot-ai->nanobot-webchat==1.0.0) (6.0.3)      
+Requirement already satisfied: APScheduler in /usr/local/lib/python3.12/site-pac
+kages (from qq-botpy<2.0.0,>=1.2.0->nanobot-ai->nanobot-webchat==1.0.0) (3.11.2)
+Requirement already satisfied: cssselect in /usr/local/lib/python3.12/site-packa
+ges (from readability-lxml<1.0.0,>=0.8.4->nanobot-ai->nanobot-webchat==1.0.0) (1
+.4.0)
+Requirement already satisfied: markdown-it-py>=2.2.0 in /usr/local/lib/python3.1
+2/site-packages (from rich<15.0.0,>=14.0.0->nanobot-ai->nanobot-webchat==1.0.0) 
+(4.0.0)
+Requirement already satisfied: pygments<3.0.0,>=2.13.0 in /usr/local/lib/python3
+.12/site-packages (from rich<15.0.0,>=14.0.0->nanobot-ai->nanobot-webchat==1.0.0
+) (2.20.0)
+Requirement already satisfied: regex>=2022.1.18 in /usr/local/lib/python3.12/sit
+e-packages (from tiktoken<1.0.0,>=0.12.0->nanobot-ai->nanobot-webchat==1.0.0) (2
+026.3.32)
+Requirement already satisfied: shellingham>=1.3.0 in /usr/local/lib/python3.12/s
+ite-packages (from typer<1.0.0,>=0.20.0->nanobot-ai->nanobot-webchat==1.0.0) (1.
+5.4)
+Requirement already satisfied: annotated-doc>=0.0.2 in /usr/local/lib/python3.12
+/site-packages (from typer<1.0.0,>=0.20.0->nanobot-ai->nanobot-webchat==1.0.0) (
+0.0.4)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/loca
+l/lib/python3.12/site-packages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->nan
+obot-ai->nanobot-webchat==1.0.0) (2025.9.1)
+Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.12/
+site-packages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-
+webchat==1.0.0) (0.37.0)
+Requirement already satisfied: rpds-py>=0.25.0 in /usr/local/lib/python3.12/site
+-packages (from jsonschema>=4.20.0->mcp<2.0.0,>=1.26.0->nanobot-ai->nanobot-webc
+hat==1.0.0) (0.30.0)
+Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.12/site-pack
+ages (from markdown-it-py>=2.2.0->rich<15.0.0,>=14.0.0->nanobot-ai->nanobot-webc
+hat==1.0.0) (0.1.2)
+Requirement already satisfied: cryptography>=3.4.0 in /usr/local/lib/python3.12/
+site-packages (from pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1.26.0->nanobot-ai->nanob
+ot-webchat==1.0.0) (46.0.6)
+Requirement already satisfied: simple-websocket>=0.10.0 in /usr/local/lib/python
+3.12/site-packages (from python-engineio>=4.11.0->python-socketio<6.0.0,>=5.16.0
+->nanobot-ai->nanobot-webchat==1.0.0) (1.1.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in /usr/local/lib/python
+3.12/site-packages (from requests>=2.27.1->dingtalk-stream<1.0.0,>=0.24.0->nanob
+ot-ai->nanobot-webchat==1.0.0) (3.4.7)
+Requirement already satisfied: urllib3<3,>=1.26 in /usr/local/lib/python3.12/sit
+e-packages (from requests>=2.27.1->dingtalk-stream<1.0.0,>=0.24.0->nanobot-ai->n
+anobot-webchat==1.0.0) (2.6.3)
+Requirement already satisfied: tzlocal>=3.0 in /usr/local/lib/python3.12/site-pa
+ckages (from APScheduler->qq-botpy<2.0.0,>=1.2.0->nanobot-ai->nanobot-webchat==1
+.0.0) (5.3.1)
+Requirement already satisfied: lxml_html_clean in /usr/local/lib/python3.12/site
+-packages (from lxml[html_clean]->readability-lxml<1.0.0,>=0.8.4->nanobot-ai->na
+nobot-webchat==1.0.0) (0.4.4)
+Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.12/site-packag
+es (from python-dateutil->croniter<7.0.0,>=6.0.0->nanobot-ai->nanobot-webchat==1
+.0.0) (1.17.0)
+Requirement already satisfied: cffi>=2.0.0 in /usr/local/lib/python3.12/site-pac
+kages (from cryptography>=3.4.0->pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1.26.0->nano
+bot-ai->nanobot-webchat==1.0.0) (2.0.0)
+Requirement already satisfied: wsproto in /usr/local/lib/python3.12/site-package
+s (from simple-websocket>=0.10.0->python-engineio>=4.11.0->python-socketio<6.0.0
+,>=5.16.0->nanobot-ai->nanobot-webchat==1.0.0) (1.3.2)
+Requirement already satisfied: pycparser in /usr/local/lib/python3.12/site-packa
+ges (from cffi>=2.0.0->cryptography>=3.4.0->pyjwt[crypto]>=2.10.1->mcp<2.0.0,>=1
+.26.0->nanobot-ai->nanobot-webchat==1.0.0) (3.0)
+Building wheels for collected packages: nanobot-webchat
+  Building editable for nanobot-webchat (pyproject.toml): started
+  Building editable for nanobot-webchat (pyproject.toml): finished with status '
+done'
+  Created wheel for nanobot-webchat: filename=nanobot_webchat-1.0.0-0.editable-p
+y3-none-any.whl size=1680 sha256=c2caf10fd9f1cda6d9636eccc4a4398b74cb72927103873
+d1a359eba48256fc8
+  Stored in directory: /tmp/pip-ephem-wheel-cache-1hekhq_m/wheels/bd/59/c7/3369d
+4b7c2681807a8f39569286d65319fba15d01de547a958
+Successfully built nanobot-webchat
+Installing collected packages: nanobot-webchat
+Successfully installed nanobot-webchat-1.0.0
+WARNING: Running pip as the 'root' user can result in broken permissions and con
+flicting behaviour with the system package manager, possibly rendering your syst
+em unusable. It is recommended to use a virtual environment instead: https://pip
+.pypa.io/warnings/venv. Use the --root-user-action option if you know what you a
+re doing and want to suppress this warning.
+
+[notice] A new release of pip is available: 25.0.1 -> 26.0.1
+[notice] To update, run: pip install --upgrade pip
+Using config: /app/nanobot/config.resolved.json
+🐈 Starting nanobot gateway version 0.1.4.post6 on port 18790...
+  Created HEARTBEAT.md
+  Created AGENTS.md
+  Created TOOLS.md
+  Created SOUL.md
+  Created USER.md
+  Created memory/MEMORY.md
+  Created memory/HISTORY.md
+2026-04-02 21:23:25.603 | DEBUG    | nanobot.channels.registry:discover_all:64 -
+ Skipping built-in channel 'matrix': Matrix dependencies not installed. Run: pip
+ install nanobot-ai[matrix]
+Warning: No channels enabled
+✓ Heartbeat: every 1800s
+2026-04-02 21:23:30.095 | INFO     | nanobot.cron.service:start:202 - Cron servi
+ce started with 0 jobs
+2026-04-02 21:23:30.095 | INFO     | nanobot.heartbeat.service:start:124 - Heart
+beat started (every 1800s)
+2026-04-02 21:23:32.869 | WARNING  | nanobot.channels.manager:start_all:82 - No 
+channels enabled
+2026-04-02 21:23:33.761 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_lms_lms_health' from server 'lms'
+2026-04-02 21:23:33.761 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_lms_lms_labs' from server 'lms'
+2026-04-02 21:23:33.761 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_lms_lms_learners' from server 'lms'
+2026-04-02 21:23:33.761 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_lms_lms_pass_rates' from server 'lms'
+2026-04-02 21:23:33.761 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_lms_lms_timeline' from server 'lms'
+2026-04-02 21:23:33.761 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_lms_lms_groups' from server 'lms'
+2026-04-02 21:23:33.761 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_lms_lms_top_learners' from server 'lms'        
+2026-04-02 21:23:33.761 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_lms_lms_completion_rate' from server 'lms'     
+2026-04-02 21:23:33.761 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_lms_lms_sync_pipeline' from server 'lms'       
+2026-04-02 21:23:33.761 | INFO     | nanobot.agent.tools.mcp:connect_mcp_servers
+:246 - MCP server 'lms': connected, 9 tools registered
+2026-04-02 21:23:34.893 | DEBUG    | nanobot.agent.tools.mcp:connect_mcp_servers
+:226 - MCP: registered tool 'mcp_webchat_ui_message' from server 'webchat'      
+2026-04-02 21:23:34.893 | INFO     | nanobot.agent.tools.mcp:connect_mcp_servers
+:246 - MCP server 'webchat': connected, 1 tools registered
+2026-04-02 21:23:34.894 | INFO     | nanobot.agent.loop:run:280 - Agent loop sta
+rted
+
+
+2. Проверка entrypoint.py:
+total 48
+drwxr-xr-x 4 root root 4096 Apr  2 18:28 .
+drwxr-xr-x 1 root root 4096 Apr  2 21:22 ..
+-rw-r--r-- 1 root root    5 Mar 28 12:22 .python-version
+-rw-r--r-- 1 root root  255 Apr  2 18:29 Dockerfile
+-rw-r--r-- 1 root root    0 Mar 28 12:22 README.md
+-rw-r--r-- 1 root root  860 Apr  2 21:00 config.json
+-rw-r--r-- 1 root root  919 Apr  2 21:23 config.resolved.json
+drwxr-xr-x 2 root root 4096 Mar 28 13:19 cron
+-rw-r--r-- 1 root root 5323 Apr  2 18:46 entrypoint.py
+-rw-r--r-- 1 root root   85 Mar 28 12:22 main.py
+-rw-r--r-- 1 root root  223 Apr  2 21:06 pyproject.toml
+drwxr-xr-x 5 root root 4096 Apr  2 19:28 workspace
+
+
+3. Содержимое entrypoint.py (первые 50 строк):
+#!/usr/bin/env python3
+"""Entrypoint for nanobot gateway in Docker."""
+
+import json
+import os
+import sys
+import subprocess
+from pathlib import Path
+
+from pydantic_settings import BaseSettings
+
+
+class Settings(BaseSettings):
+    """Docker environment settings."""
+
+    # LLM configuration
+    llm_api_key: str | None = None
+    llm_api_base_url: str | None = None
+    llm_api_model: str = "coder-model"
+
+    # Gateway configuration
+    nanobot_gateway_container_address: str = "0.0.0.0"
+    nanobot_gateway_container_port: int = 18790
+
+    # WebChat channel configuration (Task 2B)
+    nanobot_webchat_container_address: str = "0.0.0.0"
+    nanobot_webchat_container_port: int = 8765
+    nanobot_access_key: str | None = None
+
+    # LMS MCP configuration
+    nanobot_lms_backend_url: str | None = None
+    nanobot_lms_api_key: str | None = None
+
+    class Config:
+        env_prefix = ""
+        extra = "ignore"
+
+
+def install_packages():
+    """Install MCP servers from workspace directories."""
+    mcp_path = Path("/app/mcp")
+    webchat_path = Path("/app/nanobot-websocket-channel")
+
+    if mcp_path.exists():
+        print(f"Installing lms-mcp from {mcp_path}...")
+        subprocess.run([sys.executable, "-m", "pip", "install", "-e", str(mcp_pa
+th)], check=True)
+    else:
+        print(f"Warning: {mcp_path} not found")
+
+    if webchat_path.exists():
+
+
+4. Dockerfile CMD:
+FROM python:3.12-slim
+WORKDIR /app
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY pyproject.toml ./pyproject.toml
+RUN uv pip install --system nanobot-ai pydantic-settings
+COPY . ./nanobot/
+CMD ["python", "/app/nanobot/entrypoint.py"]
+
+
+
+5. nanobot/pyproject.toml:
+[project]
+name = "nanobot"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "nanobot-ai>=0.1.0",
+    "pydantic-settings>=2.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+Error: (none)
+Exit Code: 0
+Signal: (none)
+Process Group PGID: 16644

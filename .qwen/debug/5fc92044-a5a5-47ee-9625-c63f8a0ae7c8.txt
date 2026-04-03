@@ -1,0 +1,82 @@
+2026-03-29T21:48:26.103Z [INFO] Config initialization started
+2026-03-29T21:48:26.103Z [DEBUG] Extension manager initialized
+2026-03-29T21:48:26.103Z [DEBUG] Hook system disabled, skipping initialization
+2026-03-29T21:48:26.104Z [INFO] [SKILL_MANAGER] Starting skill directory watchers...
+2026-03-29T21:48:26.104Z [INFO] [SKILL_MANAGER] Refreshing skills cache...
+2026-03-29T21:48:26.104Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-03-29T21:48:26.104Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: c:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-03-29T21:48:26.113Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory c:\Users\user\se-toolkit-lab-8\.qwen\skills: ENOTDIR: not a directory, scandir 'c:\Users\user\se-toolkit-lab-8\.qwen\skills'
+2026-03-29T21:48:26.114Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-03-29T21:48:26.113Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-03-29T21:48:26.114Z [DEBUG] [SKILL_MANAGER] Found 13 entries in c:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-03-29T21:48:26.115Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: cleanup-file-review (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\cleanup-file-review\SKILL.md
+2026-03-29T21:48:26.115Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: commit (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\commit\SKILL.md
+2026-03-29T21:48:26.116Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-empty-sections (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-empty-sections\SKILL.md
+2026-03-29T21:48:26.117Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-incomplete-sections (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-incomplete-sections\SKILL.md
+2026-03-29T21:48:26.117Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-new-patterns (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\find-new-patterns\SKILL.md
+2026-03-29T21:48:26.118Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-broken-links (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-broken-links\SKILL.md
+2026-03-29T21:48:26.118Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-file (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-file\SKILL.md
+2026-03-29T21:48:26.119Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-static (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\fix-static\SKILL.md
+2026-03-29T21:48:26.119Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-report (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-report\SKILL.md
+2026-03-29T21:48:26.120Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-transcript (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-transcript\SKILL.md
+2026-03-29T21:48:26.120Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: ideate-lab (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\ideate-lab\SKILL.md
+2026-03-29T21:48:26.120Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: pr (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\pr\SKILL.md
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review-file (project) from c:\Users\user\se-toolkit-lab-8\.agents\skills\review-file\SKILL.md
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.qwen\skills
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.qwen\skills
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.agents\skills
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.agents\skills
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory C:\Users\user\.agents\skills: ENOENT: no such file or directory, scandir 'C:\Users\user\.agents\skills'
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension-level skills from 0 extensions
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Found 0 entries in C:\Users\user\.qwen\skills
+2026-03-29T21:48:26.122Z [DEBUG] [SKILL_MANAGER] Loading bundled skills from: c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.0-win32-x64\dist\qwen-cli\bundled
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-03-29T21:48:26.121Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension level skills
+2026-03-29T21:48:26.122Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.0-win32-x64\dist\qwen-cli\bundled
+2026-03-29T21:48:26.123Z [DEBUG] [SKILL_MANAGER] Found 1 entries in c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.0-win32-x64\dist\qwen-cli\bundled
+2026-03-29T21:48:26.125Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review (bundled) from c:\Users\user\.vscode\extensions\qwenlm.qwen-code-vscode-ide-companion-0.13.0-win32-x64\dist\qwen-cli\bundled\review\SKILL.md
+2026-03-29T21:48:26.125Z [DEBUG] [SKILL_MANAGER] Loaded 1 bundled skills
+2026-03-29T21:48:26.125Z [DEBUG] [SKILL_MANAGER] Loaded 1 bundled level skills
+2026-03-29T21:48:26.125Z [INFO] [SKILL_MANAGER] Skills cache refreshed: 14 total skills loaded
+2026-03-29T21:48:26.126Z [INFO] [SKILL_MANAGER] Skill directory watchers started
+2026-03-29T21:48:26.126Z [DEBUG] Skill manager initialized
+2026-03-29T21:48:26.126Z [DEBUG] Permission manager initialized
+2026-03-29T21:48:26.126Z [DEBUG] [MEMORY_DISCOVERY] Loading server hierarchical memory for CWD: c:\Users\user\se-toolkit-lab-8 (importFormat: tree)
+2026-03-29T21:48:26.128Z [DEBUG] [MEMORY_DISCOVERY] Searching for QWEN.md starting from CWD: c:\Users\user\se-toolkit-lab-8
+2026-03-29T21:48:26.129Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: c:\Users\user\se-toolkit-lab-8
+2026-03-29T21:48:26.132Z [DEBUG] [MEMORY_DISCOVERY] Searching for AGENTS.md starting from CWD: c:\Users\user\se-toolkit-lab-8
+2026-03-29T21:48:26.132Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: c:\Users\user\se-toolkit-lab-8
+2026-03-29T21:48:26.135Z [DEBUG] [MEMORY_DISCOVERY] Final ordered QWEN.md,AGENTS.md paths to read: ["c:\\Users\\user\\se-toolkit-lab-8\\QWEN.md","c:\\Users\\user\\se-toolkit-lab-8\\AGENTS.md","C:\\Users\\user\\.qwen\\output-language.md"]
+2026-03-29T21:48:26.158Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: C:\Users\user\.qwen\output-language.md (Length: 812)
+2026-03-29T21:48:26.160Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: c:\Users\user\se-toolkit-lab-8\QWEN.md (Length: 9)
+2026-03-29T21:48:26.162Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: c:\Users\user\se-toolkit-lab-8\AGENTS.md (Length: 8495)
+2026-03-29T21:48:26.162Z [DEBUG] Hierarchical memory loaded
+2026-03-29T21:48:26.163Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-03-29T21:48:26.163Z [DEBUG] [SKILL_MANAGER] Listing skills
+2026-03-29T21:48:26.163Z [DEBUG] [SKILL_MANAGER] Processing 13 project level skills
+2026-03-29T21:48:26.163Z [DEBUG] [SKILL_MANAGER] Processing 0 extension level skills
+2026-03-29T21:48:26.163Z [DEBUG] [SKILL_MANAGER] Processing 0 user level skills
+2026-03-29T21:48:26.163Z [DEBUG] [SKILL_MANAGER] Processing 1 bundled level skills
+2026-03-29T21:48:26.163Z [INFO] [SKILL_MANAGER] Listed 14 unique skills
+2026-03-29T21:48:26.230Z [DEBUG] ToolRegistry created: ["agent","skill","list_directory","read_file","grep_search","glob","edit","write_file","run_shell_command","save_memory","todo_write","ask_user_question","exit_plan_mode","web_fetch","web_search"] (15 tools)
+2026-03-29T21:48:26.230Z [INFO] Tool registry initialized with 15 tools
+2026-03-29T21:48:26.235Z [INFO] Gemini client initialized
+2026-03-29T21:48:26.235Z [INFO] Config initialization completed
+2026-03-29T21:48:26.245Z [DEBUG] [SKILL_MANAGER] Listing skills at level: bundled
+2026-03-29T21:48:26.245Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-03-29T21:48:26.245Z [DEBUG] [SKILL_MANAGER] Processing 1 bundled level skills
+2026-03-29T21:48:26.246Z [INFO] [SKILL_MANAGER] Listed 1 unique skills
+2026-03-29T21:48:26.249Z [DEBUG] [BUNDLED_SKILL_LOADER] Loaded 1 bundled skill(s) as slash commands
+2026-03-29T21:53:53.121Z [DEBUG] [QWEN_LOGGER] QwenLogger: Re-queued 8 events for retry (queue size: 8)
+2026-03-29T21:53:53.121Z [ERROR] [QWEN_LOGGER] RUM flush failed. Error: getaddrinfo ENOTFOUND gb4w8c3ygj-default-sea.rum.aliyuncs.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+    at GetAddrInfoReqWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+2026-03-29T22:23:58.226Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.
+2026-03-29T22:24:01.001Z [ERROR] [QWEN_LOGGER] RUM flush failed. Error: getaddrinfo ENOTFOUND gb4w8c3ygj-default-sea.rum.aliyuncs.com
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:122:26)
+    at GetAddrInfoReqWrap.callbackTrampoline (node:internal/async_hooks:130:17)
+2026-03-29T22:24:01.002Z [DEBUG] [QWEN_LOGGER] QwenLogger: Re-queued 2 events for retry (queue size: 3)
+2026-03-29T22:26:44.747Z [DEBUG] [QWEN_LOGGER] QwenLogger: Flush already in progress, marking pending flush.

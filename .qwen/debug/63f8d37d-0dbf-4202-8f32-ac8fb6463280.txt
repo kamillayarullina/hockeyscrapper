@@ -1,0 +1,111 @@
+2026-03-28T15:29:30.510Z [INFO] Config initialization started
+2026-03-28T15:29:30.526Z [DEBUG] [BUNDLED_SKILL_LOADER] SkillManager not available, skipping bundled skills
+2026-03-28T15:29:30.605Z [DEBUG] Extension manager initialized
+2026-03-28T15:29:30.605Z [DEBUG] Hook system disabled, skipping initialization
+2026-03-28T15:29:30.605Z [INFO] [SKILL_MANAGER] Starting skill directory watchers...
+2026-03-28T15:29:30.683Z [INFO] [SKILL_MANAGER] Refreshing skills cache...
+2026-03-28T15:29:30.683Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: C:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-03-28T15:29:30.698Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: C:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-03-28T15:29:30.683Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\se-toolkit-lab-8\.qwen\skills
+2026-03-28T15:29:30.698Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory C:\Users\user\se-toolkit-lab-8\.qwen\skills: ENOTDIR: not a directory, scandir 'C:\Users\user\se-toolkit-lab-8\.qwen\skills'
+2026-03-28T15:29:30.698Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-03-28T15:29:30.704Z [DEBUG] [SKILL_MANAGER] Found 13 entries in C:\Users\user\se-toolkit-lab-8\.agents\skills
+2026-03-28T15:29:30.737Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: cleanup-file-review (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\cleanup-file-review\SKILL.md
+2026-03-28T15:29:30.797Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: commit (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\commit\SKILL.md
+2026-03-28T15:29:30.807Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-empty-sections (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\find-empty-sections\SKILL.md
+2026-03-28T15:29:30.808Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-incomplete-sections (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\find-incomplete-sections\SKILL.md
+2026-03-28T15:29:30.810Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: find-new-patterns (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\find-new-patterns\SKILL.md
+2026-03-28T15:29:30.815Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-broken-links (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\fix-broken-links\SKILL.md
+2026-03-28T15:29:30.819Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-file (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\fix-file\SKILL.md
+2026-03-28T15:29:30.819Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: fix-static (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\fix-static\SKILL.md
+2026-03-28T15:29:30.820Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-report (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-report\SKILL.md
+2026-03-28T15:29:30.821Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: get-meeting-transcript (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\get-meeting-transcript\SKILL.md
+2026-03-28T15:29:30.821Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: ideate-lab (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\ideate-lab\SKILL.md
+2026-03-28T15:29:30.826Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: pr (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\pr\SKILL.md
+2026-03-28T15:29:30.826Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review-file (project) from C:\Users\user\se-toolkit-lab-8\.agents\skills\review-file\SKILL.md
+2026-03-28T15:29:30.827Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-03-28T15:29:30.827Z [DEBUG] [SKILL_MANAGER] Loaded 13 project level skills
+2026-03-28T15:29:30.827Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.qwen\skills
+2026-03-28T15:29:30.827Z [DEBUG] [SKILL_MANAGER] Found 0 entries in C:\Users\user\.qwen\skills
+2026-03-28T15:29:30.827Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.qwen\skills
+2026-03-28T15:29:30.827Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.agents\skills
+2026-03-28T15:29:30.827Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.agents\skills
+2026-03-28T15:29:30.828Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory C:\Users\user\.agents\skills: ENOENT: no such file or directory, scandir 'C:\Users\user\.agents\skills'
+2026-03-28T15:29:30.828Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-03-28T15:29:30.828Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-03-28T15:29:30.828Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension-level skills from 0 extensions
+2026-03-28T15:29:30.828Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension level skills
+2026-03-28T15:29:30.828Z [DEBUG] [SKILL_MANAGER] Loading bundled skills from: C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled
+2026-03-28T15:29:30.828Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled
+2026-03-28T15:29:30.828Z [DEBUG] [SKILL_MANAGER] Found 1 entries in C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled
+2026-03-28T15:29:30.829Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review (bundled) from C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled\review\SKILL.md
+2026-03-28T15:29:30.829Z [DEBUG] [SKILL_MANAGER] Loaded 1 bundled skills
+2026-03-28T15:29:30.829Z [INFO] [SKILL_MANAGER] Skills cache refreshed: 14 total skills loaded
+2026-03-28T15:29:30.829Z [DEBUG] [SKILL_MANAGER] Loaded 1 bundled level skills
+2026-03-28T15:29:30.831Z [INFO] [SKILL_MANAGER] Skill directory watchers started
+2026-03-28T15:29:30.831Z [DEBUG] Skill manager initialized
+2026-03-28T15:29:30.831Z [DEBUG] Permission manager initialized
+2026-03-28T15:29:30.831Z [DEBUG] [MEMORY_DISCOVERY] Loading server hierarchical memory for CWD: C:\Users\user\se-toolkit-lab-8 (importFormat: tree)
+2026-03-28T15:29:30.833Z [DEBUG] [MEMORY_DISCOVERY] Searching for QWEN.md starting from CWD: C:\Users\user\se-toolkit-lab-8
+2026-03-28T15:29:30.834Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: C:\Users\user\se-toolkit-lab-8
+2026-03-28T15:29:30.840Z [DEBUG] [MEMORY_DISCOVERY] Searching for AGENTS.md starting from CWD: C:\Users\user\se-toolkit-lab-8
+2026-03-28T15:29:30.841Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: C:\Users\user\se-toolkit-lab-8
+2026-03-28T15:29:30.889Z [DEBUG] [MEMORY_DISCOVERY] Final ordered QWEN.md,AGENTS.md paths to read: ["C:\\Users\\user\\se-toolkit-lab-8\\QWEN.md","C:\\Users\\user\\se-toolkit-lab-8\\AGENTS.md","C:\\Users\\user\\.qwen\\output-language.md"]
+2026-03-28T15:29:30.914Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: C:\Users\user\se-toolkit-lab-8\AGENTS.md (Length: 8495)
+2026-03-28T15:29:30.916Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: C:\Users\user\.qwen\output-language.md (Length: 812)
+2026-03-28T15:29:30.917Z [DEBUG] Hierarchical memory loaded
+2026-03-28T15:29:30.916Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: C:\Users\user\se-toolkit-lab-8\QWEN.md (Length: 9)
+2026-03-28T15:29:30.918Z [DEBUG] [SKILL_MANAGER] Listing skills
+2026-03-28T15:29:30.918Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-03-28T15:29:30.918Z [DEBUG] [SKILL_MANAGER] Processing 13 project level skills
+2026-03-28T15:29:30.918Z [DEBUG] [SKILL_MANAGER] Processing 0 extension level skills
+2026-03-28T15:29:30.918Z [DEBUG] [SKILL_MANAGER] Processing 0 user level skills
+2026-03-28T15:29:30.918Z [INFO] [SKILL_MANAGER] Listed 14 unique skills
+2026-03-28T15:29:30.918Z [DEBUG] [SKILL_MANAGER] Processing 1 bundled level skills
+2026-03-28T15:29:30.920Z [DEBUG] ToolRegistry created: ["agent","skill","list_directory","read_file","grep_search","glob","edit","write_file","run_shell_command","save_memory","todo_write","ask_user_question","exit_plan_mode","web_fetch"] (14 tools)
+2026-03-28T15:29:30.920Z [INFO] Tool registry initialized with 14 tools
+2026-03-28T15:29:30.934Z [INFO] Gemini client initialized
+2026-03-28T15:29:30.936Z [INFO] Config initialization completed
+2026-03-28T15:29:30.937Z [DEBUG] [APP_CONTAINER] SessionStart: HookSystem not available, skipping event
+2026-03-28T15:29:30.949Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-03-28T15:29:30.949Z [DEBUG] [SKILL_MANAGER] Listing skills at level: bundled
+2026-03-28T15:29:30.949Z [INFO] [SKILL_MANAGER] Listed 1 unique skills
+2026-03-28T15:29:30.949Z [DEBUG] [SKILL_MANAGER] Processing 1 bundled level skills
+2026-03-28T15:29:30.950Z [DEBUG] [BUNDLED_SKILL_LOADER] Loaded 1 bundled skill(s) as slash commands
+2026-03-28T15:29:31.451Z [DEBUG] [IDE] Failed to read IDE connection directory: Error: ENOENT: no such file or directory, scandir 'C:\Users\user\.qwen\ide'
+    at async Object.readdir (node:internal/fs/promises:953:18)
+    at async _IdeClient.getAllConnectionConfigs (file:///C:/Users/user/AppData/Roaming/npm/node_modules/@qwen-code/qwen-code/cli.js:228172:24)
+    at async _IdeClient.getConnectionConfigFromFile (file:///C:/Users/user/AppData/Roaming/npm/node_modules/@qwen-code/qwen-code/cli.js:228144:25)
+    at async file:///C:/Users/user/AppData/Roaming/npm/node_modules/@qwen-code/qwen-code/cli.js:227802:39
+2026-03-28T15:30:54.049Z [DEBUG] [QWEN_OAUTH] No refresh token available, proceeding with device flow
+2026-03-28T15:30:54.868Z [DEBUG] [QWEN_OAUTH] Device authorization result: {
+  device_code: 'r-d1lfYTOjOrLsvif4-8fBT6e9dsSOqWaskaJHqJ-XI',
+  user_code: 'DXEY869X',
+  verification_uri: 'https://chat.qwen.ai/authorize',
+  verification_uri_complete: 'https://chat.qwen.ai/authorize?user_code=DXEY869X&client=qwen-code',
+  expires_in: 900
+}
+2026-03-28T15:30:54.906Z [DEBUG] [QWEN_OAUTH] Waiting for authorization...
+
+2026-03-28T15:30:54.906Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:30:58.849Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:04.938Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:07.775Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:10.536Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:15.899Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:21.150Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:27.489Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:32.170Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:36.227Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:38.737Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:41.251Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:44.241Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:47.968Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:51.695Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:31:56.095Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:32:00.741Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:32:09.762Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:32:12.341Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:32:18.942Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:32:24.762Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-03-28T15:32:33.174Z [DEBUG] [QWEN_OAUTH] polling for token...

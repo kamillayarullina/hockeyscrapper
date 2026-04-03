@@ -1,0 +1,30 @@
+{
+  "todos": [
+    {
+      "content": "Подключиться к VM и проверить текущее состояние",
+      "id": "1",
+      "status": "completed"
+    },
+    {
+      "content": "Part A: Развернуть nanobot как Docker сервис",
+      "id": "2",
+      "status": "completed"
+    },
+    {
+      "content": "Part B: Добавить WebSocket канал и Flutter web клиент",
+      "id": "3",
+      "status": "completed"
+    },
+    {
+      "content": "Обновить REPORT.md с доказательствами",
+      "id": "4",
+      "status": "completed"
+    },
+    {
+      "content": "Финальная проверка и коммит изменений",
+      "id": "5",
+      "status": "completed"
+    }
+  ],
+  "sessionId": "111b7dee-4588-44d7-8357-a3c78811bcb1"
+}

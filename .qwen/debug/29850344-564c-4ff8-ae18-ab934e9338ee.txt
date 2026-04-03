@@ -1,0 +1,80 @@
+2026-04-03T15:29:18.403Z [DEBUG] [QWEN_OAUTH] No refresh token available, proceeding with device flow
+2026-04-03T15:29:18.582Z [INFO] Config initialization started
+2026-04-03T15:29:18.593Z [DEBUG] [BUNDLED_SKILL_LOADER] SkillManager not available, skipping bundled skills
+2026-04-03T15:29:18.640Z [DEBUG] [HOOK_REGISTRY] Hook registry initialized with 0 hook entries
+2026-04-03T15:29:18.640Z [DEBUG] Extension manager initialized
+2026-04-03T15:29:18.652Z [DEBUG] [TRUSTED_HOOKS] Hook system initialized successfully
+2026-04-03T15:29:18.652Z [INFO] [SKILL_MANAGER] Starting skill directory watchers...
+2026-04-03T15:29:18.652Z [DEBUG] Hook system initialized
+2026-04-03T15:29:18.652Z [DEBUG] MessageBus initialized with hook subscription
+2026-04-03T15:29:18.665Z [INFO] [SKILL_MANAGER] Refreshing skills cache...
+2026-04-03T15:29:18.666Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: C:\Users\user\.qwen\.qwen\skills
+2026-04-03T15:29:18.666Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.qwen\.qwen\skills
+2026-04-03T15:29:18.669Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory C:\Users\user\.qwen\.qwen\skills: ENOENT: no such file or directory, scandir 'C:\Users\user\.qwen\.qwen\skills'
+2026-04-03T15:29:18.669Z [DEBUG] [SKILL_MANAGER] Loading project level skills from: C:\Users\user\.qwen\.agents\skills
+2026-04-03T15:29:18.669Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.qwen\.agents\skills
+2026-04-03T15:29:18.670Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory C:\Users\user\.qwen\.agents\skills: ENOENT: no such file or directory, scandir 'C:\Users\user\.qwen\.agents\skills'
+2026-04-03T15:29:18.670Z [DEBUG] [SKILL_MANAGER] Loaded 0 project level skills
+2026-04-03T15:29:18.670Z [DEBUG] [SKILL_MANAGER] Loaded 0 project level skills
+2026-04-03T15:29:18.670Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.qwen\skills
+2026-04-03T15:29:18.670Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.qwen\skills
+2026-04-03T15:29:18.670Z [DEBUG] [SKILL_MANAGER] Found 0 entries in C:\Users\user\.qwen\skills
+2026-04-03T15:29:18.670Z [DEBUG] [SKILL_MANAGER] Loading user level skills from: C:\Users\user\.agents\skills
+2026-04-03T15:29:18.670Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\.agents\skills
+2026-04-03T15:29:18.671Z [DEBUG] [SKILL_MANAGER] Cannot read skills directory C:\Users\user\.agents\skills: ENOENT: no such file or directory, scandir 'C:\Users\user\.agents\skills'
+2026-04-03T15:29:18.671Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-04-03T15:29:18.671Z [DEBUG] [SKILL_MANAGER] Loaded 0 user level skills
+2026-04-03T15:29:18.671Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension-level skills from 0 extensions
+2026-04-03T15:29:18.671Z [DEBUG] [SKILL_MANAGER] Loading bundled skills from: C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled
+2026-04-03T15:29:18.671Z [DEBUG] [SKILL_MANAGER] Loading skills from directory: C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled
+2026-04-03T15:29:18.671Z [DEBUG] [SKILL_MANAGER] Loaded 0 extension level skills
+2026-04-03T15:29:18.682Z [DEBUG] [SKILL_MANAGER] Found 3 entries in C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled
+2026-04-03T15:29:18.702Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: loop (bundled) from C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled\loop\SKILL.md
+2026-04-03T15:29:18.703Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: qc-helper (bundled) from C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled\qc-helper\SKILL.md
+2026-04-03T15:29:18.704Z [DEBUG] [SKILL_MANAGER] Successfully parsed skill: review (bundled) from C:\Users\user\AppData\Roaming\npm\node_modules\@qwen-code\qwen-code\bundled\review\SKILL.md
+2026-04-03T15:29:18.704Z [DEBUG] [SKILL_MANAGER] Loaded 3 bundled skills
+2026-04-03T15:29:18.704Z [DEBUG] [SKILL_MANAGER] Loaded 3 bundled level skills
+2026-04-03T15:29:18.705Z [INFO] [SKILL_MANAGER] Skills cache refreshed: 3 total skills loaded
+2026-04-03T15:29:18.707Z [INFO] [SKILL_MANAGER] Skill directory watchers started
+2026-04-03T15:29:18.707Z [DEBUG] Skill manager initialized
+2026-04-03T15:29:18.707Z [DEBUG] Permission manager initialized
+2026-04-03T15:29:18.708Z [DEBUG] [MEMORY_DISCOVERY] Loading server hierarchical memory for CWD: C:\Users\user\.qwen (importFormat: tree)
+2026-04-03T15:29:18.708Z [DEBUG] [MEMORY_DISCOVERY] Searching for QWEN.md starting from CWD: C:\Users\user\.qwen
+2026-04-03T15:29:18.711Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: C:\Users\user
+2026-04-03T15:29:18.711Z [DEBUG] [MEMORY_DISCOVERY] Searching for AGENTS.md starting from CWD: C:\Users\user\.qwen
+2026-04-03T15:29:18.711Z [DEBUG] [MEMORY_DISCOVERY] Determined project root: C:\Users\user
+2026-04-03T15:29:18.712Z [DEBUG] [MEMORY_DISCOVERY] Final ordered QWEN.md,AGENTS.md paths to read: ["C:\\Users\\user\\.qwen\\output-language.md"]
+2026-04-03T15:29:18.731Z [DEBUG] [MEMORY_DISCOVERY] Successfully read and processed imports: C:\Users\user\.qwen\output-language.md (Length: 812)
+2026-04-03T15:29:18.732Z [DEBUG] Hierarchical memory loaded
+2026-04-03T15:29:18.733Z [DEBUG] [SKILL_MANAGER] Listing skills
+2026-04-03T15:29:18.733Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-04-03T15:29:18.733Z [DEBUG] [SKILL_MANAGER] Processing 0 project level skills
+2026-04-03T15:29:18.733Z [DEBUG] [SKILL_MANAGER] Processing 0 user level skills
+2026-04-03T15:29:18.733Z [DEBUG] [SKILL_MANAGER] Processing 0 extension level skills
+2026-04-03T15:29:18.733Z [DEBUG] [SKILL_MANAGER] Processing 3 bundled level skills
+2026-04-03T15:29:18.733Z [INFO] [SKILL_MANAGER] Listed 3 unique skills
+2026-04-03T15:29:18.736Z [DEBUG] ToolRegistry created: ["agent","skill","list_directory","read_file","grep_search","glob","edit","write_file","run_shell_command","save_memory","todo_write","ask_user_question","exit_plan_mode","web_fetch","web_search"] (15 tools)
+2026-04-03T15:29:18.737Z [INFO] Tool registry initialized with 15 tools
+2026-04-03T15:29:18.749Z [INFO] Gemini client initialized
+2026-04-03T15:29:18.751Z [INFO] Config initialization completed
+2026-04-03T15:29:18.755Z [DEBUG] [APP_CONTAINER] SessionStart event completed successfully
+2026-04-03T15:29:18.769Z [DEBUG] [SKILL_MANAGER] Listing skills at level: bundled
+2026-04-03T15:29:18.769Z [DEBUG] [SKILL_MANAGER] Processing 3 bundled level skills
+2026-04-03T15:29:18.769Z [DEBUG] [SKILL_MANAGER] Using cached skills
+2026-04-03T15:29:18.769Z [INFO] [SKILL_MANAGER] Listed 3 unique skills
+2026-04-03T15:29:18.771Z [DEBUG] [BUNDLED_SKILL_LOADER] Hiding skill "loop" because cron is not enabled
+2026-04-03T15:29:18.771Z [DEBUG] [BUNDLED_SKILL_LOADER] Loaded 2 bundled skill(s) as slash commands
+2026-04-03T15:29:22.144Z [DEBUG] [QWEN_OAUTH] No refresh token available, proceeding with device flow
+2026-04-03T15:29:23.499Z [DEBUG] [QWEN_OAUTH] Device authorization result: {
+  device_code: 'HwdJwg9KmqZXz5QNi4GxBvMJGGFdaeVIyTIRJEcO0Kk',
+  user_code: 'LQD0LMT_',
+  verification_uri: 'https://chat.qwen.ai/authorize',
+  verification_uri_complete: 'https://chat.qwen.ai/authorize?user_code=LQD0LMT_&client=qwen-code',
+  expires_in: 900
+}
+2026-04-03T15:29:23.541Z [DEBUG] [QWEN_OAUTH] Waiting for authorization...
+
+2026-04-03T15:29:23.541Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-04-03T15:29:26.674Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-04-03T15:29:29.197Z [DEBUG] [QWEN_OAUTH] polling for token...
+2026-04-03T15:29:29.543Z [DEBUG] [QWEN_OAUTH] Authentication successful! Access token obtained.
