@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подписки</title>
+
+    <link rel="stylesheet" href="style_main.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<body>
+<div class="profile-container">
+
+    <h1>Управление подписками</h1>
+
+    <div class="subscriptions-grid" id="teamsList"></div>
+    <script>
+            const khlTeams = [
+                "СКА",
+                "ЦСКА",
+                "Ак Барс",
+                "Динамо Москва",
+                "Локомотив",
+                "Спартак",
+                "Трактор",
+                "Авангард",
+                "Металлург Мг",
+                "Салават Юлаев",
+                "Северсталь",
+                "Торпедо",
+                "Нефтехимик",
+                "Сибирь",
+                "Витязь",
+                "Амур",
+                "Адмирал",
+                "Барыс",
+                "Куньлунь Ред Стар",
+                "Лада",
+                "Сочи",
+                "Динамо Минск",
+                "Автомобилист"
+            ];
+
+            let subscriptions =
+                JSON.parse(localStorage.getItem("subscriptions")) || [];
+
+            const container = document.getElementById("teamsList");
+
+            function render() {
+                container.innerHTML = "";
+
+                khlTeams.forEach(team => {
+                    const subscribed = subscriptions.includes(team);
+
+                    container.innerHTML += `
+                        <div class="subscription-card">
+                            <span>${team}</span>
+
+                            <button class="btn-small
+                                ${subscribed ? 'unsubscribe' : ''}"
+                                onclick="toggleSubscription('${team}')">
+
+                                ${subscribed
+                                    ? 'Отписаться'
+                                    : 'Подписаться'}
+
+                            </button>
+                        </div>
+                    `;
+                });
+            }
+
+            function toggleSubscription(team) {
+                if (subscriptions.includes(team)) {
+                    subscriptions =
+                        subscriptions.filter(t => t !== team);
+                } else {
+                    subscriptions.push(team);
+                }
+
+                localStorage.setItem(
+                    "subscriptions",
+                    JSON.stringify(subscriptions)
+                );
+
+                render();
+            }
+
+            render();
+        </script>
+        <!-- <div class="subscription-card">
+            <span>СКА</span>
+            <button class="btn-small unsubscribe">
+                Отписаться
+            </button>
+        </div>
+
+        <div class="subscription-card">
+            <span>ЦСКА</span>
+            <button class="btn-small unsubscribe">
+                Отписаться
+            </button>
+        </div>
+
+        <div class="subscription-card">
+            <span>Локомотив</span>
+            <button class="btn-small">
+                Подписаться
+            </button>
+        </div>
+
+        <div class="subscription-card">
+            <span>Динамо Москва</span>
+            <button class="btn-small">
+                Подписаться
+            </button>
+        </div>
+
+    </div> -->
+
+    <button class="btn"
+            onclick="window.location.href='main.html'">
+        Назад
+    </button>
+
+</div>
+</body>
+</html>
