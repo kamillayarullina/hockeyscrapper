@@ -42,5 +42,39 @@ fill="currentColor" viewBox="0 0 24 24" >
         </div>
         </form>
     </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('http://localhost:8000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: data.email,
+                        password: data.password
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    localStorage.setItem('token', result.token);
+
+                    window.location.href = '/main.html';
+                } else {
+                    const error = await response.json();
+                    alert(error.message || 'Неверный логин или пароль');
+                }
+
+            } catch (err) {
+                alert('Ошибка сети: ' + err.message);
+            }
+        });
+    </script>
 </body>
 </html>
