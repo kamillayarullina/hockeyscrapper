@@ -17,6 +17,14 @@ Registered website users who have linked their Telegram account to their account
 | `/matches` | Upcoming current matches | 
 | `/teams` | List of all KHL hockey teams | 
 | `/help` | Instructions for using the bot |
+| `/admin` | Check if user is admin |
+| `/admin_interval` | Set interval for parsing |
+| `/admin_proxy` | List of proxy |
+| `/admin_proxy_add` | Add proxy|
+| `/admin_proxy_del` | Delete proxy |
+| `/admin_proxy_toggle` | On/off proxy |
+| `/admin_run` | Forced parsing cycle |
+
 
 # Input and Outputs
 ## Success examples
@@ -33,6 +41,13 @@ Registered website users who have linked their Telegram account to their account
 | `/teams` | `🏒 Доступные команды (22):`<br><br>`• ЦСКА`<br>`• Спартак`<br>`• Динамо Москва`<br>`• СКА`<br>`• Авангард`<br>`• Ак Барс`<br>`• Салават Юлаев`<br>`• Трактор`<br>`• Металлург`<br>`• Локомотив`<br>`• Сибирь`<br>`• Торпедо`<br>`• Лада`<br>`• Витязь`<br>`• Северсталь`<br>`• Нефтехимик`<br>`• Амур`<br>`• Адмирал`<br>`• Куньлунь`<br>`• Барыс`<br>`• Динамо Минск`<br>`• Сочи`<br><br>`Подписаться: /subscribe ЦСКА` |
 | `/help` | `🤖 Как пользоваться ботом:`<br><br>`1️⃣ Подпишитесь на команды: /subscribe ЦСКА`<br>`2️⃣ Можете подписаться на несколько команд`<br>`3️⃣ Как только появятся билеты на матч с вашей командой — я пришлю вам уведомление с ценой и ссылкой`<br><br>`📋 Команды:`<br>`• /subscribe команда — подписка`<br>`• /unsubscribe команда — отписка`<br>`• /list — посмотреть подписки`<br>`• /matches — все актуальные матчи`<br>`• /match номер — детали матча`<br>`• /teams — все команды`<br>`• /stats — статистика бота`<br>`• /help — эта справка` |
 | `/stats` | `📊 Статистика бота:`<br><br>`👥 Пользователей: `<br>`🏒 Подписок на команды: 1`<br>`🏟 Подписок на стадионы: 2`<br>`🎟 Матчей в базе: 3` |
+| `/admin` | `Now we do not have proxy.` |
+| `/admin_interval "minutes "(only for admin)` | `✅ Интервал парсинга изменён на "minutes" мин.` |
+| `/admin_proxy (only for admin)` | `Now we do not have proxy.` |
+| `/admin_proxy_add (only for admin)` | `Now we do not have proxy.` |
+| `/admin_proxy_del (only for admin)` | `Now we do not have proxy.` |
+| `/admin_proxy_toggle (only for admin)` | `Now we do not have proxy.` |
+| `/admin_run (only for admin)` | `⏳ Запуск принудительного цикла парсинга...`<br>`✅ Цикл парсинга завершён.` |
 
 ## Unsuccess examples
 
@@ -42,4 +57,10 @@ Registered website users who have linked their Telegram account to their account
 | `/subscribe (without team name)` | `❗️ Укажите название команды.`<br>`Пример: /subscribe ЦСКА\`<br>`Список команд: /teams` |
 | `/unsubscribe (without team name)` | `❗️ Укажите название команды.`<br>`Пример: /subscribe ЦСКА` |
 | `/match (without number)` | `❗️ Укажите номер матча.`<br>`Пример: /match 1` |
-
+| `/admin (if user is not admin)` | `⛔️ У вас нет доступа к админ-панели.` |
+| `/admin (if there is no proxy)` | `Прокси: не настроены.` |
+| `/admin_interval (without minutes)` | `❗️ Укажите интервал в минутах.`<br>`Пример: /admin_interval 15` |
+| `/admin_proxy (if there is no proxy)` | `📭 Прокси не настроены.`<br>`Добавить: /admin_proxy_add http://user:pass@host:port` |
+| `/admin_proxy_add (without URL proxy)` | `❗️ Укажите URL прокси.`<br>`Пример:`<br>`/admin_proxy_add http://user:pass@1.2.3.4:8080 `<br>`/admin_proxy_add socks5://1.2.3.4:1080 ru мой_прокси` |
+| `/admin_proxy_del (without ID proxy)` | `❗️ Укажите ID прокси.`<br>`Список: /admin_proxy` |
+| `/admin_proxy_toggle (without ID proxy)` | `❗️ Укажите ID прокси.`<br>`Список: /admin_proxy` |
