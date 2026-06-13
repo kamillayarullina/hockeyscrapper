@@ -11,6 +11,8 @@ psycopg2-binary>=2.9.9
 # Bot
 aiogram>=3.3.0
 aiosqlite>=0.19.0
+databases>=0.9.0
+asyncpg>=0.31.0
 
 # Parser
 playwright>=1.40.0

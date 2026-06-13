@@ -58,6 +58,7 @@ async def run_bot():
         logger.error(f"Bot error: {e}")
     finally:
         await bot.stop()
+        await db.close()
 
 
 def run_api():
