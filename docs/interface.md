@@ -39,9 +39,9 @@ Registered website users who have linked their Telegram account to their account
 
 | Input | Output |
 |-------|--------|
-| `/subscribe (without team name)` | `❗️ Укажите название команды.\nПример: /subscribe ЦСКА\nСписок команд: /teams` |
-| `/unsubscribe (without team name)` | `❗️ Укажите название команды.\nПример: /subscribe ЦСКА` |
-| `/match (without number)` | `❗️ Укажите номер матча.\nПример: /match 1` |
+| `/subscribe (without team name)` | `❗️ Укажите название команды.`<br>`Пример: /subscribe ЦСКА\`<br>`Список команд: /teams` |
+| `/unsubscribe (without team name)` | `❗️ Укажите название команды.`<br>`Пример: /subscribe ЦСКА` |
+| `/match (without number)` | `❗️ Укажите номер матча.`<br>`Пример: /match 1` |
 
 ### Сценарий: привязка аккаунта
 
