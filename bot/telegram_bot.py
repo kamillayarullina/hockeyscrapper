@@ -1,4 +1,4 @@
-"""Telegram-бот с системой подписок на команды КХЛ."""
+"""Telegram bot with KHL team subscription system."""
 
 import asyncio
 import logging
@@ -22,7 +22,7 @@ router = Router()
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
-    """Приветствие и регистрация пользователя с поддержкой кода привязки."""
+    """Greeting and user registration with link code support."""
     db = get_db()
     chat_id = message.from_user.id
     await db.add_user(
@@ -71,7 +71,7 @@ async def cmd_start(message: Message):
 
 @router.message(Command("help"))
 async def cmd_help(message: Message):
-    """Справка."""
+    """Help."""
     text = (
         "🤖 <b>Как пользоваться ботом:</b>\n\n"
         "1️⃣ Подпишитесь на команды: /subscribe <code>ЦСКА</code>\n"
@@ -93,7 +93,7 @@ async def cmd_help(message: Message):
 
 @router.message(Command("link"))
 async def cmd_link(message: Message):
-    """Привязка Telegram к аккаунту, зарегистрированному на сайте."""
+    """Link Telegram to a website account."""
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
         await message.answer(
@@ -137,7 +137,7 @@ async def cmd_link(message: Message):
 
 @router.message(Command("subscribe"))
 async def cmd_subscribe(message: Message):
-    """Подписка на команду (+ автоматическая подписка на стадион)."""
+    """Subscribe to a team (auto-subscribe to venue)."""
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
         await message.answer(
@@ -159,10 +159,8 @@ async def cmd_subscribe(message: Message):
 
     db = get_db()
 
-    # Подписка на команду
     is_new_team = await db.subscribe(message.from_user.id, "team", team_canonical.lower())
 
-    # Автоматическая подписка на стадион
     team_info = get_team_info(team_canonical)
     venue_subscribed = False
     if team_info:
@@ -182,7 +180,7 @@ async def cmd_subscribe(message: Message):
 
 @router.message(Command("unsubscribe"))
 async def cmd_unsubscribe(message: Message):
-    """Отписка от команды."""
+    """Unsubscribe from a team."""
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
         await message.answer(
@@ -215,7 +213,7 @@ async def cmd_unsubscribe(message: Message):
 
 @router.message(Command("list"))
 async def cmd_list(message: Message):
-    """Показать подписки пользователя."""
+    """Show user subscriptions."""
     db = get_db()
     subs = await db.get_user_subscriptions(message.from_user.id)
 
@@ -250,7 +248,7 @@ async def cmd_list(message: Message):
 
 @router.message(Command("matches"))
 async def cmd_matches(message: Message):
-    """Показать все актуальные матчи."""
+    """Show all current matches."""
     db = get_db()
     matches = await db.get_all_matches()
 
@@ -261,7 +259,6 @@ async def cmd_matches(message: Message):
     text = f"🏒 <b>Актуальные матчи ({len(matches)}):</b>\n\n"
 
     for i, match in enumerate(matches[:10], 1):
-        # ✅ ЭКРАНИРУЕМ HTML-символы
         title = escape(match['title'])
         date = escape(match['date'])
         place = escape(match['place'])
@@ -282,7 +279,7 @@ async def cmd_matches(message: Message):
 
 @router.message(Command("match"))
 async def cmd_match(message: Message):
-    """Показать детали матча."""
+    """Show match details."""
     args = message.text.split(maxsplit=1)
     if len(args) < 2:
         await message.answer("❗ Укажите номер матча.\nПример: /match 1")
@@ -303,7 +300,6 @@ async def cmd_match(message: Message):
 
     match = matches[match_num - 1]
 
-    # ✅ ЭКРАНИРУЕМ HTML-символы
     title = escape(match['title'])
     date = escape(match['date'])
     place = escape(match['place'])
@@ -328,7 +324,7 @@ async def cmd_match(message: Message):
 
 @router.message(Command("teams"))
 async def cmd_teams(message: Message):
-    """Показать все доступные команды."""
+    """Show all available teams."""
     teams = get_all_team_names()
     teams_list = "\n".join(f"• <code>{escape(t)}</code>" for t in teams)
 
@@ -342,7 +338,7 @@ async def cmd_teams(message: Message):
 
 @router.message(Command("stats"))
 async def cmd_stats(message: Message):
-    """Статистика бота."""
+    """Bot statistics."""
     db = get_db()
     stats = await db.get_stats()
     text = (
@@ -356,7 +352,7 @@ async def cmd_stats(message: Message):
 
 
 def _is_admin(chat_id: int) -> bool:
-    """Проверяет, является ли пользователь админом."""
+    """Check if user is admin."""
     admin_id = os.environ.get("ADMIN_CHAT_ID", "0")
     try:
         return chat_id == int(admin_id)
@@ -366,7 +362,7 @@ def _is_admin(chat_id: int) -> bool:
 
 @router.message(Command("admin"))
 async def cmd_admin(message: Message):
-    """Админ-панель."""
+    """Admin panel."""
     if not _is_admin(message.from_user.id):
         await message.answer("⛔ У вас нет доступа к админ-панели.")
         return
@@ -398,7 +394,7 @@ async def cmd_admin(message: Message):
 
 @router.message(Command("admin_interval"))
 async def cmd_admin_interval(message: Message):
-    """Меняет интервал парсинга (мин)."""
+    """Change parse interval (minutes)."""
     if not _is_admin(message.from_user.id):
         return
     args = message.text.split(maxsplit=1)
@@ -420,7 +416,7 @@ async def cmd_admin_interval(message: Message):
 
 @router.message(Command("admin_proxy"))
 async def cmd_admin_proxy(message: Message):
-    """Показывает список прокси."""
+    """Show proxy list."""
     if not _is_admin(message.from_user.id):
         return
     db = get_db()
@@ -442,7 +438,7 @@ async def cmd_admin_proxy(message: Message):
 
 @router.message(Command("admin_proxy_add"))
 async def cmd_admin_proxy_add(message: Message):
-    """Добавляет прокси."""
+    """Add a proxy."""
     if not _is_admin(message.from_user.id):
         return
     args = message.text.split(maxsplit=1)
@@ -461,7 +457,7 @@ async def cmd_admin_proxy_add(message: Message):
 
 @router.message(Command("admin_proxy_del"))
 async def cmd_admin_proxy_del(message: Message):
-    """Удаляет прокси."""
+    """Delete a proxy."""
     if not _is_admin(message.from_user.id):
         return
     args = message.text.split(maxsplit=1)
@@ -481,7 +477,7 @@ async def cmd_admin_proxy_del(message: Message):
 
 @router.message(Command("admin_proxy_toggle"))
 async def cmd_admin_proxy_toggle(message: Message):
-    """Включает/отключает прокси."""
+    """Toggle a proxy."""
     if not _is_admin(message.from_user.id):
         return
     args = message.text.split(maxsplit=1)
@@ -501,7 +497,7 @@ async def cmd_admin_proxy_toggle(message: Message):
 
 @router.message(Command("admin_run"))
 async def cmd_admin_run(message: Message):
-    """Запускает принудительный цикл парсинга."""
+    """Force a parse cycle."""
     if not _is_admin(message.from_user.id):
         return
     await message.answer("⏳ Запуск принудительного цикла парсинга...")
@@ -513,7 +509,7 @@ async def cmd_admin_run(message: Message):
 
 
 async def _notify_admin(text: str, admin_id: Optional[int] = None) -> None:
-    """Отправляет уведомление админу (из роутера — без доступа к bot напрямую)."""
+    """Send notification to admin (from router without direct bot access)."""
     if not admin_id:
         try:
             admin_id = int(os.environ.get("ADMIN_CHAT_ID", "0"))
@@ -533,7 +529,7 @@ async def _notify_admin(text: str, admin_id: Optional[int] = None) -> None:
 
 
 class TelegramBot:
-    """Обёртка для запуска Telegram-бота."""
+    """Wrapper for starting the Telegram bot."""
 
     def __init__(self, token: str):
         if not token:
@@ -549,7 +545,7 @@ class TelegramBot:
         self._stop_event = asyncio.Event()
 
     async def start(self) -> None:
-        """Запускает бота и ждёт сигнала остановки."""
+        """Start the bot and wait for stop signal."""
         await self.bot.set_my_commands([
             BotCommand(command="start", description="Приветствие"),
             BotCommand(command="subscribe", description="Подписаться на команду"),
@@ -578,11 +574,10 @@ class TelegramBot:
                     await asyncio.sleep(3)
 
         self._polling_task = asyncio.create_task(_polling_forever())
-        # Ждём сигнала остановки (start() не завершается)
         await self._stop_event.wait()
 
     async def stop(self) -> None:
-        """Останавливает бота."""
+        """Stop the bot."""
         self._stop_event.set()
         if self._polling_task:
             self._polling_task.cancel()

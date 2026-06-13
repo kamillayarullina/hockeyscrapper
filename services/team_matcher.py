@@ -1,4 +1,4 @@
-"""Определяет команды и стадионы из названия матча."""
+"""Match team/venue extraction from title."""
 
 import logging
 import re
@@ -41,7 +41,7 @@ for team, info in KHL_TEAMS.items():
 
 
 def extract_teams_from_title(title: str) -> list[str]:
-    """Извлекает команды из названия матча (только целые слова)."""
+    """Extract team names from match title (whole words only)."""
     if not title:
         return []
 
@@ -77,7 +77,7 @@ def extract_teams_from_title(title: str) -> list[str]:
 
 
 def get_team_info(team: str) -> Optional[dict]:
-    """Возвращает информацию о команде (стадион, город)."""
+    """Return team info (venue, city)."""
     if not team:
         return None
     return KHL_TEAMS.get(team)

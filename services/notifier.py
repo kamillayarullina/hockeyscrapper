@@ -1,4 +1,4 @@
-"""Персональные уведомления для подписчиков."""
+"""Personal notifications for subscribers."""
 
 import asyncio
 import logging
@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class Notifier:
-    """Отправляет персональные уведомления подписчикам через Telegram-бот."""
+    """Sends personal notifications to subscribers via Telegram bot."""
 
     def __init__(self, bot: Optional[Bot], admin_chat_id: int = 0):
         self.bot = bot
@@ -25,8 +25,8 @@ class Notifier:
         reason: str = "new",
     ) -> int:
         """
-        Отправляет персональные уведомления всем подписчикам.
-        Возвращает количество успешно отправленных.
+        Sends personal notifications to all subscribers.
+        Returns the number of successfully sent.
         """
         if not self.bot or not subscriber_chat_ids:
             return 0
@@ -34,13 +34,13 @@ class Notifier:
         event_id = f"{event.get('title')}|{event.get('date')}|{reason}"
         sent_count = 0
 
-        # Определяем команды матча для персонализации
+
         from services.team_matcher import extract_teams_from_title
         teams = extract_teams_from_title(event.get("title", ""))
         teams_str = ", ".join(teams) if teams else "матч"
 
         for chat_id in subscriber_chat_ids:
-            # Проверяем, не отправляли ли уже
+
             if await db.was_event_notified(event_id, chat_id):
                 continue
 
@@ -56,7 +56,7 @@ class Notifier:
             except TelegramAPIError as e:
                 if "bot was blocked" in str(e).lower() or "chat not found" in str(e).lower():
                     logger.warning(f"Пользователь {chat_id} заблокировал бота")
-                    # Можно пометить пользователя как неактивного
+
                 else:
                     logger.error(f"Ошибка отправки {chat_id}: {e}")
             except Exception as e:
@@ -65,7 +65,7 @@ class Notifier:
         return sent_count
 
     def _format_message(self, event: dict, teams_str: str, reason: str) -> str:
-        """Формирует красивое сообщение."""
+        """Format notification message."""
         if reason == "available":
             header = "🎟 <b>БИЛЕТЫ ПОЯВИЛИСЬ В ПРОДАЖЕ!</b>"
         elif reason == "sold_out":
@@ -96,7 +96,7 @@ class Notifier:
         )
 
     async def notify_admin(self, text: str) -> None:
-        """Отправляет уведомление админу."""
+        """Send notification to admin."""
         if not self.bot or not self.admin_chat_id:
             return
         try:

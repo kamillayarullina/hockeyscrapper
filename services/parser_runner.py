@@ -1,4 +1,4 @@
-"""Раннер парсера с интеграцией уведомлений подписчикам."""
+"""Parser runner with subscriber notification integration."""
 
 import asyncio
 import csv
@@ -96,7 +96,7 @@ class ParserRunner:
         logger.info(f"Загружено {len(self._sites)} активных сайтов")
 
     async def load_proxies_from_db(self) -> list[dict]:
-        """Загружает прокси из БД и возвращает в формате config."""
+        """Load proxies from DB and return as config list."""
         try:
             proxies = await self.db.get_all_proxies()
             config_list = []

@@ -1,14 +1,4 @@
-"""
-Модуль ротации прокси с проверкой здоровья, статистикой
-и автоматическим исключением нерабочих серверов.
-
-Поддерживает:
-  - HTTP/HTTPS/SOCKS5 прокси
-  - Аутентификацию (user:pass@host:port)
-  - Несколько стратегий ротации
-  - Периодическую проверку работоспособности
-  - Автоматическую "реанимацию" отключённых прокси
-"""
+"""Proxy rotation module with health checks, stats, and automatic exclusion of dead servers."""
 
 import asyncio
 import logging
@@ -25,14 +15,14 @@ logger = logging.getLogger(__name__)
 
 
 class ProxyType(str, Enum):
-    """Тип прокси-сервера."""
+    """Proxy server type."""
     HTTP = "http"
     HTTPS = "https"
     SOCKS5 = "socks5"
 
 
 class RotationStrategy(str, Enum):
-    """Стратегия выбора следующего прокси."""
+    """Strategy for selecting the next proxy."""
     ROUND_ROBIN = "round_robin"
     RANDOM = "random"
     LEAST_USED = "least_used"
@@ -41,7 +31,7 @@ class RotationStrategy(str, Enum):
 
 @dataclass
 class ProxyStats:
-    """Статистика использования конкретного прокси."""
+    """Usage statistics for a specific proxy."""
     total_requests: int = 0
     successful_requests: int = 0
     failed_requests: int = 0
@@ -53,7 +43,7 @@ class ProxyStats:
     _response_times: list[float] = field(default_factory=list)
 
     def record_success(self, response_time_ms: float) -> None:
-        """Записывает успешный запрос."""
+        """Record a successful request."""
         self.total_requests += 1
         self.successful_requests += 1
         self.consecutive_failures = 0
@@ -67,7 +57,7 @@ class ProxyStats:
         )
 
     def record_failure(self) -> None:
-        """Записывает неудачный запрос."""
+        """Record a failed request."""
         self.total_requests += 1
         self.failed_requests += 1
         self.consecutive_failures += 1
@@ -76,7 +66,7 @@ class ProxyStats:
 
     @property
     def success_rate(self) -> float:
-        """Доля успешных запросов (0.0 — 1.0)."""
+        """Fraction of successful requests (0.0 — 1.0)."""
         if self.total_requests == 0:
             return 1.0
         return self.successful_requests / self.total_requests
@@ -84,7 +74,7 @@ class ProxyStats:
 
 @dataclass
 class ProxyServer:
-    """Описание одного прокси-сервера."""
+    """A single proxy server."""
     url: str
     proxy_type: ProxyType = ProxyType.HTTP
     country: Optional[str] = None
@@ -100,7 +90,7 @@ class ProxyServer:
     password: Optional[str] = None
 
     def __post_init__(self) -> None:
-        """Разбирает URL прокси на компоненты."""
+        """Parse proxy URL into components."""
         parsed = urlparse(self.url)
         self.host = parsed.hostname or ""
         self.port = parsed.port or 8080
@@ -115,10 +105,7 @@ class ProxyServer:
             self.proxy_type = ProxyType.HTTP
 
     def get_playwright_proxy(self) -> dict[str, Any]:
-        """
-        Возвращает словарь в формате, который принимает Playwright.
-        Формат: {"server": "...", "username": "...", "password": "..."}
-        """
+        """Return dict in Playwright proxy format: {"server": "...", "username": "...", "password": "..."}"""
         server_url = f"{self.proxy_type.value}://{self.host}:{self.port}"
         result: dict[str, Any] = {"server": server_url}
         if self.username:
@@ -128,11 +115,11 @@ class ProxyServer:
         return result
 
     def get_aiohttp_proxy(self) -> str:
-        """Возвращает URL прокси для aiohttp (с auth, если есть)."""
+        """Return proxy URL for aiohttp."""
         return self.url
 
     def disable(self) -> None:
-        """Отключает прокси (помечает как недоступный)."""
+        """Disable this proxy."""
         self.enabled = False
         self.disabled_at = time.time()
         logger.warning(
@@ -142,10 +129,7 @@ class ProxyServer:
         )
 
     def try_reanimate(self, reanimate_after_seconds: float) -> bool:
-        """
-        Пытается "реанимировать" отключённый прокси,
-        если прошло достаточно времени.
-        """
+        """Try to re-enable a disabled proxy after enough time has passed."""
         if self.enabled:
             return False
         if self.disabled_at is None:
@@ -171,23 +155,7 @@ class ProxyServer:
 
 
 class ProxyRotator:
-    """
-    Ротатор прокси с проверкой здоровья и статистикой.
-
-    Пример использования:
-        rotator = ProxyRotator(config)
-        await rotator.start()             # запуск фоновой проверки здоровья
-
-        proxy = rotator.get_next()        # получить следующий прокси
-        if proxy:
-            # использовать proxy.get_playwright_proxy() в Playwright
-            ...
-            rotator.record_success(proxy, response_time_ms=150)
-        else:
-            # все прокси недоступны, идти напрямую
-
-        await rotator.stop()              # остановка
-    """
+    """Proxy rotator with health checks and statistics."""
 
     def __init__(self, config: dict[str, Any]):
         self.enabled: bool = bool(config.get("enabled", False))
@@ -240,7 +208,7 @@ class ProxyRotator:
         )
 
     def _load_servers(self, servers_config: list[dict]) -> None:
-        """Загружает список прокси-серверов из конфигурации."""
+        """Load proxy server list from config."""
         for i, srv_cfg in enumerate(servers_config):
             if not isinstance(srv_cfg, dict):
                 logger.warning(f"Прокси #{i} имеет некорректный формат")
@@ -272,11 +240,7 @@ class ProxyRotator:
         self,
         country: Optional[str] = None,
     ) -> Optional[ProxyServer]:
-        """
-        Возвращает следующий прокси согласно стратегии ротации.
-        Если country задан — фильтрует по стране.
-        Если ни один прокси не доступен — возвращает None.
-        """
+        """Return the next proxy per rotation strategy, optionally filtered by country."""
         if not self.enabled or not self._servers:
             return None
 
@@ -314,7 +278,7 @@ class ProxyRotator:
                 return self._select_round_robin(pool)
 
     def _select_round_robin(self, pool: list[ProxyServer]) -> ProxyServer:
-        """Выбор по круговому алгоритму."""
+        """Round-robin selection."""
         all_enabled_ids = [
             i for i, s in enumerate(self._servers) if s.enabled
         ]
@@ -332,15 +296,15 @@ class ProxyRotator:
         return self._servers[chosen_idx]
 
     def _select_random(self, pool: list[ProxyServer]) -> ProxyServer:
-        """Случайный выбор."""
+        """Random selection."""
         return random.choice(pool)
 
     def _select_least_used(self, pool: list[ProxyServer]) -> ProxyServer:
-        """Выбор наименее используемого прокси."""
+        """Least-used proxy selection."""
         return min(pool, key=lambda s: s.stats.total_requests)
 
     def _select_fastest(self, pool: list[ProxyServer]) -> ProxyServer:
-        """Выбор самого быстрого прокси (по среднему времени отклика)."""
+        """Fastest proxy selection (by avg response time)."""
         with_stats = [s for s in pool if s.stats.total_requests > 0]
         if not with_stats:
             return random.choice(pool)
@@ -349,7 +313,7 @@ class ProxyRotator:
     async def record_success(
         self, server: ProxyServer, response_time_ms: float
     ) -> None:
-        """Отмечает успешное использование прокси."""
+        """Record a successful proxy usage."""
         async with self._lock:
             server.stats.record_success(response_time_ms)
             logger.debug(
@@ -358,10 +322,7 @@ class ProxyRotator:
             )
 
     async def record_failure(self, server: ProxyServer) -> None:
-        """
-        Отмечает неудачное использование прокси.
-        Если превышен лимит ошибок — отключает прокси.
-        """
+        """Record a failed proxy usage; disable if limit exceeded."""
         async with self._lock:
             server.stats.record_failure()
             logger.debug(
@@ -372,7 +333,7 @@ class ProxyRotator:
                 server.disable()
 
     async def start(self) -> None:
-        """Запускает фоновую проверку здоровья прокси."""
+        """Start background health checks."""
         if not self.enabled or not self.health_check_enabled:
             logger.info("Проверка здоровья прокси отключена")
             return
@@ -389,7 +350,7 @@ class ProxyRotator:
         )
 
     async def stop(self) -> None:
-        """Останавливает фоновую проверку здоровья."""
+        """Stop background health checks."""
         self._stop_event.set()
         if self._health_check_task is not None:
             self._health_check_task.cancel()
@@ -401,7 +362,7 @@ class ProxyRotator:
         logger.info("ProxyRotator остановлен")
 
     async def _health_check_loop(self) -> None:
-        """Цикл периодической проверки здоровья."""
+        """Periodic health check loop."""
         try:
             while not self._stop_event.is_set():
                 try:
@@ -416,10 +377,7 @@ class ProxyRotator:
             raise
 
     async def _run_health_check(self) -> None:
-        """
-        Проверяет работоспособность всех прокси.
-        Нерабочие — отключает, отключённые — пытается реанимировать.
-        """
+        """Check all proxies; disable dead ones, reanimate disabled."""
         logger.debug("Запуск проверки здоровья прокси")
 
         for server in self._servers:
@@ -440,7 +398,7 @@ class ProxyRotator:
         )
 
     async def _check_single_proxy(self, server: ProxyServer) -> None:
-        """Проверяет работоспособность одного прокси."""
+        """Check a single proxy's health."""
         try:
             start = time.time()
             if server.proxy_type == ProxyType.SOCKS5:
@@ -493,7 +451,7 @@ class ProxyRotator:
             await self.record_failure(server)
 
     def get_stats(self) -> list[dict[str, Any]]:
-        """Возвращает статистику по всем прокси (для отладки/логов)."""
+        """Return stats for all proxies."""
         result = []
         for server in self._servers:
             result.append({
@@ -512,5 +470,5 @@ class ProxyRotator:
         return len(self._servers)
 
     def __bool__(self) -> bool:
-        """True, если есть хотя бы один включённый прокси."""
+        """True if at least one proxy is enabled."""
         return self.enabled and any(s.enabled for s in self._servers)

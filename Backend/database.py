@@ -19,7 +19,6 @@ if DATABASE_URL.startswith("sqlite"):
     engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
     logger.info("Using SQLite at %s", db_path)
 else:
-    # Render provides DATABASE_URL as postgres:// — SQLAlchemy handles it
     engine = create_engine(DATABASE_URL)
     logger.info("Using PostgreSQL")
 

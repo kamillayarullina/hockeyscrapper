@@ -1,5 +1,3 @@
-"""Работа с БД: SQLite (локально) или PostgreSQL (продакшен)."""
-
 import os
 import logging
 from typing import Optional
@@ -23,13 +21,11 @@ def _build_url() -> str:
 
 
 class Database:
-    """Асинхронная работа с БД (SQLite / PostgreSQL)."""
 
     def __init__(self):
         self.db = DatabaseCore(_build_url())
 
     async def init(self) -> None:
-        """Создаёт таблицы."""
         await self.db.connect()
         await self.db.execute("""
             CREATE TABLE IF NOT EXISTS users (
@@ -117,15 +113,11 @@ class Database:
                     note TEXT DEFAULT ''
                 )
             """)
-        logger.info("База данных инициализирована")
+        logger.info("database initialized")
 
     async def close(self) -> None:
-        """Закрывает соединение."""
         await self.db.disconnect()
 
-    # ─────────────────────────────────────────────
-    # Пользователи
-    # ─────────────────────────────────────────────
     async def add_user(self, chat_id: int, username: Optional[str], first_name: Optional[str]) -> None:
         await self.db.execute("""
             INSERT INTO users (chat_id, username, first_name)
@@ -167,7 +159,6 @@ class Database:
         )
 
     async def link_account(self, old_chat_id: int, new_chat_id: int) -> bool:
-        """Переносит пользователя и подписки с old_chat_id (веб) на new_chat_id (Telegram)."""
         async with self.db.transaction():
             old_user = await self.db.fetch_one(
                 "SELECT * FROM users WHERE chat_id = :chat_id",
@@ -221,11 +212,7 @@ class Database:
             )
         return True
 
-    # ─────────────────────────────────────────────
-    # Подписки
-    # ─────────────────────────────────────────────
     async def subscribe(self, chat_id: int, sub_type: str, value: str) -> bool:
-        """Подписка (type: "team" или "venue")."""
         value = value.lower().strip()
         try:
             await self.db.execute(
@@ -251,7 +238,6 @@ class Database:
         return True
 
     async def get_user_subscriptions(self, chat_id: int) -> dict[str, list[str]]:
-        """Возвращает подписки: {"team": [...], "venue": [...]}"""
         rows = await self.db.fetch_all(
             "SELECT type, value FROM subscriptions WHERE chat_id = :chat_id ORDER BY type, value",
             {"chat_id": chat_id},
@@ -289,9 +275,6 @@ class Database:
         """, values)
         return [row[0] for row in rows]
 
-    # ─────────────────────────────────────────────
-    # Матчи
-    # ─────────────────────────────────────────────
     async def save_match(self, match: dict, source_name: str = "") -> None:
         match_id = match.get("match_id", "")
         existing = await self.get_match_by_id(match_id)
@@ -360,9 +343,6 @@ class Database:
         )
         return dict(row) if row else None
 
-    # ─────────────────────────────────────────────
-    # Уведомления
-    # ─────────────────────────────────────────────
     async def mark_event_notified(self, event_id: str, chat_id: int) -> None:
         try:
             await self.db.execute(
@@ -370,7 +350,7 @@ class Database:
                 {"event_id": event_id, "chat_id": chat_id},
             )
         except Exception as e:
-            logger.warning(f"Не удалось пометить уведомление: {e}")
+            logger.warning(f"mark_event_notified failed: {e}")
 
     async def was_event_notified(self, event_id: str, chat_id: int) -> bool:
         result = await self.db.fetch_val(
@@ -386,9 +366,6 @@ class Database:
         matches = await self.db.fetch_val("SELECT COUNT(*) FROM matches") or 0
         return {"users": users, "team_subs": team_subs, "venue_subs": venue_subs, "matches": matches}
 
-    # ─────────────────────────────────────────────
-    # Настройки (admin panel)
-    # ─────────────────────────────────────────────
     async def get_setting(self, key: str, default: str = "") -> str:
         row = await self.db.fetch_one(
             "SELECT value FROM settings WHERE key = :key",
@@ -406,9 +383,6 @@ class Database:
         rows = await self.db.fetch_all("SELECT key, value FROM settings")
         return {row["key"]: row["value"] for row in rows}
 
-    # ─────────────────────────────────────────────
-    # Прокси (admin panel)
-    # ─────────────────────────────────────────────
     async def add_proxy(self, url: str, proxy_type: str = "http", country: str = "", note: str = "") -> int:
         return await self.db.execute(
             "INSERT INTO proxies (url, proxy_type, country, note) VALUES (:url, :proxy_type, :country, :note)",
