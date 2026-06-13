@@ -1,4 +1,4 @@
-# Interface Telegram-бота for notifications
+# Interface Telegram-bot for notifications
 
 ## Interface Type
 Telegram-bot
