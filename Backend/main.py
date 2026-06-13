@@ -2,6 +2,8 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
+from fastapi.middleware.cors import CORSMiddleware
+
 import models
 from database import engine, get_db
 from security import get_password_hash, verify_password
@@ -10,6 +12,15 @@ from security import get_password_hash, verify_password
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HockeyScrapper API")
+
+# --- НАСТРОЙКА CORS ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Для локального теста разрешаем всё
+    allow_credentials=True,
+    allow_methods=["*"], # Разрешаем любые методы (GET, POST и т.д.)
+    allow_headers=["*"], # Разрешаем любые заголовки
+)
 
 # --- СХЕМЫ ДАННЫХ (Pydantic) ---
 class UserRegister(BaseModel):
@@ -33,17 +44,16 @@ def home():
     return {"status": "norm", "message": "Бэкенд HockeyScrapper работает!"}
 
 # 1. РЕГИСТРАЦИЯ (для register.html)
-@app.post("/register")
+@app.post("/api/register") # Изменили адрес! Теперь он совпадает с fetch у фронтенда
 def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
-    # Проверяем, нет ли уже такого email в базе
     existing_user = db.query(models.UserModel).filter(models.UserModel.email == user_data.email).first()
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
+            # Важно: фронтенд ищет ошибку в поле 'message', сделаем ответ удобным
             detail="Пользователь с таким email уже зарегистрирован"
         )
     
-    # Хэшируем пароль и сохраняем в БД
     hashed_password = get_password_hash(user_data.password)
     new_user = models.UserModel(
         username=user_data.username,
@@ -53,19 +63,18 @@ def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
     )
     
     db.add(new_user)
-    db.commit()      # Фиксируем изменения в PostgreSQL
+    db.commit()
     db.refresh(new_user)
     
     return {
         "status": "success",
-        "message": "Пользователь успешно зарегистрирован!",
+        "message": "Регистрация успешна!",
         "user_id": new_user.id
     }
 
 # 2. ВХОД (для vhod.html)
-@app.post("/login")
+@app.post("/api/login") # Изменили адрес!
 def login_user(login_data: UserLogin, db: Session = Depends(get_db)):
-    # Ищем пользователя по email
     user = db.query(models.UserModel).filter(models.UserModel.email == login_data.email).first()
     if not user:
         raise HTTPException(
@@ -73,16 +82,17 @@ def login_user(login_data: UserLogin, db: Session = Depends(get_db)):
             detail="Неверный email или пароль"
         )
     
-    # Проверяем, совпадает ли пароль с хэшем из базы
-    if not verify_password(login_data.password, user.password_hash):
+    if not verify_password(login_data.password, str(user.password_hash)):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Неверный email или пароль"
         )
     
-    # Если всё ок, возвращаем данные пользователя для страницы профиля (main.html)
+    # Возвращаем "token", который так ждет фронтенд в vhod.html!
+    # Если пароль совпал, возвращаем токен И данные пользователя
     return {
         "status": "success",
+        "token": f"fake-jwt-token-for-user-{user.id}", 
         "message": "Вход успешно выполнен!",
         "user": {
             "id": user.id,
