@@ -21,7 +21,7 @@ Users can create an account, select their favourite teams and subscribe them. On
 [HockeyScrapper Figma Prototype](https://www.figma.com/proto/QA9kxzUyxzBCnEycOYvinv/HockeyScrapper-Prototype?node-id=3-163&p=f&t=cW9lcLU0V8yCkDc5-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A163&show-proto-sidebar=1)
 
 **Non-graphical interface (Telegram Bot):**
-- Demonstration: [MVP v0 Video](https://www.youtube.com/watch?v=EXAMPLE)
+- Demonstration: [Telegram bot]([https://www.youtube.com/watch?v=EXAMPLE](https://drive.google.com/drive/folders/1KM8mjVmRVEtvAi60wAL4QUFikZs4Hz5z?usp=share_link))
 - Documentation: [`docs/interface.md`](../../docs/interface.md)
 
 ---
