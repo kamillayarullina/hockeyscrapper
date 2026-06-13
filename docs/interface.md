@@ -1,7 +1,7 @@
 # Interface Telegram-бота for notifications
 
 ## Interface Type
-Telegram-бот
+Telegram-bot
 
 ## Intended users
 Registered website users who have linked their Telegram account to their account.
@@ -43,7 +43,3 @@ Registered website users who have linked their Telegram account to their account
 | `/unsubscribe (without team name)` | `❗️ Укажите название команды.`<br>`Пример: /subscribe ЦСКА` |
 | `/match (without number)` | `❗️ Укажите номер матча.`<br>`Пример: /match 1` |
 
-### Сценарий: привязка аккаунта
-
-1. Пользователь открывает чат с ботом и отправляет `/start`.
-2. Бот отвечает:
