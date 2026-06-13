@@ -10,13 +10,13 @@ Registered website users who have linked their Telegram account to their account
 
 | Command | Description |
 |---------|----------|
-| `/start` | Инициализация бота, проверка привязки, выдача инструкции |
-| `/subscribe` | Подписаться на все уведомления (если уже привязан) | 
-| `/unsubscribe` | Отписаться от уведомлений (бот перестаёт присылать сообщения) | 
-| `/list` | Показать текущий статус подписки и привязки | 
-| `/matches` | Показать текущий статус подписки и привязки | 
-| `/teams` | Показать текущий статус подписки и привязки | 
-| `/help` | Показать список команд и краткую справку |
+| `/start` | Initializing the bot, checking the binding, issuing instructions |
+| `/subscribe` | Subscribing to the team | 
+| `/unsubscribe` | Unsubscribing the team | 
+| `/list` | Current subscribtions | 
+| `/matches` | Upcoming current matches | 
+| `/teams` | List of all KHL hockey teams | 
+| `/help` | Instructions for using the bot |
 
 # Input and Outputs
 ## Success examples
@@ -34,16 +34,14 @@ Registered website users who have linked their Telegram account to their account
 | `/help` | `🤖 Как пользоваться ботом:`<br><br>`1️⃣ Подпишитесь на команды: /subscribe ЦСКА`<br>`2️⃣ Можете подписаться на несколько команд`<br>`3️⃣ Как только появятся билеты на матч с вашей командой — я пришлю вам уведомление с ценой и ссылкой`<br><br>`📋 Команды:`<br>`• /subscribe команда — подписка`<br>`• /unsubscribe команда — отписка`<br>`• /list — посмотреть подписки`<br>`• /matches — все актуальные матчи`<br>`• /match номер — детали матча`<br>`• /teams — все команды`<br>`• /stats — статистика бота`<br>`• /help — эта справка` |
 | `/stats` | `📊 Статистика бота:<br><br>👥 Пользователей: 2<br>🏒 Подписок на команды: 1<br>🏟 Подписок на стадионы: 2<br>🎟 Матчей в базе: 3` |
 
+## Unsuccess examples
 
 
-
-
-## Входные и выходные данные
-
-- **Вход**: текст команды, callback_data от нажатой кнопки, `chat_id` (присваивается Telegram).
-- **Выход**: текст, клавиатура (JSON-объект для ReplyKeyboardMarkup или InlineKeyboardMarkup).
-
-## Пример успешного взаимодействия
+| Input | Output |
+|-------|--------|
+| `/subscribe (without team name)` | `❗️ Укажите название команды.\nПример: /subscribe ЦСКА\nСписок команд: /teams` |
+| `/unsubscribe (without team name)` | `❗️ Укажите название команды.\nПример: /subscribe ЦСКА` |
+| `/match (without number)` | `❗️ Укажите номер матча.\nПример: /match 1` |
 
 ### Сценарий: привязка аккаунта
 
