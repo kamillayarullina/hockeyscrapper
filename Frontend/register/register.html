@@ -66,7 +66,7 @@ fill="currentColor" viewBox="0 0 24 24" >
                     return;
                 }
                 try {
-                    const response = await fetch('http://localhost:8000/api/register', {
+                    const response = await fetch('/register', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -80,8 +80,15 @@ fill="currentColor" viewBox="0 0 24 24" >
                     });
 
                     if (response.ok) {
-                        alert('Регистрация успешна!');
-                        window.location.href = '/main.html';
+                        const result = await response.json();
+                        localStorage.setItem('chat_id', result.chat_id);
+                        localStorage.setItem('token', result.access_token);
+                        localStorage.setItem('user', JSON.stringify({
+                            username: data.username,
+                            email: data.email,
+                            telegram: data.telegram
+                        }));
+                        window.location.href = '../main.html';
                     } else {
                         const error = await response.json();
                         alert(error.message || 'Ошибка регистрации');

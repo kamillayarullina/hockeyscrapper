@@ -1,13 +1,20 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "postgresql://hockey_user:hockey_password@127.0.0.1:5433/hockey_tickets"
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    "sqlite:///data/tickets.db"
+)
 
-engine = create_engine(DATABASE_URL)
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base = declarative_base()
+
 
 def get_db():
     db = SessionLocal()

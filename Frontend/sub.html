@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Подписки</title>
-
     <link rel="stylesheet" href="style_main.css">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
           rel="stylesheet">
 </head>
-<body>
 <body>
 <div class="profile-container">
 
@@ -20,77 +17,67 @@
     <div class="subscriptions-grid" id="teamsList"></div>
     <script>
             const khlTeams = [
-                "СКА",
-                "ЦСКА",
-                "Ак Барс",
-                "Динамо Москва",
-                "Локомотив",
-                "Спартак",
-                "Трактор",
-                "Авангард",
-                "Металлург Мг",
-                "Салават Юлаев",
-                "Северсталь",
-                "Торпедо",
-                "Нефтехимик",
-                "Сибирь",
-                "Витязь",
-                "Амур",
-                "Адмирал",
-                "Барыс",
-                "Куньлунь Ред Стар",
-                "Лада",
-                "Сочи",
-                "Динамо Минск",
-                "Автомобилист"
+                "СКА", "ЦСКА", "Ак Барс", "Динамо Москва", "Локомотив",
+                "Спартак", "Трактор", "Авангард", "Металлург Мг", "Салават Юлаев",
+                "Северсталь", "Торпедо", "Нефтехимик", "Сибирь", "Витязь",
+                "Амур", "Адмирал", "Барыс", "Куньлунь Ред Стар", "Лада",
+                "Сочи", "Динамо Минск", "Автомобилист"
             ];
 
-            let subscriptions =
-                JSON.parse(localStorage.getItem("subscriptions")) || [];
+            const API = "";
+            const chatId = localStorage.getItem("chat_id");
+
+            let subscriptions = [];
+
+            async function loadSubscriptions() {
+                if (!chatId) return;
+                try {
+                    const r = await fetch(`${API}/subscriptions/${chatId}`);
+                    const data = await r.json();
+                    subscriptions = data.subscriptions || [];
+                    localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
+                    render();
+                } catch { }
+            }
 
             const container = document.getElementById("teamsList");
 
             function render() {
                 container.innerHTML = "";
-
                 khlTeams.forEach(team => {
-                    const subscribed = subscriptions.includes(team);
-
+                    const subscribed = subscriptions.includes(team.toLowerCase());
                     container.innerHTML += `
                         <div class="subscription-card">
                             <span>${team}</span>
-
-                            <button class="btn-small
-                                ${subscribed ? 'unsubscribe' : ''}"
+                            <button class="btn-small ${subscribed ? 'unsubscribe' : ''}"
                                 onclick="toggleSubscription('${team}')">
-
-                                ${subscribed
-                                    ? 'Отписаться'
-                                    : 'Подписаться'}
-
+                                ${subscribed ? 'Отписаться' : 'Подписаться'}
                             </button>
                         </div>
                     `;
                 });
             }
 
-            function toggleSubscription(team) {
-                if (subscriptions.includes(team)) {
-                    subscriptions =
-                        subscriptions.filter(t => t !== team);
-                } else {
-                    subscriptions.push(team);
+            async function toggleSubscription(team) {
+                if (!chatId) { alert("Авторизуйтесь"); return; }
+                try {
+                    const r = await fetch(`${API}/subscription/toggle`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
+                    });
+                    const result = await r.json();
+                    if (r.ok) {
+                        await loadSubscriptions();
+                    } else {
+                        alert(result.message || "Ошибка");
+                    }
+                } catch (err) {
+                    alert("Ошибка сети: " + err.message);
                 }
-
-                localStorage.setItem(
-                    "subscriptions",
-                    JSON.stringify(subscriptions)
-                );
-
-                render();
             }
 
-            render();
+            loadSubscriptions();
         </script>
     <button class="btn"
             onclick="window.location.href='main.html'">

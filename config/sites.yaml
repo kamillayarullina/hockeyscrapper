@@ -1,0 +1,97 @@
+settings:
+  default_interval_minutes: 30
+  retry_attempts: 3
+  retry_backoff_base: 2
+  min_delay_seconds: 1.0
+  max_delay_seconds: 3.0
+  output_dir: "data"
+  headless: true
+
+  proxy:
+    enabled: false
+
+  # Настройки Telegram-бота (токен из .env)
+  telegram:
+    admin_chat_id: 8061310741
+
+  # Email-уведомления админу (опционально)
+  email:
+    enabled: false
+    smtp_server: "smtp.yandex.ru"
+    smtp_port: 587
+    login: ""
+    password: ""
+    to_email: ""
+
+sites:
+  - name: ticket_hockey
+    url: https://ticket-hockey.ru/afisha/
+    parser: club
+    enabled: true
+    interval_minutes: 30
+    params:
+      keywords:
+        - "хоккей"
+        - "кхл"
+        - "цска"
+        - "спартак"
+        - "динамо"
+        - "ска"
+        - "авангард"
+        - "ак барс"
+        - "металлург"
+        - "трактор"
+        - "локомотив"
+        - "сибирь"
+        - "торпедо"
+        - "лада"
+        - "салават юлаев"
+        - "витязь"
+        - "северсталь"
+        - "нефтехимик"
+        - "амур"
+        - "адмирал"
+        - "куньлунь"
+        - "барыс"
+        - "сочи"
+      timeout_ms: 30000
+
+  - name: khl_ru
+    url: https://khl.ru/tickets/
+    parser: khl
+    enabled: true
+    interval_minutes: 30
+    params:
+      timeout_ms: 30000
+
+  - name: yandex_afisha
+    url: https://afisha.yandex.ru/moscow/sport/khokkej
+    parser: yandex
+    enabled: true
+    interval_minutes: 30
+    params:
+      keywords:
+        - "кхл"
+        - "континентальная"
+        - "цска"
+        - "спартак"
+        - "динамо"
+        - "ска"
+        - "авангард"
+        - "ак барс"
+        - "металлург"
+        - "трактор"
+        - "локомотив"
+        - "сибирь"
+        - "торпедо"
+        - "лада"
+        - "салават"
+        - "витязь"
+        - "северсталь"
+        - "нефтехимик"
+        - "амур"
+        - "адмирал"
+        - "куньлунь"
+        - "барыс"
+        - "сочи"
+      timeout_ms: 30000
