@@ -21,7 +21,7 @@ Users can create an account, select their favourite teams and subscribe them. On
 [HockeyScrapper Figma Prototype](https://www.figma.com/proto/QA9kxzUyxzBCnEycOYvinv/HockeyScrapper-Prototype?node-id=3-163&p=f&t=cW9lcLU0V8yCkDc5-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A163&show-proto-sidebar=1)
 
 **Non-graphical interface (Telegram Bot):**
-- Demonstration: [MVP v0 Video](https://www.youtube.com/watch?v=EXAMPLE)
+- Demonstration: [MVP v0 Video]
 - Documentation: [`docs/interface.md`](../../docs/interface.md)
 
 ---
@@ -29,7 +29,7 @@ Users can create an account, select their favourite teams and subscribe them. On
 ## 3. MVP v0
 
 - **Documentation:** [`reports/week2/mvp-v0-report.md`](mvp-v0-report.md)
-- **Deployed MVP v0:** [https://hockeyscrapper-mvp-v0.onrender.com](https://hockeyscrapper-mvp-v0.onrender.com)
+- **Deployed MVP v0:** [https://hockeyscrapper-mvp-v0.onrender.com]
 - **Run instructions:** See [root README.md](../../README.md) for local setup.
 
 ---
@@ -38,7 +38,7 @@ Users can create an account, select their favourite teams and subscribe them. On
 
 - **PR template:** [`.github/pull_request_template.md`](../../.github/pull_request_template.md)
 - **Reviewed PRs:**
-  - [PR #1: Add project setup files](https://github.com/kamillayarullina/hockeyscrapper/pull/1) (Example — replace with actual)
+  - [PR #1: Add project setup files] (Example — replace with actual)
 - **Branch protection:** Protected default branch (main) — see screenshot below.
 
 ![Protected default branch settings](images/branch-protection.png)
