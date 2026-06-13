@@ -18,7 +18,7 @@ Users can create an account, select their favourite teams and subscribe them. On
 ## 2. Prototype and Interface Artifacts
 
 #### Interactive prototype: 
-[ссылка на Figma, Adobe XD и т.д.]([https://...](https://www.figma.com/proto/QA9kxzUyxzBCnEycOYvinv/HockeyScrapper-Prototype?node-id=3-163&p=f&t=cW9lcLU0V8yCkDc5-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A163&show-proto-sidebar=1))
+[Figma]([https://...](https://www.figma.com/proto/QA9kxzUyxzBCnEycOYvinv/HockeyScrapper-Prototype?node-id=3-163&p=f&t=cW9lcLU0V8yCkDc5-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A163&show-proto-sidebar=1))
 
 #### Non-graphical interface:
 - Demonstration: [ссылка](https://...)
