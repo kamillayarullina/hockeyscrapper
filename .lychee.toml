@@ -4,6 +4,9 @@
 cache = true
 max_cache_age = "1d"
 
+# Don't check root-relative paths in frontend HTML
+exclude_path = ["Frontend/*.html"]
+
 # Exclude patterns (authenticated, rate-limited, or unsuitable links)
 exclude = [
     # GitHub issue/PR links may require authentication

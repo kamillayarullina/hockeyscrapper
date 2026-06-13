@@ -66,6 +66,8 @@ Users can create an account, select their favourite teams and subscribe them. On
 | `http://127.0.0.1` | Local only | N/A |
 | `https://my-mvp-v0.example.com` | Placeholder | No — удалён из README |
 | `https://ticket-hockey.ru/*` | Example domain in docs | No — удалён из docs/interface.md |
+| `Frontend/*.html` | Root-relative paths (`/images/...`, `/main.html`) | N/A — frontend paths |
+| `https://googleapis.com` | Typo (неверный URL) | No — удалён из index.html |
 
 ---
 
