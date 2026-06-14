@@ -13,23 +13,33 @@ It's not deployed anywhere public (no server with a card), but you can run it lo
 
 ## Video
 
-<!-- Add link < 2 min -->
+[Video demostration](https://drive.google.com/file/d/1F7rCt25XgOrvZRCbu4dqxDarWH1BV5li/view?usp=sharing)
 
 ## Prototype vs MVP v0
 
 | Item | Figma | Current |
 |------|-------|---------|
-| Profile | Static mockup | Live `/me` endpoint |
+| Profile | Mockup | Live `/me` endpoint |
 | Subscriptions | Mockup | Working via API + bot |
-| Login/Register | Not in prototype | Working with JWT |
+| Login/Register | Mockup | Working with JWT |
 | Notifications | Not shown | Telegram push |
 | Parser | Not shown | Works (except Yandex) |
+
+## Prototype vs MVP v1
+
+| MVP v1 user story | Prototype |
+|------|-------|
+| US-01 | Shown in prototype |
+| US-02 | Shown in prototype | 
+| US-04 | Shown in prototype |
+| US-05 | Available in MVP v0 (only telegram notifications)|
+| US-07 | Shown in prototype |
+| US-10 | Not realised yet |
 
 ## What doesn't work / placeholders
 
 - No public hosting (needs a card)
 - Yandex parser finds 0 events
-- Venue subscriptions — backend ready, no frontend yet
 - Bot crashes with `Conflict` if a second instance runs
 - Frontend shows generic error messages
 
