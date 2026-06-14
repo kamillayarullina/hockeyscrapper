@@ -29,7 +29,7 @@ Users can create an account, select their favourite teams and subscribe them. On
 ## 4. MVP v0
 
 - **Documentation:** [`reports/week2/mvp-v0-report.md`](mvp-v0-report.md)
-- **Deployed MVP v0:** [`http://139.100.225.113:8000/`](http://139.100.225.113:8000/)
+- **Deployed MVP v0:** [`https://hockeyscrapper-3.onrender.com/`]([http://139.100.225.113:8000/](https://hockeyscrapper-3.onrender.com/))
 - **Run instructions:** See [root README.md](../../README.md) for local setup.
 
 ---
