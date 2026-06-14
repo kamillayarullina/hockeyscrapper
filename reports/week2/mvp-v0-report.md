@@ -17,35 +17,35 @@ It's not deployed anywhere public (no server with a card), but you can run it lo
 
 ## Prototype vs MVP v0
 
-| Что | Figma | Сейчас |
-|-----|-------|--------|
-| Профиль | Картинка | Живой `/me` |
-| Подписки | Макет | Работают через API + бот |
-| Логин/рег | Нет | Есть, с JWT |
-| Уведомления | Нет | Telegram push |
-| Парсер | Нет | Работает (кроме Яндекс.Афиши) |
+| Item | Figma | Current |
+|------|-------|---------|
+| Profile | Static mockup | Live `/me` endpoint |
+| Subscriptions | Mockup | Working via API + bot |
+| Login/Register | Not in prototype | Working with JWT |
+| Notifications | Not shown | Telegram push |
+| Parser | Not shown | Works (except Yandex) |
 
-## Что не работает / заглушки
+## What doesn't work / placeholders
 
-- Публичный хостинг — только локально (карта нужна)
-- Яндекс.Афиша — парсер находит 0 событий
-- Подписки на арены — бэкенд есть, фронтенда нет
-- Бот падает с `Conflict`, если запущен второй экземпляр
-- Ошибки на фронтенде — показывают "Ошибка регистрации" без деталей
+- No public hosting (needs a card)
+- Yandex parser finds 0 events
+- Venue subscriptions — backend ready, no frontend yet
+- Bot crashes with `Conflict` if a second instance runs
+- Frontend shows generic error messages
 
 ## Smoke-check
 
-1. `python -m main --all` — сервер запущен, бот ответил
-2. Открыть `http://localhost:8000` — видно кнопки входа/регистрации
-3. Зарегистрироваться — редирект на профиль
-4. Зайти в "Управление подписками" → подписаться на команду → кнопка стала "Отписаться"
-5. `curl /subscriptions/{chat_id}` — в JSON видна подписка
-6. `curl /matches` — JSON (может быть пустым)
-7. `curl /stats` — JSON со счётчиками
+1. `python -m main --all` — server starts, bot says it's running
+2. Open `http://localhost:8000` — buttons for login/register visible
+3. Register — redirect to profile page
+4. Go to "Управление подписками" → subscribe to a team → button changes to "Отписаться"
+5. `curl /subscriptions/{chat_id}` — JSON has the subscription
+6. `curl /matches` — JSON array (may be empty)
+7. `curl /stats` — JSON with counts
 
-Всё должно работать без ошибок.
+All steps should pass without errors.
 
-## Запуск локально
+## Local setup
 
 ```bash
 git clone https://github.com/kamillayarullina/hockeyscrapper.git
@@ -54,8 +54,8 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 playwright install
-# BOT_TOKEN в .env
+# Set BOT_TOKEN in .env
 python -m main --all
 ```
 
-Подробнее — [README.md](../../README.md).
+More details — [README.md](../../README.md).
