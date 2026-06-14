@@ -4,12 +4,11 @@
 
 HockeyScrapper MVP v0 is a working local project that connects a website, a Telegram bot, and a database. You can register on the site, subscribe to KHL teams, and get match notifications in Telegram. The parsers scrape ticket data from multiple sources in the background.
 
-It's not deployed anywhere public (no server with a card), but you can run it locally and expose it via Cloudflare Tunnel if needed.
 
-## Deployment
 
-- **Run:** `python -m main --all` → `http://localhost:8000`
-- **Tunnel:** `cloudflared tunnel --url http://localhost:8000`
+## Deployment URL
+
+[Deployment](http://139.100.225.113:8000/)
 
 ## Video
 
