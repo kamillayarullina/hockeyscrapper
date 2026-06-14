@@ -55,7 +55,15 @@ Users can create an account, select their favourite teams and subscribe them. On
 - **CI workflow:** [`.github/workflows/lychee.yml`](../../.github/workflows/lychee.yml)
 - **Latest successful run:** [Actions tab](https://github.com/kamillayarullina/hockeyscrapper/actions/workflows/lychee.yml)
 
-  A lychee.toml file has been created with exclusions for local files. After running the check, all links are valid (56/56 successful). Errors related to missing logo.svg files have been fixed — the files have been added to the project.
+## Excluded Links Verification
+
+| Link Pattern | Reason for Exclusion | Manual Check |
+|:-------------|----------------------|:-------------:|
+| `https://github.com/.*/issues/`, `https://github.com/.*/pull/` | Authentication required (403/429 for bots) | Yes |
+| `https://www.figma.com/` | Interactive login required, bots blocked | Yes |
+| `http://localhost`, `http://127.0.0.1` | Local dev only, not in CI/CD | Yes |
+| `https://my-mvp-v0.example.com` | Documentation placeholder domain | N/A |
+| `https://ticket-hockey.ru/.*` | Bot protection  | Yes |
 
 ---
 
