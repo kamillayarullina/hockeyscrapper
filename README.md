@@ -60,4 +60,4 @@ config/        — parser config (sites.yaml)
 
 ## License
 
-MIT
+[MIT](LICENSE)
