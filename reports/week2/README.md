@@ -132,7 +132,7 @@ The following artifacts are provided:
 
 ### MVP v0 coverage
 
-See [`reports/week2/mvp-v0-report.md`](mvp-v0-report.md) for the MVP v0 foundation details and smoke-check scenario. MVP v0 establishes the frontend hosting infrastructure and static page foundation, which supports the eventual implementation of US-01 (User registration) and US-02 (User login).
+See [`reports/week2/mvp-v0-report.md`](mvp-v0-report.md) for the MVP v0 foundation details and smoke-check scenario. MVP v0 supports the implementation of US-01(Subscription to team), US-02(Date and time of the match), US-03(Ticket price), US-04(List of KHL teams), US-05(Notifications only to telegram), US-07(Profile).
 
 ### User stories represented by MVP v0 (foundation only)
 - **US‑01** – user can subscribe a team using telegram bot.
