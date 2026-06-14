@@ -63,5 +63,3 @@ config/        — parser config (sites.yaml)
 [`reports/week2/README.md`](reports/week2/README.md)
 
 ## License
-
-[`MIT`](LICENSE)

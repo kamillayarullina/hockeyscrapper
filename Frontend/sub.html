@@ -25,12 +25,31 @@
             ];
 
             const API = "";
-            const chatId = localStorage.getItem("chat_id");
+            const token = localStorage.getItem("token");
 
+            let chatId = localStorage.getItem("chat_id");
             let subscriptions = [];
 
+            async function resolveChatId() {
+                if (token) {
+                    try {
+                        const r = await fetch(`${API}/me`, {
+                            headers: { "Authorization": `Bearer ${token}` }
+                        });
+                        if (r.ok) {
+                            const user = await r.json();
+                            chatId = user.chat_id;
+                            localStorage.setItem("chat_id", chatId);
+                            return;
+                        }
+                    } catch {}
+                }
+                if (!chatId) chatId = localStorage.getItem("chat_id");
+            }
+
             async function loadSubscriptions() {
-                if (!chatId) return;
+                await resolveChatId();
+                if (!chatId) { render(); return; }
                 try {
                     const r = await fetch(`${API}/subscriptions/${chatId}`);
                     const data = await r.json();
@@ -59,6 +78,7 @@
             }
 
             async function toggleSubscription(team) {
+                await resolveChatId();
                 if (!chatId) { alert("Авторизуйтесь"); return; }
                 try {
                     const r = await fetch(`${API}/subscription/toggle`, {
