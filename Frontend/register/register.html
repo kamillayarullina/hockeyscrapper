@@ -90,12 +90,13 @@ fill="currentColor" viewBox="0 0 24 24" >
                         }));
                         window.location.href = '../main.html';
                     } else {
-                        const error = await response.json();
-                        alert(error.message || 'Ошибка регистрации');
+                        let msg = 'Ошибка регистрации';
+                        try { const err = await response.json(); msg = err.detail || msg; } catch {}
+                        alert(msg);
                     }
 
                 } catch (err) {
-                    alert('Ошибка сети: ' + err.message);
+                    alert('Ошибка сети');
                 }
             });
         </script>
