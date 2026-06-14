@@ -67,5 +67,5 @@ Make github repository public
 
 ## Links to evidence
 - Figma mockups https://www.figma.com/proto/QA9kxzUyxzBCnEycOYvinv/HockeyScrapper-Prototype?node-id=3-163&p=f&t=cW9lcLU0V8yCkDc5-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A163&show-proto-sidebar=1
-- Interview recording https://drive.google.com/file/d/1F7rCt25XgOrvZRCbu4dqxDarWH1BV5li/view?usp=sharing
+- Interview recording https://drive.google.com/file/d/1jd-_YTGIgSYCszZ7eRl1LAxsamZqYGi3/view?usp=sharing
 - Transcript source [`reports/week2/customer-meeting-transcript.md`](customer-meeting-transcript.md)
