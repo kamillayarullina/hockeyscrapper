@@ -6,22 +6,11 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
-from Backend import models
-from Backend.database import engine, get_db
-from Backend.security import get_password_hash, verify_password
-from Backend.jwt_auth import create_token, get_current_user
+
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HockeyScrapper API")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 class UserRegister(BaseModel):
@@ -41,48 +30,14 @@ class SubscriptionToggle(BaseModel):
     team_name: str
 
 
-@app.post("/register")
-def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
-    existing = db.query(models.UserModel).filter(models.UserModel.email == user_data.email).first()
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
 
-    hashed = get_password_hash(user_data.password)
-    max_chat = db.query(models.UserModel.chat_id).order_by(models.UserModel.chat_id.desc()).first()
-    new_chat_id = (max_chat[0] - 1) if max_chat else -1
-
-    user = models.UserModel(
-        chat_id=new_chat_id,
         username=user_data.username,
         email=user_data.email,
         telegram=user_data.telegram,
         password_hash=hashed,
         is_active=1
     )
-    db.add(user)
-    db.commit()
 
-    token = create_token(new_chat_id, user_data.email)
-    return {
-        "status": "success",
-        "message": "Registered!",
-        "chat_id": new_chat_id,
-        "access_token": token,
-        "token_type": "bearer"
-    }
-
-
-@app.post("/login")
-def login_user(login_data: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(models.UserModel).filter(models.UserModel.email == login_data.email).first()
-    if not user or not verify_password(login_data.password, user.password_hash):
-        raise HTTPException(status_code=400, detail="Invalid email or password")
-    token = create_token(user.chat_id, user.email)
-    return {
-        "status": "success",
-        "message": "Login successful!",
-        "access_token": token,
-        "token_type": "bearer",
         "user": {
             "chat_id": user.chat_id,
             "username": user.username,

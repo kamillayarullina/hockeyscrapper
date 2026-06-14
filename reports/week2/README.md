@@ -75,15 +75,22 @@ Users can create an account, select their favourite teams and subscribe them. On
 
 ### Protected default branch settings
 
-
+![Protected default branch settings](images/Ruleset.png)
 
 ### Example reviewed PR/MR
 
-
+![Example reviewed PR](images/PR.png)
+![Example reviewed PR](images/PR2.png)
 
 ### Selected prototype and interface artifacts
-
-
+![Prototype of main screen](images/Mainscreen.png)
+![Prototype of main screen](images/Mainscreen2.png)
+![Prototype of main screen](images/Mainscreen3.png)
+![Prototype of registration screen](images/Register.png)
+![Prototype of registration screen](images/Registererr.png)
+![Prototype of login screen](images/Login.png)
+![Prototype of profile screen](images/Profileuser.png)
+![Prototype of subscriptions screen](images/Subscriptions.png)
 
 ### Deployed MVP v0
 
