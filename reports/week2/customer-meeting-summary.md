@@ -3,12 +3,14 @@
 ## Date and participants
 
 14.06.2026
-- Kamilla Larullina
+- Kamilla Iarullina
 - Gleb Shamiev
 - Samir Shakirov
 - Bulat Bulatov
 
 ![Prototype of main screen](images/Mainscreen.png)
+![Prototype of main screen](images/Mainscreen2.png)
+![Prototype of main screen](images/Mainscreen3.png)
 ![Prototype of registration screen](images/Register.png)
 ![Prototype of login screen](images/Login.png)
 ![Prototype of profile screen](images/Profileuser.png)
@@ -64,6 +66,6 @@ Make github repository public
 | Email Notification | Add notification via email |
 
 ## Links to evidence
-- Figma mockups https://www.figma.com/proto/QA9kxzUyxzBCnEycOYvinv/HockeyScrapper-Prototype?node-id=3-163&p=f&t=cW9lcLU0V8yCkDc5-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A163&show-proto-sidebar=1
+- Figma mockups [](https://www.figma.com/proto/QA9kxzUyxzBCnEycOYvinv/HockeyScrapper-Prototype?node-id=3-163&p=f&t=cW9lcLU0V8yCkDc5-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3%3A163&show-proto-sidebar=1)
 - Interview recording https://drive.google.com/file/d/1FNcAee_cXBZKttdOM21p6VRAE1Hib5Vv/view?usp=drive_link
 - Transcript source [`reports/week2/customer-meeting-transcript.md`](customer-meeting-transcript.md)
