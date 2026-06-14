@@ -1,30 +1,63 @@
 # HockeyScrapper 🏒
 
-HockeyScrapper is a web platform that allows hockey fans to follow KHL teams and receive timely alerts about ticket sales. Users can create an account, select their favourite teams, and subscribe. The system automatically sends notifications when ticket sales for a selected team's match begin.
+Track KHL hockey tickets. Web dashboard + Telegram bot in one project.
 
-## Documentation
+## Features
 
-- **Week 2 Report:** [`reports/week2/README.md`](reports/week2/README.md)
-- **User Stories:** [`reports/week2/user-stories.md`](reports/week2/user-stories.md)
-- **MVP v0 Report:** [`reports/week2/mvp-v0-report.md`](reports/week2/mvp-v0-report.md)
-- **Interface Documentation:** [`docs/interface.md`](docs/interface.md)
+- **Ticket search** — scrapes ticket-hockey.ru, khl.ru, yandex.afisha
+- **Notifications** — Telegram bot sends alerts on new tickets
+- **Auth** — register / login with JWT
+- **Subscriptions** — follow teams and venues
+- **Telegram linking** — auto-link web account via one-time code
 
-## Local Setup
+## Quick Start
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/kamillayarullina/hockeyscrapper.git
-   cd hockeyscrapper
-   ```
+```bash
+git clone https://github.com/kamillayarullina/hockeyscrapper.git
+cd hockeyscrapper
 
-2. Copy environment file:
-   ```bash
-   cp .env.example .env
-   ```
+python -m venv .venv
+.venv\Scripts\activate    # Windows
+pip install -r requirements.txt
+playwright install
 
-3. Open the frontend:
-   - Open `Frontend/index.html` in a browser
+cp .env.example .env
+# Set BOT_TOKEN and ADMIN_CHAT_ID in .env
+```
+
+## Run
+
+```bash
+# Everything (site + bot + parser)
+python -m main --all
+
+# Site only (http://localhost:8000)
+python -m main --api-only
+
+# Bot only
+python -m main --bot-only
+```
+
+## Stack
+
+- **Backend:** FastAPI, SQLAlchemy, JWT (python-jose)
+- **Frontend:** HTML + CSS (vanilla)
+- **Bot:** aiogram 3.x
+- **Parsers:** Playwright, BeautifulSoup, aiohttp
+- **Database:** SQLite (dev) / PostgreSQL (prod) via `databases` library
+- **Hosting:** Render / Docker / Fly.io
+
+## Project Structure
+
+```
+Backend/       — API endpoints, JWT, ORM models
+bot/           — Telegram bot (aiogram)
+parsers/       — KHL, Yandex Afisha, club sites
+services/      — DB, notifications, proxy rotation, team matching
+Frontend/      — HTML pages (index, profile, subscriptions, login)
+config/        — parser config (sites.yaml)
+```
 
 ## License
 
-This project is MIT-licensed. See [`LICENSE`](LICENSE).
+MIT
