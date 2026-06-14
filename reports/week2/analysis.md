@@ -55,7 +55,7 @@ Our MVP v0 became a frontend site with minimal backend:
 ### 2. Display the full list of KHL teams for subscription
 - What we learned: Users need to see all available KHL teams in one place to choose which team they want to subscribe to.
 - What we are changing: We add a page or section showing the complete list of KHL teams. Users can browse the list and subscribe to any team they are interested in.
-
+- User story: As a user, I want to see the list of all teams of KHL, so that I can choose which team I can subscribe to.
 
 ### 3. Investigating parsing risks
 - What we learned: There is a risk that the parser may not work on the KHL website.
