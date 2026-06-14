@@ -38,14 +38,23 @@ Users can create an account, select their favourite teams and subscribe them. On
 
 - **PR template:** [`.github/pull_request_template.md`](../../.github/pull_request_template.md)
 - **Reviewed PRs:**
-  - [PR #1: Add project setup files]
+  - [- **#7** — Fix broken links and Lychee config
+- **#8** — Update README with project info
+- **#9** — Add backend folder with auth and database
+- **#11** — Update interface documentation (Telegram bot commands)
+- **#12** — Update README structure
+- **#13** — Full integration: API + Telegram bot + parsers connected
+- **#14** — Update analysis report and parser fixes
+- **#16** — Update LLM report and analysis
+- **#17** — Merge main into feat-backend, fix DB and backend bugs
+- **#18** — Update README with setup and usage instructions
+- **#19** — Update README formatting and content
+- **#21** — Backend fixes: CORS, JWT auth, DB schema improvements
+- **#22** — Update README with local setup instructions
+- **#23** — Merge feat-backend into main (API + frontend + bot)
+- **#25** — Update customer meeting transcript
+- **#26** — Add report links to README, update analysis]
 - **Branch protection:** Protected default branch (main) — see screenshot below.
-
-
-*Protected default branch settings — direct pushes disabled, PR approval required.*
-
-
-*Example of a reviewed PR — approval from another team member.*
 
 ---
 
