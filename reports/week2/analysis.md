@@ -23,16 +23,17 @@ The customer acted as a beginner – he is not familiar with the implementation 
 - Add KHL team icons.
 - Redesign the login site.
 
-### Based on this feedback, we improved the site: 
+### Based on this feedback, we will improve the site: 
 
-- Added KHL team icons.
-- Made input fields smaller.
+- Add KHL team icons.
+- Make input fields smaller.
 
 ### MVP v0 deployment
-Our MVP v0 became a frontend site with minimal backend, which:
+Our MVP v0 became a frontend site with minimal backend:
 
 - Allows users to register (create an account, log in).
 - Allows users to see the KHL teams.
+- Telegram bot sends notifications
 
 ## Validated assumptions
 
@@ -42,16 +43,14 @@ Our MVP v0 became a frontend site with minimal backend, which:
 
 ## Needs clarification
 
-1)Questions to customer - do 'user stories' fit, and are the priorities set correctly?
+1)Technical Risks - The parser may not work on some websites
 
-2)Technical Risks - The parser may not work on some websites
-
-## 6.4 Planned Response
+## Planned Response
 
 ### 1. Interface improvements based on customer feedback
 
-- What we learned: users feel comfortable when see command icons
-- What we are changing: we added this icons for him.
+- What we learned: users feel comfortable when see team icons
+- What we will change: we will add this icons.
 
 ### 2. Display the full list of KHL teams for subscription
 - What we learned: Users need to see all available KHL teams in one place to choose which team they want to subscribe to.
