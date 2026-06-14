@@ -48,8 +48,8 @@ def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed = get_password_hash(user_data.password)
-    max_chat = db.query(models.UserModel.chat_id).order_by(models.UserModel.chat_id.desc()).first()
-    new_chat_id = (max_chat[0] - 1) if max_chat else -1
+    min_chat = db.query(models.UserModel.chat_id).order_by(models.UserModel.chat_id.asc()).first()
+    new_chat_id = (min_chat[0] - 1) if (min_chat and min_chat[0] < 0) else -1
 
     user = models.UserModel(
         chat_id=new_chat_id,
