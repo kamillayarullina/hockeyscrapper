@@ -52,11 +52,8 @@
             <div class="teams-grid" id="myTeams"></div>
             <script>
                 const API = "";
-                const token = localStorage.getItem("token");
-                const chatId = localStorage.getItem("chat_id");
 
-                async function loadProfile() {
-                    let chatId_ = chatId;
+                async function resolveChatId(token) {
                     if (token) {
                         try {
                             const r = await fetch(`${API}/me`, {
@@ -64,13 +61,30 @@
                             });
                             if (r.ok) {
                                 const user = await r.json();
-                                document.getElementById("profileUsername").textContent = user.username || "—";
-                                document.getElementById("profileEmail").textContent = user.email || "—";
-                                document.getElementById("profileTelegram").textContent = user.telegram || "—";
                                 localStorage.setItem("chat_id", user.chat_id);
-                                chatId_ = user.chat_id;
+                                return user;
+                            }
+                            if (r.status === 404 || r.status === 401) {
+                                localStorage.removeItem("token");
+                                localStorage.removeItem("chat_id");
+                                localStorage.removeItem("user");
+                                window.location.href = "vhod/vhod.html";
+                                return null;
                             }
                         } catch {}
+                    }
+                    return null;
+                }
+
+                async function loadProfile() {
+                    const token = localStorage.getItem("token");
+                    let chatId_ = localStorage.getItem("chat_id");
+                    const userFromApi = await resolveChatId(token);
+                    if (userFromApi) {
+                        chatId_ = userFromApi.chat_id;
+                        document.getElementById("profileUsername").textContent = userFromApi.username || "—";
+                        document.getElementById("profileEmail").textContent = userFromApi.email || "—";
+                        document.getElementById("profileTelegram").textContent = userFromApi.telegram || "—";
                     }
                     const tgBtn = document.getElementById("telegramBtn");
                     if (chatId_ && chatId_ > 0) {
@@ -112,17 +126,16 @@
                         tgBtn.style.display = "none";
                     }
                     const user = JSON.parse(localStorage.getItem("user") || "{}");
-                    if (user.username) {
-                        if (document.getElementById("profileUsername").textContent === "—") {
-                            document.getElementById("profileUsername").textContent = user.username;
-                            document.getElementById("profileEmail").textContent = user.email;
-                            document.getElementById("profileTelegram").textContent = user.telegram;
-                        }
+                    if (!userFromApi && user.username) {
+                        document.getElementById("profileUsername").textContent = user.username;
+                        document.getElementById("profileEmail").textContent = user.email;
+                        document.getElementById("profileTelegram").textContent = user.telegram;
                     }
                 }
 
                 async function loadSubscriptions() {
                     const teamsContainer = document.getElementById("myTeams");
+                    const chatId = localStorage.getItem("chat_id");
                     if (!chatId) {
                         teamsContainer.innerHTML = "<p>Авторизуйтесь, чтобы увидеть подписки.</p>";
                         return;
