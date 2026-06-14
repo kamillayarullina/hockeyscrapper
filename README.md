@@ -10,32 +10,60 @@ Track KHL hockey tickets. Web dashboard + Telegram bot in one project.
 - **Subscriptions** — follow teams and venues
 - **Telegram linking** — auto-link web account via one-time code
 
-## Quick Start
+## Reports
+
+- [Week 2 report](reports/week2/README.md) — user stories, prototype, MVP v0, customer meeting
+- [MVP v0 report](reports/week2/mvp-v0-report.md) — foundation details, smoke-check scenario
+
+## Local Setup
+
+### Requirements
+- Python 3.10 or higher
+- Git
+
+### Steps
 
 ```bash
+# 1. Clone
 git clone https://github.com/kamillayarullina/hockeyscrapper.git
 cd hockeyscrapper
 
+# 2. Virtual environment
 python -m venv .venv
 .venv\Scripts\activate    # Windows
-pip install -r requirements.txt
-playwright install
 
+# 3. Dependencies
+pip install -r requirements.txt
+playwright install         # for parsers
+
+# 4. Environment
 cp .env.example .env
-# Set BOT_TOKEN and ADMIN_CHAT_ID in .env
+# Edit .env — set BOT_TOKEN and ADMIN_CHAT_ID (get token from @BotFather)
 ```
 
-## Run
+### Run
 
 ```bash
-# Everything (site + bot + parser)
+# Everything (API + frontend + bot + parser)
 python -m main --all
 
-# Site only (http://localhost:8000)
-python -m main --api-only
+# Open in browser
+start http://localhost:8000
+```
 
-# Bot only
-python -m main --bot-only
+### Options
+
+| Command | Starts |
+|---------|--------|
+| `python -m main --all` | API + bot + parser |
+| `python -m main --api-only` | API + frontend only |
+| `python -m main --bot-only` | Telegram bot only |
+
+### Public access (optional)
+
+```bash
+# Cloudflare Tunnel — exposes localhost to the internet
+cloudflared tunnel --url http://localhost:8000
 ```
 
 ## Stack

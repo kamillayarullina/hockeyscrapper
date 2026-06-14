@@ -1,1 +1,61 @@
+# MVP v0 Report — HockeyScrapper
 
+## What it is
+
+HockeyScrapper MVP v0 is a working local project that connects a website, a Telegram bot, and a database. You can register on the site, subscribe to KHL teams, and get match notifications in Telegram. The parsers scrape ticket data from multiple sources in the background.
+
+It's not deployed anywhere public (no server with a card), but you can run it locally and expose it via Cloudflare Tunnel if needed.
+
+## Deployment
+
+- **Run:** `python -m main --all` → `http://localhost:8000`
+- **Tunnel:** `cloudflared tunnel --url http://localhost:8000`
+
+## Video
+
+<!-- Add link < 2 min -->
+
+## Prototype vs MVP v0
+
+| Item | Figma | Current |
+|------|-------|---------|
+| Profile | Static mockup | Live `/me` endpoint |
+| Subscriptions | Mockup | Working via API + bot |
+| Login/Register | Not in prototype | Working with JWT |
+| Notifications | Not shown | Telegram push |
+| Parser | Not shown | Works (except Yandex) |
+
+## What doesn't work / placeholders
+
+- No public hosting (needs a card)
+- Yandex parser finds 0 events
+- Venue subscriptions — backend ready, no frontend yet
+- Bot crashes with `Conflict` if a second instance runs
+- Frontend shows generic error messages
+
+## Smoke-check
+
+1. `python -m main --all` — server starts, bot says it's running
+2. Open `http://localhost:8000` — buttons for login/register visible
+3. Register — redirect to profile page
+4. Go to "Управление подписками" → subscribe to a team → button changes to "Отписаться"
+5. `curl /subscriptions/{chat_id}` — JSON has the subscription
+6. `curl /matches` — JSON array (may be empty)
+7. `curl /stats` — JSON with counts
+
+All steps should pass without errors.
+
+## Local setup
+
+```bash
+git clone https://github.com/kamillayarullina/hockeyscrapper.git
+cd hockeyscrapper
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+playwright install
+# Set BOT_TOKEN in .env
+python -m main --all
+```
+
+More details — [README.md](../../README.md).
