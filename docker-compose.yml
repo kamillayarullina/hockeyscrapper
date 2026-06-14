@@ -1,0 +1,21 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:///app/data/tickets.db
+      - BOT_TOKEN=${BOT_TOKEN:-}
+
+  bot:
+    build: .
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:///app/data/tickets.db
+      - BOT_TOKEN=${BOT_TOKEN:-}
+    command: python -m main --bot-only
+    profiles:
+      - bot

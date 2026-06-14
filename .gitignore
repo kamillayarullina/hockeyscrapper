@@ -25,3 +25,6 @@ Thumbs.db
 
 # Generated
 *.log
+
+# Data (local SQLite)
+data/

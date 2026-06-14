@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль</title>
-
     <link rel="stylesheet" href="style_main.css">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
           rel="stylesheet">
@@ -18,29 +16,30 @@
 
         <div class="profile-header">
 
-            <div class="profile-avatar">
-                👤
-            </div>
+            <div class="profile-avatar">👤</div>
 
             <div class="profile-info">
                 <div class="info-card">
                     <span>Имя пользователя</span>
-                    <strong>Иван Иванов</strong>
+                    <strong id="profileUsername">—</strong>
                 </div>
 
                 <div class="info-card">
                     <span>Почта</span>
-                    <strong>ivan@example.com</strong>
+                    <strong id="profileEmail">—</strong>
                 </div>
 
                 <div class="info-card">
                     <span>Telegram</span>
-                    <strong>@ivanov</strong>
+                    <strong id="profileTelegram">—</strong>
                 </div>
 
                 <button class="btn"
                         onclick="window.location.href='sub.html'">
                     Управление подписками
+                </button>
+                <button class="btn" id="telegramBtn">
+                    Привязать Telegram
                 </button>
             </div>
 
@@ -52,24 +51,101 @@
 
             <div class="teams-grid" id="myTeams"></div>
             <script>
-                const teamsContainer =
-                    document.getElementById("myTeams");
+                const API = "";
+                const token = localStorage.getItem("token");
+                const chatId = localStorage.getItem("chat_id");
 
-                const subscriptions =
-                    JSON.parse(localStorage.getItem("subscriptions")) || [];
-
-                if (subscriptions.length === 0) {
-                    teamsContainer.innerHTML =
-                        "<p>Вы пока не подписаны ни на одну команду.</p>";
-                } else {
-                    subscriptions.forEach(team => {
-                        teamsContainer.innerHTML += `
-                            <div class="team-card">
-                                ${team}
-                            </div>
-                        `;
-                    });
+                async function loadProfile() {
+                    let chatId_ = chatId;
+                    if (token) {
+                        try {
+                            const r = await fetch(`${API}/me`, {
+                                headers: { "Authorization": `Bearer ${token}` }
+                            });
+                            if (r.ok) {
+                                const user = await r.json();
+                                document.getElementById("profileUsername").textContent = user.username || "—";
+                                document.getElementById("profileEmail").textContent = user.email || "—";
+                                document.getElementById("profileTelegram").textContent = user.telegram || "—";
+                                localStorage.setItem("chat_id", user.chat_id);
+                                chatId_ = user.chat_id;
+                            }
+                        } catch {}
+                    }
+                    const tgBtn = document.getElementById("telegramBtn");
+                    if (chatId_ && chatId_ > 0) {
+                        tgBtn.textContent = "Telegram привязан ✅";
+                        tgBtn.disabled = true;
+                        tgBtn.style.background = "#4CAF50";
+                    } else if (chatId_ && chatId_ < 0) {
+                        tgBtn.textContent = "Привязать Telegram";
+                        tgBtn.disabled = false;
+                        tgBtn.style.background = "";
+                        tgBtn.onclick = async function() {
+                            tgBtn.textContent = "Генерируем код...";
+                            tgBtn.disabled = true;
+                            try {
+                                const r = await fetch(`${API}/link-code`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ chat_id: parseInt(chatId_) })
+                                });
+                                if (r.ok) {
+                                    const data = await r.json();
+                                    localStorage.setItem("link_code", data.code);
+                                    window.open(data.link, "_blank");
+                                    tgBtn.textContent = "Код отправлен! Проверьте Telegram";
+                                    setTimeout(() => { tgBtn.textContent = "Привязать Telegram"; tgBtn.disabled = false; }, 5000);
+                                } else {
+                                    const err = await r.json();
+                                    alert(err.detail || "Ошибка");
+                                    tgBtn.textContent = "Привязать Telegram";
+                                    tgBtn.disabled = false;
+                                }
+                            } catch(e) {
+                                alert("Ошибка сети");
+                                tgBtn.textContent = "Привязать Telegram";
+                                tgBtn.disabled = false;
+                            }
+                        };
+                    } else {
+                        tgBtn.style.display = "none";
+                    }
+                    const user = JSON.parse(localStorage.getItem("user") || "{}");
+                    if (user.username) {
+                        if (document.getElementById("profileUsername").textContent === "—") {
+                            document.getElementById("profileUsername").textContent = user.username;
+                            document.getElementById("profileEmail").textContent = user.email;
+                            document.getElementById("profileTelegram").textContent = user.telegram;
+                        }
+                    }
                 }
+
+                async function loadSubscriptions() {
+                    const teamsContainer = document.getElementById("myTeams");
+                    if (!chatId) {
+                        teamsContainer.innerHTML = "<p>Авторизуйтесь, чтобы увидеть подписки.</p>";
+                        return;
+                    }
+                    try {
+                        const r = await fetch(`${API}/subscriptions/${chatId}`);
+                        const data = await r.json();
+                        const subs = data.subscriptions || [];
+                        if (subs.length === 0) {
+                            teamsContainer.innerHTML = "<p>Вы пока не подписаны ни на одну команду.</p>";
+                        } else {
+                            localStorage.setItem("subscriptions", JSON.stringify(subs));
+                            subs.forEach(team => {
+                                teamsContainer.innerHTML += `<div class="team-card">${team}</div>`;
+                            });
+                        }
+                    } catch {
+                        teamsContainer.innerHTML = "<p>Ошибка загрузки подписок.</p>";
+                    }
+                }
+
+                loadProfile();
+                loadSubscriptions();
             </script>
 
         </div>
