@@ -52,11 +52,12 @@
                 if (!chatId) { render(); return; }
                 try {
                     const r = await fetch(`${API}/subscriptions/${chatId}`);
+                    if (!r.ok) { render(); return; }
                     const data = await r.json();
                     subscriptions = data.subscriptions || [];
                     localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
                     render();
-                } catch { }
+                } catch { render(); }
             }
 
             const container = document.getElementById("teamsList");
