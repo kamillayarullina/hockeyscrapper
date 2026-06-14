@@ -36,4 +36,4 @@ Database: SQLite (dev) / PostgreSQL (prod)
 ```
 ## License
 
-![MIT](LICENSE)
+[`MIT`](LICENSE)
