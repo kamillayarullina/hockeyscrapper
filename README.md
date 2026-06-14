@@ -85,7 +85,9 @@ services/      — DB, notifications, proxy rotation, team matching
 Frontend/      — HTML pages (index, profile, subscriptions, login)
 config/        — parser config (sites.yaml)
 ```
+## links to week2
+
+[`reports/week2/mvp-v0-report.md`](reports/week2/mvp-v0-report.md)
+[`reports/week2/README.md`](reports/week2/README.md)
 
 ## License
-
-[MIT](LICENSE)
