@@ -3,6 +3,8 @@ from pathlib import Path
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+
 from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
@@ -10,6 +12,11 @@ from Backend import models
 from Backend.database import engine, get_db
 from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
+
+import random
+import os
+
+test_code = {}
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -21,6 +28,16 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+conf_email = ConnectionConfig(
+    MAIL_PASSWORD = "hqbo-bhdk-cxfg-gabq",
+    MAIL_USERNAME = "sakirovsamir401@gmail.com",
+    MAIL_FROM ="sakirovsamir401@gmail.com",
+    MAIL_PORT = 587,
+    MAIL_SERVER = "smtp.gmail.com",
+    MAIL_STARTTLS = True,
+    MAIL_SSL_TLS = False
 )
 
 
@@ -91,6 +108,44 @@ def login_user(login_data: UserLogin, db: Session = Depends(get_db)):
         }
     }
 
+@app.post("/forgot_password")
+async def forgot_password(email:EmailStr, db: Session = Depends(get_db)):
+    user = db.query(models.UserModel).filter(models.UserModel.email == email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Такого пользователя не существует"
+        )
+    random_code = random.randint(100000,999999)
+    test_code[email] = {"code": random_code}
+    fm = FastMail(conf_email)
+    msg = MessageSchema(
+        subject = "Код подтверждения",
+        recipients = [email],
+        body=random_code
+    )
+    await fm.send_message(msg)
+    return {"status": "success", "message": "Email sent!"}
+
+@app.post("/new_password")
+async def new_password(email:EmailStr, code : int, newPassword: str, db: Session = Depends(get_db)):
+    user = db.query(models.UserModel).filter(models.UserModel.email == email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Такого пользователя не существует"
+        )
+    user_code = test_code.get(email)
+    if not user_code or user_code["code"] != code:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Неверный код"
+        )
+    hashed_password = get_password_hash(newPassword)
+    user.password_hash = hashed_password
+    db.commit()
+    del test_code[email]
+    return {"status": "success","message": "Password changed!"}
 
 @app.get("/me")
 def get_me(payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
