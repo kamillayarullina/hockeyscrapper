@@ -163,15 +163,18 @@ async def forgot_password(request: dict, db: Session = Depends(get_db)):
     _code_created_at[email] = now
     _last_forgot_request[email] = now
 
-    fm = FastMail(conf_email)
-    msg = MessageSchema(
-        subject="Код подтверждения",
-        recipients=[email],
-        body=str(random_code),
-        subtype=MessageType.plain
-    )
-    await fm.send_message(msg)
-    return {"status": "success", "message": "Email sent!"}
+    try:
+        fm = FastMail(conf_email)
+        msg = MessageSchema(
+            subject="Код подтверждения",
+            recipients=[email],
+            body=str(random_code),
+            subtype=MessageType.plain
+        )
+        await fm.send_message(msg)
+        return {"status": "success", "message": "Email sent!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка отправки email: {str(e)}")
 
 @app.post("/new_password")
 async def new_password(request: NewPasswordRequest, db: Session = Depends(get_db)):
@@ -234,6 +237,14 @@ def toggle_subscription(sub_data: SubscriptionToggle, db: Session = Depends(get_
 
     if existing:
         db.delete(existing)
+        team_info = get_team_info(sub_data.team_name)
+        if team_info:
+            venue_value = f"{team_info['city']}, {team_info['venue']}".lower()
+            db.query(models.SubscriptionModel).filter(
+                models.SubscriptionModel.chat_id == sub_data.chat_id,
+                models.SubscriptionModel.type == "venue",
+                models.SubscriptionModel.value == venue_value
+            ).delete()
         db.commit()
         return {"status": "removed", "message": f"Unsubscribed from {sub_data.team_name}"}
     else:

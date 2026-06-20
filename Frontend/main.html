@@ -165,8 +165,8 @@
                             localStorage.setItem("subscriptions", JSON.stringify(subs));
                             subs.forEach(team => {
                                 const logo = teamLogos[team.toLowerCase()] || "";
-                                const imgHtml = logo ? `<img src="images/${logo}" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:8px">` : "";
-                                teamsContainer.innerHTML += `<div class="team-card">${imgHtml}${team}</div>`;
+                                const imgHtml = logo ? `<img src="images/${logo}" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">` : "";
+                                teamsContainer.innerHTML += `<div class="team-card" style="gap:10px;overflow:hidden">${imgHtml}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${team}</span></div>`;
                             });
                         }
                     } catch {
