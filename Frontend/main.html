@@ -133,6 +133,20 @@
                     }
                 }
 
+                const teamLogos = {
+                    "цска": "CSKA.svg", "спартак": "Spartak.svg",
+                    "динамо москва": "DinMsk.svg", "ска": "SKA.svg",
+                    "авангард": "Avangard.svg", "ак барс": "AkBars.svg",
+                    "салават юлаев": "Salavat.svg", "трактор": "Traktor.svg",
+                    "металлург": "Metallurg.svg", "локомотив": "Lokomotiv.svg",
+                    "сибирь": "Sibir.svg", "торпедо": "Torpedo.svg",
+                    "лада": "Lada.svg", "витязь": "Vityaz.svg",
+                    "северсталь": "Severstal.svg", "нефтехимик": "Neftekhimik.svg",
+                    "амур": "Amur.svg", "адмирал": "Admiral.svg",
+                    "куньлунь": "Kunlun.svg", "барыс": "Barys.svg",
+                    "динамо минск": "DynamoMin.svg", "сочи": "Sochi.svg"
+                };
+
                 async function loadSubscriptions() {
                     const teamsContainer = document.getElementById("myTeams");
                     const chatId = localStorage.getItem("chat_id");
@@ -150,7 +164,9 @@
                         } else {
                             localStorage.setItem("subscriptions", JSON.stringify(subs));
                             subs.forEach(team => {
-                                teamsContainer.innerHTML += `<div class="team-card">${team}</div>`;
+                                const logo = teamLogos[team.toLowerCase()] || "";
+                                const imgHtml = logo ? `<img src="images/${logo}" style="width:32px;height:32px;object-fit:contain;vertical-align:middle;margin-right:8px">` : "";
+                                teamsContainer.innerHTML += `<div class="team-card">${imgHtml}${team}</div>`;
                             });
                         }
                     } catch {
