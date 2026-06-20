@@ -205,3 +205,74 @@ a {
 .telegram__button:hover {
     opacity: 80%;
 }
+
+/* Form styles (forgot/new_password pages) */
+.wrapper {
+    width: 420px;
+    margin: 0 auto;
+    padding-top: 60px;
+}
+.wrapper h1 {
+    color: #0D398C;
+    font-size: 50px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.wrapper .description {
+    color: #3059a6;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+.wrapper .input-box {
+    width: 100%;
+    height: 25px;
+    margin: 30px 0;
+}
+.input-box input {
+    width: 70%;
+    height: 70%;
+    border: 2px solid #0D398C;
+    border-radius: 40px;
+    padding: 10px 45px 10px 10px;
+    font-size: 16px;
+}
+.input-box input::placeholder {
+    color: #3059a6;
+    font-size: 20px;
+}
+.wrapper .btn {
+    width: 100%;
+    height: 45px;
+    background: #537cc9;
+    border-radius: 40px;
+    cursor: pointer;
+    color: white;
+    font-weight: 500;
+    font-size: 20px;
+    border: none;
+}
+.btn:hover {
+    opacity: 80%;
+}
+.wrapper .register-link {
+    font-size: 14.5px;
+    text-align: center;
+    margin-top: 20px;
+}
+.register-link a {
+    font-weight: 500;
+    color: #3059a6;
+}
+.register-link a:hover {
+    text-decoration: underline;
+    color: #0D398C;
+}
+#message {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #3059a6;
+}
