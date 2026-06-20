@@ -25,7 +25,7 @@
             { name: "Спартак", logo: "images/Spartak.png" },
             { name: "Трактор", logo: "images/Traktor.png" },
             { name: "Авангард", logo: "images/Avangard.png" },
-            { name: "Металлург Мг", logo: "images/Metallurg.png" },
+            { name: "Металлург", logo: "images/Metallurg.png" },
             { name: "Салават Юлаев", logo: "images/Salavat.png" },
             { name: "Северсталь", logo: "images/Severstal.png" },
             { name: "Торпедо", logo: "images/Torpedo.png" },
@@ -35,11 +35,10 @@
             { name: "Амур", logo: "images/Amur.png" },
             { name: "Адмирал", logo: "images/Admiral.png" },
             { name: "Барыс", logo: "images/Barys.png" },
-            { name: "Куньлунь Ред Стар", logo: "images/Kunlun.png" },
+            { name: "Куньлунь", logo: "images/Kunlun.png" },
             { name: "Лада", logo: "images/Lada.png" },
             { name: "Сочи", logo: "images/Sochi.png" },
             { name: "Динамо Минск", logo: "images/DynamoMin.png" },
-            { name: "Автомобилист", logo: "images/Avto.png" },
         ];
 
         const API = "";
@@ -85,26 +84,24 @@
                 const subscribed = subscriptions.some(sub =>
                     sub.toLowerCase() === team.name.toLowerCase()
                 );
+
                 const card = document.createElement("div");
                 card.className = "subscription-card";
 
                 const infoDiv = document.createElement("div");
                 infoDiv.style.display = "flex";
                 infoDiv.style.alignItems = "center";
-                infoDiv.style.gap = "15px";
+                infoDiv.style.gap = "12px";
                 infoDiv.style.minWidth = "0";
                 infoDiv.style.flex = "1";
 
                 const img = document.createElement("img");
-                img.src = team.logo || "default_logo.png";
+                img.src = team.logo;
                 img.alt = team.name;
                 img.style.width = "40px";
                 img.style.height = "40px";
                 img.style.objectFit = "contain";
                 img.style.flexShrink = "0";
-                img.onerror = function() {
-                    this.src = "default_logo.png";
-                };
 
                 const nameSpan = document.createElement("span");
                 nameSpan.textContent = team.name;

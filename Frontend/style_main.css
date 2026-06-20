@@ -116,7 +116,8 @@ body {
     margin-bottom: 40px;
 }
 
-.team-card {
+.team-card,
+.subscription-card {
     background: white;
 
     border-radius: 20px;
@@ -189,16 +190,4 @@ body {
     background: var(--lidark);
     transform: translateY(-2px);
 }
-.subscription-card {
-    background: white;
 
-    border-radius: 20px;
-
-    border: 2px solid #dbe4f5;
-
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
