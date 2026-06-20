@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.3.1] 20.06.26
+## [1.3.1]
 
 ### Added
 - Team icons to the team subscriptions
