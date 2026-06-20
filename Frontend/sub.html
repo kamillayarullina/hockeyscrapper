@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подписки</title>
+    <link rel="stylesheet" href="style_main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<div class="profile-container">
+
+    <h1>Управление подписками</h1>
+
+    <div class="subscriptions-grid" id="teamsList"></div>
+    <script>
+        const khlTeams = [
+            { name: "СКА",  logo: "images/SKA.png" },
+            { name: "ЦСКА", logo: "images/CSKA.png" },
+            { name: "Ак Барс", logo: "images/AkBars.png" },
+            { name: "Динамо Москва", logo: "images/DinMsk.png" },
+            { name: "Локомотив", logo: "images/Lokomotiv.png" },
+            { name: "Спартак", logo: "images/Spartak.png" },
+            { name: "Трактор", logo: "images/Traktor.png" },
+            { name: "Авангард", logo: "images/Avangard.png" },
+            { name: "Металлург", logo: "images/Metallurg.png" },
+            { name: "Салават Юлаев", logo: "images/Salavat.png" },
+            { name: "Северсталь", logo: "images/Severstal.png" },
+            { name: "Торпедо", logo: "images/Torpedo.png" },
+            { name: "Нефтехимик", logo: "images/Neftekhimik.png" },
+            { name: "Сибирь", logo: "images/Sibir.png" },
+            { name: "Витязь", logo: "images/Vityaz.png" },
+            { name: "Амур", logo: "images/Amur.png" },
+            { name: "Адмирал", logo: "images/Admiral.png" },
+            { name: "Барыс", logo: "images/Barys.png" },
+            { name: "Куньлунь", logo: "images/Kunlun.png" },
+            { name: "Лада", logo: "images/Lada.png" },
+            { name: "Сочи", logo: "images/Sochi.png" },
+            { name: "Динамо Минск", logo: "images/DynamoMin.png" },
+        ];
+
+        const API = "";
+        const token = localStorage.getItem("token");
+        let chatId = localStorage.getItem("chat_id");
+        let subscriptions = [];
+
+        async function resolveChatId() {
+            if (token) {
+                try {
+                    const r = await fetch(`${API}/me`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+                    if (r.ok) {
+                        const user = await r.json();
+                        chatId = user.chat_id;
+                        localStorage.setItem("chat_id", chatId);
+                        return;
+                    }
+                } catch {}
+            }
+            if (!chatId) chatId = localStorage.getItem("chat_id");
+        }
+
+        async function loadSubscriptions() {
+            await resolveChatId();
+            if (!chatId) { render(); return; }
+            try {
+                const r = await fetch(`${API}/subscriptions/${chatId}`);
+                if (!r.ok) { render(); return; }
+                const data = await r.json();
+                subscriptions = data.subscriptions || [];
+                localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
+                render();
+            } catch { render(); }
+        }
+
+        const container = document.getElementById("teamsList");
+
+        function render() {
+            container.innerHTML = "";
+            khlTeams.forEach(team => {
+                const subscribed = subscriptions.some(sub =>
+                    sub.toLowerCase() === team.name.toLowerCase()
+                );
+
+                const card = document.createElement("div");
+                card.className = "subscription-card";
+
+                const infoDiv = document.createElement("div");
+                infoDiv.style.display = "flex";
+                infoDiv.style.alignItems = "center";
+                infoDiv.style.gap = "12px";
+                infoDiv.style.minWidth = "0";
+                infoDiv.style.flex = "1";
+
+                const img = document.createElement("img");
+                img.src = team.logo;
+                img.alt = team.name;
+                img.style.width = "40px";
+                img.style.height = "40px";
+                img.style.objectFit = "contain";
+                img.style.flexShrink = "0";
+
+                const nameSpan = document.createElement("span");
+                nameSpan.textContent = team.name;
+                nameSpan.style.overflow = "hidden";
+                nameSpan.style.textOverflow = "ellipsis";
+                nameSpan.style.whiteSpace = "nowrap";
+
+                infoDiv.appendChild(img);
+                infoDiv.appendChild(nameSpan);
+
+                const btn = document.createElement("button");
+                btn.className = `btn-small ${subscribed ? 'unsubscribe' : ''}`;
+                btn.textContent = subscribed ? 'Отписаться' : 'Подписаться';
+                btn.onclick = function() {
+                    toggleSubscription(team.name);
+                };
+
+                card.appendChild(infoDiv);
+                card.appendChild(btn);
+                container.appendChild(card);
+            });
+        }
+
+        async function toggleSubscription(team) {
+            await resolveChatId();
+            if (!chatId) { alert("Авторизуйтесь"); return; }
+            try {
+                const r = await fetch(`${API}/subscription/toggle`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
+                });
+                const result = await r.json();
+                if (r.ok) {
+                    await loadSubscriptions();
+                } else {
+                    alert(result.message || "Ошибка");
+                }
+            } catch (err) {
+                alert("Ошибка сети: " + err.message);
+            }
+        }
+
+        loadSubscriptions();
+    </script>
+    <button class="btn"
+            onclick="window.location.href='main.html'">
+        Назад
+    </button>
+
+</div>
+</body>
+</html>
