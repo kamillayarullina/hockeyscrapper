@@ -11,6 +11,7 @@ Users can create an account, select their favourite teams and subscribe them. On
 
 ## 2. User Stories
 
+The backlog now contains 15 qualifying PBIs, comprising 11 user stories and 4 technical tasks, ensuring compliance with course requirements.
 
 
 [`reports/week2/user-stories.md`](user-stories.md)
