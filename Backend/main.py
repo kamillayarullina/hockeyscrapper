@@ -226,7 +226,7 @@ def generate_link_code(req: LinkCodeRequest, db: Session = Depends(get_db)):
     code = secrets.token_hex(4)
     user.link_code = code
     db.commit()
-    return {"code": code, "link": f"https://t.me/HockeyScrapper_bot?start={code}"}
+    return {"code": code, "link": f"https://t.me/HockeyScrAppeer_bot?start={code}"}
 
 @app.post("/subscription/toggle")
 def toggle_subscription(sub_data: SubscriptionToggle, db: Session = Depends(get_db)):
