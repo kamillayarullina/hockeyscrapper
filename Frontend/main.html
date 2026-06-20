@@ -133,6 +133,20 @@
                     }
                 }
 
+                const teamLogos = {
+                    "цска": "CSKA.png", "спартак": "Spartak.png",
+                    "динамо москва": "DinMsk.png", "ска": "SKA.png",
+                    "авангард": "Avangard.png", "ак барс": "AkBars.png",
+                    "салават юлаев": "Salavat.png", "трактор": "Traktor.png",
+                    "металлург": "Metallurg.png", "локомотив": "Lokomotiv.png",
+                    "сибирь": "Sibir.png", "торпедо": "Torpedo.png",
+                    "лада": "Lada.png", "витязь": "Vityaz.png",
+                    "северсталь": "Severstal.png", "нефтехимик": "Neftekhimik.png",
+                    "амур": "Amur.png", "адмирал": "Admiral.png",
+                    "куньлунь": "Kunlun.png", "барыс": "Barys.png",
+                    "динамо минск": "DynamoMin.png", "сочи": "Sochi.png"
+                };
+
                 async function loadSubscriptions() {
                     const teamsContainer = document.getElementById("myTeams");
                     const chatId = localStorage.getItem("chat_id");
@@ -150,7 +164,9 @@
                         } else {
                             localStorage.setItem("subscriptions", JSON.stringify(subs));
                             subs.forEach(team => {
-                                teamsContainer.innerHTML += `<div class="team-card">${team}</div>`;
+                                const logo = teamLogos[team.toLowerCase()] || "";
+                                const imgHtml = logo ? `<img src="images/${logo}" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">` : "";
+                                teamsContainer.innerHTML += `<div class="team-card" style="gap:10px;overflow:hidden">${imgHtml}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${team}</span></div>`;
                             });
                         }
                     } catch {
@@ -158,8 +174,7 @@
                     }
                 }
 
-                loadProfile();
-                loadSubscriptions();
+                loadProfile().then(loadSubscriptions);
             </script>
 
         </div>
