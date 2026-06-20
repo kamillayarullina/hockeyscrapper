@@ -9,31 +9,31 @@ This prevented us from overbuilding the MVP.
 
 ### Prototyping
 We built only one prototype - Computer prototype. To understend:
+
 1 Check whether the interface is visually and structurally suitable for the customer.
+
 2 Get feedback on the layout of elements, colors, fonts, and labels.
+
 3 Quickly make changes without spending time on programming the logic.
 
 ### Interface design and Customer validation of the proposed product interface
 We showed frontend mockup to the customer.
 The customer acted as a beginner – he is not familiar with the implementation details and looks at the interface as an ordinary user. During the review, he honestly pointed out what exactly and where he found unclear:
 
--
--
--
--
+- Add KHL team icons.
+- Redesign the login site.
 
-Based on this feedback, we improved the site:
--
--
--
--
+### Based on this feedback, we will improve the site: 
+
+- Add KHL team icons.
+- Make input fields smaller.
 
 ### MVP v0 deployment
-Our MVP v0 became a frontend site with minimal backend, which:
+Our MVP v0 became a frontend site with minimal backend:
 
 - Allows users to register (create an account, log in).
-- Can send notifications, but only manually – by clicking the "send test notification" button (simulation).
-
+- Allows users to see the KHL teams.
+- Telegram bot sends notifications
 
 ## Validated assumptions
 
@@ -43,23 +43,21 @@ Our MVP v0 became a frontend site with minimal backend, which:
 
 ## Needs clarification
 
-1)Questions to customer -
+1)Technical Risks - The parser may not work on some websites
 
-2)Technical Risks - The parser may not work on some websites
-
-## 6.4 Planned Response
+## Planned Response
 
 ### 1. Interface improvements based on customer feedback
 
-- What we learned:
-- What we are changing:
+- What we learned: users feel comfortable when see team icons
+- What we will change: we will add this icons.
 
 ### 2. Display the full list of KHL teams for subscription
 - What we learned: Users need to see all available KHL teams in one place to choose which team they want to subscribe to.
-- What we are changing: We will add a page or section showing the complete list of KHL teams. Users can browse the list and subscribe to any team they are interested in.
-
+- What we are changing: We add a page or section showing the complete list of KHL teams. Users can browse the list and subscribe to any team they are interested in.
+- User story: As a user, I want to see the list of all teams of KHL, so that I can choose which team I can subscribe to.
 
 ### 3. Investigating parsing risks
 - What we learned: There is a risk that the parser may not work on the KHL website.
-- What we are changing: We add a research and prototyping phase for the parser before full development.
+- What we are changing: We will add a research and prototyping phase for the parser before full development.
 
