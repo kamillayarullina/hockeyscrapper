@@ -91,17 +91,20 @@
                 const infoDiv = document.createElement("div");
                 infoDiv.style.display = "flex";
                 infoDiv.style.alignItems = "center";
-                infoDiv.style.gap = "12px";
+                infoDiv.style.gap = "15px";
                 infoDiv.style.minWidth = "0";
                 infoDiv.style.flex = "1";
 
                 const img = document.createElement("img");
-                img.src = team.logo;
+                img.src = team.logo || "default_logo.png";
                 img.alt = team.name;
                 img.style.width = "40px";
                 img.style.height = "40px";
                 img.style.objectFit = "contain";
-                img.style.flexShrink = "0";
+       
+                img.onerror = function() {
+                    this.src = "default_logo.png";
+                };
 
                 const nameSpan = document.createElement("span");
                 nameSpan.textContent = team.name;
