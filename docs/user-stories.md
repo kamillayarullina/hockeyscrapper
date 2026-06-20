@@ -6,7 +6,7 @@
 | US-04 | KHL teams | Must have | [#77](https://github.com/kamillayarullina/hockeyscrapper/issues/77) | Active | Done | [Sprint 1](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
 | US-05 | Notifications | Must have | [#76](https://github.com/kamillayarullina/hockeyscrapper/issues/76) | Active | In Progress | [Sprint 1](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
 | US-07 | Profile | Must have | [#74](https://github.com/kamillayarullina/hockeyscrapper/issues/74) | Active | Done | [Sprint 1](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
-| US-10 | Recover the password Backend | Must have | [#71](https://github.com/kamillayarullina/hockeyscrapper/issues/71) | Active | In Progress | [Sprint 1](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
+| US-10 | Recover the password | Must have | [#71](https://github.com/kamillayarullina/hockeyscrapper/issues/71) | Active | In Progress | [Sprint 1](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
 | US-06 | Monetization | Must have | [#75](https://github.com/kamillayarullina/hockeyscrapper/issues/75) | Active | To Do | - |
-| US-08 | Subscribtion to a stadium | Could have | [#73](https://github.com/kamillayarullina/hockeyscrapper/issues/73) | Active | Done | [Sprint 1](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
+| US-08 | Subscribtion to a stadium | Could have | [#73](https://github.com/kamillayarullina/hockeyscrapper/issues/73) | Active | Done | - |
 | US-09 | Number of subscriptions | Could have | [#72](https://github.com/kamillayarullina/hockeyscrapper/issues/72) | Active | To Do | - |
