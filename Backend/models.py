@@ -43,7 +43,7 @@ class MatchModel(Base):
     source: Mapped[str] = mapped_column(nullable=True)
     sources: Mapped[str] = mapped_column(default="")
     created_at = Column(DateTime, server_default=func.now())
-    updated_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
 
 class NotifiedEventModel(Base):

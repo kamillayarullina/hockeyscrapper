@@ -141,25 +141,47 @@
                         return;
                     }
                     try {
-                        const r = await fetch(`${API}/subscriptions/${chatId}`);
-                        if (!r.ok) { throw new Error("not ok"); }
+                        const token = localStorage.getItem("token");
+                        const headers = {};
+                        if (token) headers["Authorization"] = `Bearer ${token}`;
+                        const r = await fetch(`${API}/subscriptions/${chatId}`, { headers });
+                        if (!r.ok) {
+                            if (r.status === 401 || r.status === 404) {
+                                localStorage.removeItem("token");
+                                localStorage.removeItem("chat_id");
+                                window.location.href = "vhod/vhod.html";
+                                return;
+                            }
+                            throw new Error("not ok");
+                        }
                         const data = await r.json();
                         const subs = data.subscriptions || [];
-                        if (subs.length === 0) {
-                            teamsContainer.innerHTML = "<p>Вы пока не подписаны ни на одну команду.</p>";
+                        const venues = data.venues || [];
+                        if (subs.length === 0 && venues.length === 0) {
+                            teamsContainer.innerHTML = "<p>Вы пока не подписаны.</p>";
                         } else {
                             localStorage.setItem("subscriptions", JSON.stringify(subs));
-                            subs.forEach(team => {
-                                teamsContainer.innerHTML += `<div class="team-card">${team}</div>`;
-                            });
+                            if (subs.length) {
+                                teamsContainer.innerHTML = "<h3>Команды</h3>";
+                                subs.forEach(team => {
+                                    teamsContainer.innerHTML += `<div class="team-card">${team}</div>`;
+                                });
+                            }
+                            if (venues.length) {
+                                teamsContainer.innerHTML += "<h3 style='margin-top:15px'>Стадионы</h3>";
+                                venues.forEach(v => {
+                                    const parts = v.split(", ");
+                                    const display = parts.length === 2 ? parts[1] + " (" + parts[0] + ")" : v;
+                                    teamsContainer.innerHTML += `<div class="team-card venue-card">🏟 ${display}</div>`;
+                                });
+                            }
                         }
                     } catch {
                         teamsContainer.innerHTML = "<p>Ошибка загрузки подписок.</p>";
                     }
                 }
 
-                loadProfile();
-                loadSubscriptions();
+                loadProfile().then(loadSubscriptions);
             </script>
 
         </div>

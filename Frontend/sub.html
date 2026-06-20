@@ -18,10 +18,10 @@
     <script>
             const khlTeams = [
                 "СКА", "ЦСКА", "Ак Барс", "Динамо Москва", "Локомотив",
-                "Спартак", "Трактор", "Авангард", "Металлург Мг", "Салават Юлаев",
+                "Спартак", "Трактор", "Авангард", "Металлург", "Салават Юлаев",
                 "Северсталь", "Торпедо", "Нефтехимик", "Сибирь", "Витязь",
-                "Амур", "Адмирал", "Барыс", "Куньлунь Ред Стар", "Лада",
-                "Сочи", "Динамо Минск", "Автомобилист"
+                "Амур", "Адмирал", "Барыс", "Куньлунь", "Лада",
+                "Сочи", "Динамо Минск"
             ];
 
             const API = "";
@@ -47,14 +47,27 @@
                 if (!chatId) chatId = localStorage.getItem("chat_id");
             }
 
+            let venues = [];
+
             async function loadSubscriptions() {
                 await resolveChatId();
                 if (!chatId) { render(); return; }
                 try {
-                    const r = await fetch(`${API}/subscriptions/${chatId}`);
-                    if (!r.ok) { render(); return; }
+                    const headers = {};
+                    if (token) headers["Authorization"] = `Bearer ${token}`;
+                    const r = await fetch(`${API}/subscriptions/${chatId}`, { headers });
+                    if (!r.ok) {
+                        if (r.status === 401 || r.status === 404) {
+                            localStorage.removeItem("token");
+                            localStorage.removeItem("chat_id");
+                            window.location.href = "vhod/vhod.html";
+                            return;
+                        }
+                        render(); return;
+                    }
                     const data = await r.json();
                     subscriptions = data.subscriptions || [];
+                    venues = data.venues || [];
                     localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
                     render();
                 } catch { render(); }
@@ -64,27 +77,57 @@
 
             function render() {
                 container.innerHTML = "";
+                const heading = document.createElement("h2");
+                heading.textContent = "Команды";
+                container.appendChild(heading);
                 khlTeams.forEach(team => {
                     const subscribed = subscriptions.includes(team.toLowerCase());
-                    container.innerHTML += `
-                        <div class="subscription-card">
-                            <span>${team}</span>
-                            <button class="btn-small ${subscribed ? 'unsubscribe' : ''}"
-                                onclick="toggleSubscription('${team}')">
-                                ${subscribed ? 'Отписаться' : 'Подписаться'}
-                            </button>
-                        </div>
-                    `;
+                    const card = document.createElement("div");
+                    card.className = "subscription-card";
+                    const span = document.createElement("span");
+                    span.textContent = team;
+                    card.appendChild(span);
+                    const btn = document.createElement("button");
+                    btn.className = "btn-small" + (subscribed ? " unsubscribe" : "");
+                    btn.textContent = subscribed ? "Отписаться" : "Подписаться";
+                    btn.dataset.team = team;
+                    btn.addEventListener("click", function() {
+                        toggleSubscription(this.dataset.team);
+                    });
+                    card.appendChild(btn);
+                    container.appendChild(card);
                 });
+                if (venues.length) {
+                    const vHeading = document.createElement("h2");
+                    vHeading.textContent = "Стадионы";
+                    vHeading.style.marginTop = "30px";
+                    container.appendChild(vHeading);
+                    venues.forEach(v => {
+                        const parts = v.split(", ");
+                        const display = parts.length === 2 ? parts[1] + " (" + parts[0] + ")" : v;
+                        const card = document.createElement("div");
+                        card.className = "subscription-card";
+                        const span = document.createElement("span");
+                        span.textContent = "\u{1F3DF} " + display;
+                        card.appendChild(span);
+                        const badge = document.createElement("span");
+                        badge.className = "badge";
+                        badge.textContent = "авто";
+                        card.appendChild(badge);
+                        container.appendChild(card);
+                    });
+                }
             }
 
             async function toggleSubscription(team) {
                 await resolveChatId();
                 if (!chatId) { alert("Авторизуйтесь"); return; }
                 try {
+                    const headers = { "Content-Type": "application/json" };
+                    if (token) headers["Authorization"] = `Bearer ${token}`;
                     const r = await fetch(`${API}/subscription/toggle`, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers,
                         body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
                     });
                     const result = await r.json();

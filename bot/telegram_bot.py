@@ -44,9 +44,8 @@ async def cmd_start(message: Message):
                 f"📋 Ваши подписки перенесены.\n"
                 f"Теперь уведомления будут приходить сюда."
             )
-            return
 
-    teams_list = "\n".join(f"• <code>/{t.split()[0].lower()}</code> — {t}" for t in get_all_team_names()[:10])
+    teams_sample = ", ".join(get_all_team_names()[:10])
 
     text = (
         f"👋 Привет, <b>{escape(message.from_user.first_name or 'друг')}</b>!\n\n"
@@ -200,6 +199,11 @@ async def cmd_unsubscribe(message: Message):
 
     db = get_db()
     removed = await db.unsubscribe(message.from_user.id, "team", team_canonical.lower())
+
+    team_info = get_team_info(team_canonical)
+    if team_info:
+        venue_key = f"{team_info['city']}, {team_info['venue']}"
+        await db.unsubscribe(message.from_user.id, "venue", venue_key.lower())
 
     if removed:
         await message.answer(
@@ -409,7 +413,7 @@ async def cmd_admin_interval(message: Message):
         db = get_db()
         await db.set_setting("parse_interval_minutes", str(minutes))
         await message.answer(f"✅ Интервал парсинга изменён на <b>{minutes}</b> мин.")
-        await _notify_admin(f"🕐 Интервал парсинга изменён на {minutes} мин.", admin_id)
+        await _notify_admin(f"🕐 Интервал парсинга изменён на {minutes} мин.", message.from_user.id)
     except ValueError:
         await message.answer("❗ Введите число.")
 

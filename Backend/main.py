@@ -18,16 +18,25 @@ from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
 
 import random
+import time
+from datetime import datetime, timedelta
+
+from sqlalchemy.exc import IntegrityError
+
+from services.team_matcher import get_team_info, normalize_team_name
 
 test_code = {}
+CODE_TTL_SECONDS = 300  # 5 minutes
+_last_forgot_request = {}  # email -> timestamp for rate limiting
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HockeyScrapper API")
 
+_origins = os.getenv("CORS_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -44,10 +53,22 @@ conf_email = ConnectionConfig(
 )
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
 class NewPasswordRequest(BaseModel):
     email: EmailStr
     code: int
     new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_new_password(cls, v):
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        if not any(c.isalpha() for c in v):
+            raise ValueError("Password must contain at least one letter")
+        return v
 
 
 class UserRegister(BaseModel):
@@ -83,19 +104,26 @@ def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed = get_password_hash(user_data.password)
-    min_chat = db.query(models.UserModel.chat_id).order_by(models.UserModel.chat_id.asc()).first()
-    new_chat_id = (min_chat[0] - 1) if (min_chat and min_chat[0] < 0) else -1
-
-    user = models.UserModel(
-        chat_id=new_chat_id,
-        username=user_data.username,
-        email=user_data.email,
-        telegram=user_data.telegram,
-        password_hash=hashed,
-        is_active=1
-    )
-    db.add(user)
-    db.commit()
+    for attempt in range(3):
+        min_chat = db.query(models.UserModel.chat_id).filter(models.UserModel.chat_id < 0).order_by(models.UserModel.chat_id.asc()).first()
+        new_chat_id = (min_chat[0] - 1) if min_chat else -1
+        user = models.UserModel(
+            chat_id=new_chat_id,
+            username=user_data.username,
+            email=user_data.email,
+            telegram=user_data.telegram,
+            password_hash=hashed,
+            is_active=1
+        )
+        db.add(user)
+        try:
+            db.commit()
+            break
+        except IntegrityError:
+            db.rollback()
+            continue
+    else:
+        raise HTTPException(status_code=500, detail="Registration error, try again")
 
     token = create_token(new_chat_id, user_data.email)
     return {
@@ -127,15 +155,21 @@ def login_user(login_data: UserLogin, db: Session = Depends(get_db)):
     }
 
 @app.post("/forgot_password")
-async def forgot_password(email:EmailStr, db: Session = Depends(get_db)):
+async def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
+    email = req.email
+    now = time.time()
+    last = _last_forgot_request.get(email, 0)
+    if now - last < 60:
+        raise HTTPException(status_code=429, detail="Повторите попытку через минуту")
     user = db.query(models.UserModel).filter(models.UserModel.email == email).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Такого пользователя не существует"
         )
-    random_code = random.randint(100000,999999)
-    test_code[email] = {"code": random_code}
+    _last_forgot_request[email] = now
+    random_code = random.randint(100000, 999999)
+    test_code[email] = {"code": random_code, "created_at": time.time()}
     fm = FastMail(conf_email)
     msg = MessageSchema(
         subject = "Код подтверждения",
@@ -160,10 +194,16 @@ async def new_password(request: NewPasswordRequest, db: Session = Depends(get_db
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Неверный код"
         )
+    if time.time() - user_code.get("created_at", 0) > CODE_TTL_SECONDS:
+        test_code.pop(request.email, None)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Код истёк. Запросите новый."
+        )
     hashed_password = get_password_hash(request.new_password)
     user.password_hash = hashed_password
     db.commit()
-    del test_code[request.email]
+    test_code.pop(request.email, None)
     return {"status": "success","message": "Password changed!"}
 
 @app.get("/me")
@@ -184,8 +224,10 @@ class LinkCodeRequest(BaseModel):
 
 
 @app.post("/link-code")
-def generate_link_code(req: LinkCodeRequest, db: Session = Depends(get_db)):
+def generate_link_code(req: LinkCodeRequest, payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
     import secrets
+    if int(payload["sub"]) != req.chat_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
     user = db.query(models.UserModel).filter(models.UserModel.chat_id == req.chat_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -198,35 +240,66 @@ def generate_link_code(req: LinkCodeRequest, db: Session = Depends(get_db)):
 
 
 @app.post("/subscription/toggle")
-def toggle_subscription(sub_data: SubscriptionToggle, db: Session = Depends(get_db)):
+def toggle_subscription(sub_data: SubscriptionToggle, payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    if int(payload["sub"]) != sub_data.chat_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    team = normalize_team_name(sub_data.team_name)
     existing = db.query(models.SubscriptionModel).filter(
         models.SubscriptionModel.chat_id == sub_data.chat_id,
         models.SubscriptionModel.type == "team",
-        models.SubscriptionModel.value == sub_data.team_name.lower()
+        models.SubscriptionModel.value == (team or sub_data.team_name).lower()
     ).first()
 
     if existing:
         db.delete(existing)
+        team_info = get_team_info(team) if team else None
+        if team_info:
+            venue_key = f"{team_info['city']}, {team_info['venue']}".lower()
+            venue_sub = db.query(models.SubscriptionModel).filter(
+                models.SubscriptionModel.chat_id == sub_data.chat_id,
+                models.SubscriptionModel.type == "venue",
+                models.SubscriptionModel.value == venue_key
+            ).first()
+            if venue_sub:
+                db.delete(venue_sub)
         db.commit()
-        return {"status": "removed", "message": f"Unsubscribed from {sub_data.team_name}"}
+        return {"status": "removed", "message": f"Unsubscribed from {team or sub_data.team_name}"}
     else:
         new_sub = models.SubscriptionModel(
             chat_id=sub_data.chat_id,
             type="team",
-            value=sub_data.team_name.lower()
+            value=(team or sub_data.team_name).lower()
         )
         db.add(new_sub)
+        team_info = get_team_info(team) if team else None
+        if team_info:
+            venue_key = f"{team_info['city']}, {team_info['venue']}".lower()
+            existing_venue = db.query(models.SubscriptionModel).filter(
+                models.SubscriptionModel.chat_id == sub_data.chat_id,
+                models.SubscriptionModel.type == "venue",
+                models.SubscriptionModel.value == venue_key
+            ).first()
+            if not existing_venue:
+                venue_sub = models.SubscriptionModel(
+                    chat_id=sub_data.chat_id,
+                    type="venue",
+                    value=venue_key
+                )
+                db.add(venue_sub)
         db.commit()
-        return {"status": "added", "message": f"Subscribed to {sub_data.team_name}"}
+        return {"status": "added", "message": f"Subscribed to {team or sub_data.team_name}"}
 
 
 @app.get("/subscriptions/{chat_id}")
-def get_user_subscriptions(chat_id: int, db: Session = Depends(get_db)):
+def get_user_subscriptions(chat_id: int, payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    if int(payload["sub"]) != chat_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
     subs = db.query(models.SubscriptionModel).filter(
         models.SubscriptionModel.chat_id == chat_id
     ).all()
     teams = [s.value for s in subs if s.type == "team"]
-    return {"chat_id": chat_id, "subscriptions": teams}
+    venues = [s.value for s in subs if s.type == "venue"]
+    return {"chat_id": chat_id, "subscriptions": teams, "venues": venues}
 
 
 @app.get("/matches")
@@ -266,22 +339,21 @@ async def serve_frontend(full_path: str):
     from fastapi.responses import FileResponse, HTMLResponse
     import mimetypes
 
-    file = frontend_path / full_path if full_path else frontend_path / "index.html"
+    resolved = (frontend_path / full_path).resolve() if full_path else (frontend_path / "index.html").resolve()
 
-    if not file.exists() or not file.is_file():
-        if not full_path or full_path.endswith("/"):
-            file = frontend_path / "index.html"
-        else:
-            file = frontend_path / full_path
-            if not file.exists():
-                file = frontend_path / "index.html"
-
-    if not file.exists():
+    if not str(resolved).startswith(str(frontend_path.resolve())):
         from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Not found")
 
-    media_type, _ = mimetypes.guess_type(str(file))
-    return FileResponse(str(file), media_type=media_type or "text/html")
+    if not resolved.exists() or not resolved.is_file():
+        resolved = frontend_path / "index.html"
+
+    if not resolved.exists():
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Not found")
+
+    media_type, _ = mimetypes.guess_type(str(resolved))
+    return FileResponse(str(resolved), media_type=media_type or "text/html")
 
 if __name__ == "__main__":
     import uvicorn
