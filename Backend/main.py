@@ -7,7 +7,7 @@ from pathlib import Path
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 from pydantic import BaseModel, EmailStr, field_validator
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -167,7 +167,8 @@ async def forgot_password(request: dict, db: Session = Depends(get_db)):
     msg = MessageSchema(
         subject="Код подтверждения",
         recipients=[email],
-        body=str(random_code)
+        body=str(random_code),
+        subtype=MessageType.plain
     )
     await fm.send_message(msg)
     return {"status": "success", "message": "Email sent!"}
