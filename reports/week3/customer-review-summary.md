@@ -10,7 +10,11 @@
 
 ## Artifacts Demonstrated
 
-
+![Main page](images/Mainpage.png)
+![Button to Telegram bot](images/tgbutton.png)
+![Logos](images/Subscriptionswithlogos.png)
+![Recover password page](images/Recoverpassword.png)
+![New password page](images/Newpassword.png)
 
 ## Scope reviewed
 The team presented the current state of the product, covering:
