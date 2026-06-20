@@ -3,7 +3,7 @@ services:
     name: hockeyscrapper-api
     runtime: docker
     repo: https://github.com/kamillayarullina/hockeyscrapper
-    branch: feat-password
+    branch: main
     dockerfilePath: ./Dockerfile
     dockerCommand: python -m main --api-only
     healthCheckPath: /stats
@@ -28,7 +28,7 @@ services:
     name: hockeyscrapper-bot
     runtime: docker
     repo: https://github.com/kamillayarullina/hockeyscrapper
-    branch: feat-password
+    branch: main
     dockerfilePath: ./Dockerfile
     dockerCommand: python -m main --bot-only
     envVars:
