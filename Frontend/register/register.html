@@ -41,7 +41,7 @@ fill="currentColor" viewBox="0 0 24 24" >
 </svg>
         </div>
         <div class="input-box">
-            <input type="password" name="password" placeholder="Пароль" required>
+            <input type="password" name="password" placeholder="Пароль (мин. 8 символов, хотя бы 1 буква)" required minlength="8">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"  
 fill="currentColor" viewBox="0 0 24 24" >
 <path d="M6 22h12c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2h-1V7c0-2.76-2.24-5-5-5S7 4.24 7 7v2H6c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2M9 7c0-1.65 1.35-3 3-3s3 1.35 3 3v2H9zm-3 4h12v9H6z"></path>
@@ -63,6 +63,14 @@ fill="currentColor" viewBox="0 0 24 24" >
                 const data = Object.fromEntries(formData.entries());
                 if (data.password !== data.password_repeat) {
                     alert('Пароли не совпадают');
+                    return;
+                }
+                if (data.password.length < 8) {
+                    alert('Пароль должен быть минимум 8 символов');
+                    return;
+                }
+                if (!/[a-zA-Zа-яА-Я]/.test(data.password)) {
+                    alert('Пароль должен содержать хотя бы одну букву');
                     return;
                 }
                 try {

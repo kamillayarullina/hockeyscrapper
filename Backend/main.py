@@ -1,3 +1,5 @@
+import sys
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, Depends, HTTPException, status
@@ -5,8 +7,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 from sqlalchemy.orm import Session
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Backend import models
 from Backend.database import engine, get_db
@@ -14,7 +18,6 @@ from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
 
 import random
-import os
 
 test_code = {}
 
@@ -31,14 +34,20 @@ app.add_middleware(
 )
 
 conf_email = ConnectionConfig(
-    MAIL_PASSWORD = "hqbo-bhdk-cxfg-gabq",
-    MAIL_USERNAME = "sakirovsamir401@gmail.com",
-    MAIL_FROM ="sakirovsamir401@gmail.com",
-    MAIL_PORT = 587,
-    MAIL_SERVER = "smtp.gmail.com",
-    MAIL_STARTTLS = True,
-    MAIL_SSL_TLS = False
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "hqbo bhdk cxfg gabq"),
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
+    MAIL_FROM = os.getenv("MAIL_FROM", "sakirovsamir401@gmail.com"),
+    MAIL_PORT = int(os.getenv("MAIL_PORT", "587")),
+    MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com"),
+    MAIL_STARTTLS = os.getenv("MAIL_STARTTLS", "True") == "True",
+    MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True"
 )
+
+
+class NewPasswordRequest(BaseModel):
+    email: EmailStr
+    code: int
+    new_password: str
 
 
 class UserRegister(BaseModel):
@@ -46,6 +55,15 @@ class UserRegister(BaseModel):
     email: EmailStr
     telegram: str
     password: str
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, v):
+        if len(v) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        if not any(c.isalpha() for c in v):
+            raise ValueError("Password must contain at least one letter")
+        return v
 
 
 class UserLogin(BaseModel):
@@ -122,29 +140,30 @@ async def forgot_password(email:EmailStr, db: Session = Depends(get_db)):
     msg = MessageSchema(
         subject = "Код подтверждения",
         recipients = [email],
-        body=random_code
+        body=str(random_code),
+        subtype="plain"
     )
     await fm.send_message(msg)
     return {"status": "success", "message": "Email sent!"}
 
 @app.post("/new_password")
-async def new_password(email:EmailStr, code : int, newPassword: str, db: Session = Depends(get_db)):
-    user = db.query(models.UserModel).filter(models.UserModel.email == email).first()
+async def new_password(request: NewPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(models.UserModel).filter(models.UserModel.email == request.email).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Такого пользователя не существует"
         )
-    user_code = test_code.get(email)
-    if not user_code or user_code["code"] != code:
+    user_code = test_code.get(request.email)
+    if not user_code or user_code["code"] != request.code:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Неверный код"
         )
-    hashed_password = get_password_hash(newPassword)
+    hashed_password = get_password_hash(request.new_password)
     user.password_hash = hashed_password
     db.commit()
-    del test_code[email]
+    del test_code[request.email]
     return {"status": "success","message": "Password changed!"}
 
 @app.get("/me")
@@ -263,3 +282,7 @@ async def serve_frontend(full_path: str):
 
     media_type, _ = mimetypes.guess_type(str(file))
     return FileResponse(str(file), media_type=media_type or "text/html")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
