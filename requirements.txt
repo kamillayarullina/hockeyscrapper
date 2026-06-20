@@ -22,4 +22,4 @@ aiohttp>=3.9.0
 fake-useragent>=1.4.0
 
 # Mail
-fastapi-mail>=1.6.0
+fastapi-mail>=1.6.0,<1.6.5

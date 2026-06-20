@@ -47,7 +47,6 @@ conf_email = ConnectionConfig(
     MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com"),
     MAIL_STARTTLS = os.getenv("MAIL_STARTTLS", "True") == "True",
     MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True",
-    MAIL_TIMEOUT = 10,
 )
 
 class UserRegister(BaseModel):

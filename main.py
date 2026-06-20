@@ -62,14 +62,17 @@ async def run_bot():
 
 
 def run_api():
-    import Backend.main as api_app
-    from Backend.database import engine
-    import Backend.models
+    try:
+        import Backend.main as api_app
+        from Backend.database import engine
+        import Backend.models
 
-    Backend.models.Base.metadata.create_all(bind=engine)
+        Backend.models.Base.metadata.create_all(bind=engine)
 
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run("Backend.main:app", host="0.0.0.0", port=port, reload=False)
+        port = int(os.environ.get("PORT", 8000))
+        uvicorn.run("Backend.main:app", host="0.0.0.0", port=port, reload=False)
+    except Exception as e:
+        logger.exception(f"API failed to start: {e}")
 
 
 async def main():
