@@ -40,11 +40,11 @@ app.add_middleware(
 )
 
 conf_email = ConnectionConfig(
-    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "hqbo bhdk cxfg gabq"),
-    MAIL_USERNAME = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
-    MAIL_FROM = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", ""),
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME", ""),
+    MAIL_FROM = os.getenv("MAIL_USERNAME", ""),
     MAIL_PORT = int(os.getenv("MAIL_PORT", "587")),
-    MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com"),
+    MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.yandex.ru"),
     MAIL_STARTTLS = os.getenv("MAIL_STARTTLS", "True") == "True",
     MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True",
     MAIL_TIMEOUT = 10,
@@ -174,7 +174,9 @@ async def forgot_password(request: dict, db: Session = Depends(get_db)):
         )
         await fm.send_message(msg)
     except Exception as e:
-        print(f"[EMAIL FAILED] Code for {email}: {random_code} (SMTP error: {e})")
+        print(f"[EMAIL FALLBACK] Code for {email}: {random_code} (SMTP error: {e})")
+        if os.getenv("MAIL_USERNAME") and os.getenv("MAIL_PASSWORD"):
+            raise HTTPException(status_code=500, detail=f"Ошибка отправки email: {e}")
     return {"status": "success", "message": "Email sent!"}
 
 @app.post("/new_password")
