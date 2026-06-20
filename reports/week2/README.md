@@ -29,7 +29,7 @@ Users can create an account, select their favourite teams and subscribe them. On
 ## 4. MVP v0
 
 - **Documentation:** [`reports/week2/mvp-v0-report.md`](mvp-v0-report.md)
-- **Deployed MVP v0:** *(будет добавлено)*
+- **Deployed MVP v0:** [`https://hockeyscrapper-3.onrender.com/`](https://hockeyscrapper-3.onrender.com/)
 - **Run instructions:** See [root README.md](../../README.md) for local setup.
 
 ---
@@ -38,14 +38,23 @@ Users can create an account, select their favourite teams and subscribe them. On
 
 - **PR template:** [`.github/pull_request_template.md`](../../.github/pull_request_template.md)
 - **Reviewed PRs:**
-  - [PR #1: Add project setup files]
+  - [- **#7** — Fix broken links and Lychee config
+- **#8** — Update README with project info
+- **#9** — Add backend folder with auth and database
+- **#11** — Update interface documentation (Telegram bot commands)
+- **#12** — Update README structure
+- **#13** — Full integration: API + Telegram bot + parsers connected
+- **#14** — Update analysis report and parser fixes
+- **#16** — Update LLM report and analysis
+- **#17** — Merge main into feat-backend, fix DB and backend bugs
+- **#18** — Update README with setup and usage instructions
+- **#19** — Update README formatting and content
+- **#21** — Backend fixes: CORS, JWT auth, DB schema improvements
+- **#22** — Update README with local setup instructions
+- **#23** — Merge feat-backend into main (API + frontend + bot)
+- **#25** — Update customer meeting transcript
+- **#26** — Add report links to README, update analysis]
 - **Branch protection:** Protected default branch (main) — see screenshot below.
-
-
-*Protected default branch settings — direct pushes disabled, PR approval required.*
-
-
-*Example of a reviewed PR — approval from another team member.*
 
 ---
 
@@ -55,19 +64,15 @@ Users can create an account, select their favourite teams and subscribe them. On
 - **CI workflow:** [`.github/workflows/lychee.yml`](../../.github/workflows/lychee.yml)
 - **Latest successful run:** [Actions tab](https://github.com/kamillayarullina/hockeyscrapper/actions/workflows/lychee.yml)
 
-### Excluded links
+## Excluded Links Verification
 
-| Link | Reason for exclusion | Manually verified? |
-|------|---------------------|--------------------|
-| `https://github.com/*/issues/*` | Requires authentication | N/A — pattern |
-| `https://github.com/*/pull/*` | Requires authentication | N/A — pattern |
-| `https://www.figma.com/*` | Requires authentication | Yes |
-| `http://localhost` | Local only | N/A |
-| `http://127.0.0.1` | Local only | N/A |
-| `https://my-mvp-v0.example.com` | Placeholder | No — удалён из README |
-| `https://ticket-hockey.ru/*` | Example domain in docs | No — удалён из docs/interface.md |
-| Root-relative paths в Frontend HTML | Исправлены на относительные | Да |
-| `https://googleapis.com` | Typo | No — удалён из index.html |
+| Link Pattern | Reason for Exclusion | Manual Check |
+|:-------------|----------------------|:-------------:|
+| `https://github.com/.*/issues/`, `https://github.com/.*/pull/` | Authentication required (403/429 for bots) | Yes |
+| `https://www.figma.com/` | Interactive login required, bots blocked | Yes |
+| `http://localhost`, `http://127.0.0.1` | Local dev only, not in CI/CD | Yes |
+| `https://my-mvp-v0.example.com` | Documentation placeholder domain | N/A |
+| `https://ticket-hockey.ru/.*` | Bot protection  | Yes |
 
 ---
 
@@ -132,7 +137,7 @@ The following artifacts are provided:
 
 ### MVP v0 coverage
 
-See [`reports/week2/mvp-v0-report.md`](mvp-v0-report.md) for the MVP v0 foundation details and smoke-check scenario. MVP v0 establishes the frontend hosting infrastructure and static page foundation, which supports the eventual implementation of US-01 (User registration) and US-02 (User login).
+See [`reports/week2/mvp-v0-report.md`](mvp-v0-report.md) for the MVP v0 foundation details and smoke-check scenario. MVP v0 supports the implementation of US-01(Subscription to team), US-02(Date and time of the match), US-03(Ticket price), US-04(List of KHL teams), US-05(Notifications only to telegram), US-07(Profile).
 
 ### User stories represented by MVP v0 (foundation only)
 - **US‑01** – user can subscribe a team using telegram bot.
