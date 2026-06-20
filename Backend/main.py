@@ -47,7 +47,7 @@ conf_email = ConnectionConfig(
     MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com"),
     MAIL_STARTTLS = os.getenv("MAIL_STARTTLS", "True") == "True",
     MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True",
-)
+) 
 
 class UserRegister(BaseModel):
     username: str
@@ -170,7 +170,7 @@ async def forgot_password(request: dict, db: Session = Depends(get_db)):
             recipients=[email],
             body=str(random_code),
             subtype=MessageType.plain
-        )
+        ) #sending msg 
         await fm.send_message(msg)
     except Exception as e:
         print(f"[EMAIL FAILED] Code for {email}: {random_code} (SMTP error: {e})")
