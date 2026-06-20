@@ -39,7 +39,7 @@ These are required for every work item without exception:
 - [ ] Async code uses proper await patterns (no blocking calls in async paths)
 - [ ] Playwright/parser changes handle timeout and retry gracefully
 - [ ] Proxy rotator changes maintain health-check compatibility
-
+- [ ] for every user-visible change update CHANGELOG.md
 ---
 
 ## Bug Report
