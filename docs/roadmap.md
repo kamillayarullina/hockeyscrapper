@@ -1,0 +1,15 @@
+## Sprint 1 (MVP v1)
+- **Dates:** June 14, 2026 — June 20, 2026
+- **Sprint Goal:** Deliver a complete user authentication and team subscription experience, allowing users to securely manage their profile, recover passwords, and receive email notifications about their favorite KHL teams.
+- **Focus:** Core user authentication and team subscription management with email notifications.
+- **Link to the Sprint Milestone:** - https://github.com/kamillayarullina/hockeyscrapper/milestone/1
+- **Planned Items:**
+  - [PBI] US-02: Date and time of the match - https://github.com/kamillayarullina/hockeyscrapper/issues/79
+  - [PBI] US-10: Recover the password Backend - https://github.com/kamillayarullina/hockeyscrapper/issues/71
+  - [PBI] US-07: Profile - https://github.com/kamillayarullina/hockeyscrapper/issues/74
+  - [PBI] US-05: Notifications - https://github.com/kamillayarullina/hockeyscrapper/issues/76
+  - [PBI] US-04: KHL teams[cite: 2] - https://github.com/kamillayarullina/hockeyscrapper/issues/77
+  - [PBI] US-03: Ticket price - https://github.com/kamillayarullina/hockeyscrapper/issues/78
+  - [PBI] US-01: Subscription to a team - https://github.com/kamillayarullina/hockeyscrapper/issues/80
+  - [PBI] US-10: Recover the password Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/93
+  - [PBI] Add icons - https://github.com/kamillayarullina/hockeyscrapper/issues/84
