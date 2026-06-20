@@ -535,10 +535,20 @@ class TelegramBot:
         if not token:
             raise ValueError("Не указан токен Telegram-бота. Укажите BOT_TOKEN в .env")
 
-        self.bot = Bot(
-            token=token,
-            default=DefaultBotProperties(parse_mode=ParseMode.HTML)
-        )
+        proxy = os.environ.get("BOT_PROXY", "")
+        if proxy:
+            from aiogram.client.session.aiohttp import AiohttpSession
+            session = AiohttpSession(proxy=proxy)
+            self.bot = Bot(
+                token=token,
+                session=session,
+                default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+            )
+        else:
+            self.bot = Bot(
+                token=token,
+                default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+            )
         self.dp = Dispatcher()
         self.dp.include_router(router)
         self._polling_task: Optional[asyncio.Task] = None
