@@ -31,7 +31,7 @@ app.add_middleware(
 )
 
 conf_email = ConnectionConfig(
-    MAIL_PASSWORD = "hqbo-bhdk-cxfg-gabq",
+    MAIL_PASSWORD = "hqbo bhdk cxfg gabq",
     MAIL_USERNAME = "sakirovsamir401@gmail.com",
     MAIL_FROM ="sakirovsamir401@gmail.com",
     MAIL_PORT = 587,
