@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="style_main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+    <div class="profile-container">
+
+        <h1>Профиль</h1>
+
+        <div class="profile-header">
+
+            <div class="profile-avatar">👤</div>
+
+            <div class="profile-info">
+                <div class="info-card">
+                    <span>Имя пользователя</span>
+                    <strong id="profileUsername">—</strong>
+                </div>
+
+                <div class="info-card">
+                    <span>Почта</span>
+                    <strong id="profileEmail">—</strong>
+                </div>
+
+                <div class="info-card">
+                    <span>Telegram</span>
+                    <strong id="profileTelegram">—</strong>
+                </div>
+
+                <button class="btn"
+                        onclick="window.location.href='sub.html'">
+                    Управление подписками
+                </button>
+                <button class="btn" id="telegramBtn">
+                    Привязать Telegram
+                </button>
+            </div>
+
+        </div>
+
+        <div class="teams-section">
+
+            <h2>Подписки</h2>
+
+            <div class="teams-grid" id="myTeams"></div>
+            <script>
+                const API = "";
+
+                async function resolveChatId(token) {
+                    if (token) {
+                        try {
+                            const r = await fetch(`${API}/me`, {
+                                headers: { "Authorization": `Bearer ${token}` }
+                            });
+                            if (r.ok) {
+                                const user = await r.json();
+                                localStorage.setItem("chat_id", user.chat_id);
+                                return user;
+                            }
+                            if (r.status === 404 || r.status === 401) {
+                                localStorage.removeItem("token");
+                                localStorage.removeItem("chat_id");
+                                localStorage.removeItem("user");
+                                window.location.href = "vhod/vhod.html";
+                                return null;
+                            }
+                        } catch {}
+                    }
+                    return null;
+                }
+
+                async function loadProfile() {
+                    const token = localStorage.getItem("token");
+                    let chatId_ = localStorage.getItem("chat_id");
+                    const userFromApi = await resolveChatId(token);
+                    if (userFromApi) {
+                        chatId_ = userFromApi.chat_id;
+                        document.getElementById("profileUsername").textContent = userFromApi.username || "—";
+                        document.getElementById("profileEmail").textContent = userFromApi.email || "—";
+                        document.getElementById("profileTelegram").textContent = userFromApi.telegram || "—";
+                    }
+                    const tgBtn = document.getElementById("telegramBtn");
+                    if (chatId_ && chatId_ > 0) {
+                        tgBtn.textContent = "Telegram привязан ✅";
+                        tgBtn.disabled = true;
+                        tgBtn.style.background = "#4CAF50";
+                    } else if (chatId_ && chatId_ < 0) {
+                        tgBtn.textContent = "Привязать Telegram";
+                        tgBtn.disabled = false;
+                        tgBtn.style.background = "";
+                        tgBtn.onclick = async function() {
+                            tgBtn.textContent = "Генерируем код...";
+                            tgBtn.disabled = true;
+                            try {
+                                const r = await fetch(`${API}/link-code`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ chat_id: parseInt(chatId_) })
+                                });
+                                if (r.ok) {
+                                    const data = await r.json();
+                                    localStorage.setItem("link_code", data.code);
+                                    window.open(data.link, "_blank");
+                                    tgBtn.textContent = "Код отправлен! Проверьте Telegram";
+                                    setTimeout(() => { tgBtn.textContent = "Привязать Telegram"; tgBtn.disabled = false; }, 5000);
+                                } else {
+                                    const err = await r.json();
+                                    alert(err.detail || "Ошибка");
+                                    tgBtn.textContent = "Привязать Telegram";
+                                    tgBtn.disabled = false;
+                                }
+                            } catch(e) {
+                                alert("Ошибка сети");
+                                tgBtn.textContent = "Привязать Telegram";
+                                tgBtn.disabled = false;
+                            }
+                        };
+                    } else {
+                        tgBtn.style.display = "none";
+                    }
+                    const user = JSON.parse(localStorage.getItem("user") || "{}");
+                    if (!userFromApi && user.username) {
+                        document.getElementById("profileUsername").textContent = user.username;
+                        document.getElementById("profileEmail").textContent = user.email;
+                        document.getElementById("profileTelegram").textContent = user.telegram;
+                    }
+                }
+
+                async function loadSubscriptions() {
+                    const teamsContainer = document.getElementById("myTeams");
+                    const chatId = localStorage.getItem("chat_id");
+                    if (!chatId) {
+                        teamsContainer.innerHTML = "<p>Авторизуйтесь, чтобы увидеть подписки.</p>";
+                        return;
+                    }
+                    try {
+                        const r = await fetch(`${API}/subscriptions/${chatId}`);
+                        if (!r.ok) { throw new Error("not ok"); }
+                        const data = await r.json();
+                        const subs = data.subscriptions || [];
+                        if (subs.length === 0) {
+                            teamsContainer.innerHTML = "<p>Вы пока не подписаны ни на одну команду.</p>";
+                        } else {
+                            localStorage.setItem("subscriptions", JSON.stringify(subs));
+                            subs.forEach(team => {
+                                teamsContainer.innerHTML += `<div class="team-card">${team}</div>`;
+                            });
+                        }
+                    } catch {
+                        teamsContainer.innerHTML = "<p>Ошибка загрузки подписок.</p>";
+                    }
+                }
+
+                loadProfile();
+                loadSubscriptions();
+            </script>
+
+        </div>
+
+    </div>
+</body>
+</html>
