@@ -158,8 +158,7 @@
                     }
                 }
 
-                loadProfile();
-                loadSubscriptions();
+                loadProfile().then(loadSubscriptions);
             </script>
 
         </div>

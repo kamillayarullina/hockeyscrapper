@@ -20,3 +20,6 @@ beautifulsoup4>=4.12.0
 pyyaml>=6.0
 aiohttp>=3.9.0
 fake-useragent>=1.4.0
+
+# Mail
+fastapi-mail>=1.6.0

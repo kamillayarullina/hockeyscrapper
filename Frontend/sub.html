@@ -16,90 +16,131 @@
 
     <div class="subscriptions-grid" id="teamsList"></div>
     <script>
-            const khlTeams = [
-                "СКА", "ЦСКА", "Ак Барс", "Динамо Москва", "Локомотив",
-                "Спартак", "Трактор", "Авангард", "Металлург Мг", "Салават Юлаев",
-                "Северсталь", "Торпедо", "Нефтехимик", "Сибирь", "Витязь",
-                "Амур", "Адмирал", "Барыс", "Куньлунь Ред Стар", "Лада",
-                "Сочи", "Динамо Минск", "Автомобилист"
-            ];
+        const khlTeams = [
+            { name: "СКА",  logo: "images/SKA.svg" },
+            { name: "ЦСКА", logo: "images/CSKA.svg" },
+            { name: "Ак Барс", logo: "images/AkBars.svg" },
+            { name: "Динамо Москва", logo: "images/DinMsk.svg" },
+            { name: "Локомотив", logo: "images/Lokomotiv.svg" },
+            { name: "Спартак", logo: "images/Spartak.svg" },
+            { name: "Трактор", logo: "images/Traktor.svg" },
+            { name: "Авангард", logo: "images/Avangard.svg" },
+            { name: "Металлург", logo: "images/Metallurg.svg" },
+            { name: "Салават Юлаев", logo: "images/Salavat.svg" },
+            { name: "Северсталь", logo: "images/Severstal.svg" },
+            { name: "Торпедо", logo: "images/Torpedo.svg" },
+            { name: "Нефтехимик", logo: "images/Neftekhimik.svg" },
+            { name: "Сибирь", logo: "images/Sibir.svg" },
+            { name: "Витязь", logo: "images/Vityaz.svg" },
+            { name: "Амур", logo: "images/Amur.svg" },
+            { name: "Адмирал", logo: "images/Admiral.svg" },
+            { name: "Барыс", logo: "images/Barys.svg" },
+            { name: "Куньлунь", logo: "images/Kunlun.svg" },
+            { name: "Лада", logo: "images/Lada.svg" },
+            { name: "Сочи", logo: "images/Sochi.svg" },
+            { name: "Динамо Минск", logo: "images/DynamoMin.svg" },
+        ];
 
-            const API = "";
-            const token = localStorage.getItem("token");
+        const API = "";
+        const token = localStorage.getItem("token");
+        let chatId = localStorage.getItem("chat_id");
+        let subscriptions = [];
 
-            let chatId = localStorage.getItem("chat_id");
-            let subscriptions = [];
-
-            async function resolveChatId() {
-                if (token) {
-                    try {
-                        const r = await fetch(`${API}/me`, {
-                            headers: { "Authorization": `Bearer ${token}` }
-                        });
-                        if (r.ok) {
-                            const user = await r.json();
-                            chatId = user.chat_id;
-                            localStorage.setItem("chat_id", chatId);
-                            return;
-                        }
-                    } catch {}
-                }
-                if (!chatId) chatId = localStorage.getItem("chat_id");
-            }
-
-            async function loadSubscriptions() {
-                await resolveChatId();
-                if (!chatId) { render(); return; }
+        async function resolveChatId() {
+            if (token) {
                 try {
-                    const r = await fetch(`${API}/subscriptions/${chatId}`);
-                    if (!r.ok) { render(); return; }
-                    const data = await r.json();
-                    subscriptions = data.subscriptions || [];
-                    localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
-                    render();
-                } catch { render(); }
-            }
-
-            const container = document.getElementById("teamsList");
-
-            function render() {
-                container.innerHTML = "";
-                khlTeams.forEach(team => {
-                    const subscribed = subscriptions.includes(team.toLowerCase());
-                    container.innerHTML += `
-                        <div class="subscription-card">
-                            <span>${team}</span>
-                            <button class="btn-small ${subscribed ? 'unsubscribe' : ''}"
-                                onclick="toggleSubscription('${team}')">
-                                ${subscribed ? 'Отписаться' : 'Подписаться'}
-                            </button>
-                        </div>
-                    `;
-                });
-            }
-
-            async function toggleSubscription(team) {
-                await resolveChatId();
-                if (!chatId) { alert("Авторизуйтесь"); return; }
-                try {
-                    const r = await fetch(`${API}/subscription/toggle`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
+                    const r = await fetch(`${API}/me`, {
+                        headers: { "Authorization": `Bearer ${token}` }
                     });
-                    const result = await r.json();
                     if (r.ok) {
-                        await loadSubscriptions();
-                    } else {
-                        alert(result.message || "Ошибка");
+                        const user = await r.json();
+                        chatId = user.chat_id;
+                        localStorage.setItem("chat_id", chatId);
+                        return;
                     }
-                } catch (err) {
-                    alert("Ошибка сети: " + err.message);
-                }
+                } catch {}
             }
+            if (!chatId) chatId = localStorage.getItem("chat_id");
+        }
 
-            loadSubscriptions();
-        </script>
+        async function loadSubscriptions() {
+            await resolveChatId();
+            if (!chatId) { render(); return; }
+            try {
+                const r = await fetch(`${API}/subscriptions/${chatId}`);
+                if (!r.ok) { render(); return; }
+                const data = await r.json();
+                subscriptions = data.subscriptions || [];
+                localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
+                render();
+            } catch { render(); }
+        }
+
+        const container = document.getElementById("teamsList");
+
+        function render() {
+            container.innerHTML = "";
+            khlTeams.forEach(team => {
+                const subscribed = subscriptions.some(sub =>
+                    sub.toLowerCase() === team.name.toLowerCase()
+                );
+
+                const card = document.createElement("div");
+                card.className = "subscription-card";
+
+                const infoDiv = document.createElement("div");
+                infoDiv.style.display = "flex";
+                infoDiv.style.alignItems = "center";
+                infoDiv.style.gap = "15px";
+
+                const img = document.createElement("img");
+                img.src = team.logo;
+                img.alt = team.name;
+                img.style.width = "40px";
+                img.style.height = "40px";
+                img.style.objectFit = "contain";
+
+                const nameSpan = document.createElement("span");
+                nameSpan.textContent = team.name;
+
+                infoDiv.appendChild(img);
+                infoDiv.appendChild(nameSpan);
+
+                const btn = document.createElement("button");
+                btn.className = `btn-small ${subscribed ? 'unsubscribe' : ''}`;
+                btn.textContent = subscribed ? 'Отписаться' : 'Подписаться';
+                btn.onclick = function() {
+                    toggleSubscription(team.name);
+                };
+
+                card.appendChild(infoDiv);
+                card.appendChild(btn);
+                container.appendChild(card);
+            });
+        }
+
+        async function toggleSubscription(team) {
+            await resolveChatId();
+            if (!chatId) { alert("Авторизуйтесь"); return; }
+            try {
+                const r = await fetch(`${API}/subscription/toggle`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
+                });
+                const result = await r.json();
+                if (r.ok) {
+                    await loadSubscriptions();
+                } else {
+                    alert(result.message || "Ошибка");
+                }
+            } catch (err) {
+                alert("Ошибка сети: " + err.message);
+            }
+        }
+
+        loadSubscriptions();
+    </script>
     <button class="btn"
             onclick="window.location.href='main.html'">
         Назад
