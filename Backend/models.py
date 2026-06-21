@@ -1,51 +1,72 @@
-# Database configuration and models definition
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from database import Base
+from sqlalchemy import Column, Integer, String, Text, DateTime, func
+from sqlalchemy.orm import Mapped, mapped_column
+from Backend.database import Base
 
-# --- User Model ---
-# Represents users registered in the system
+
 class UserModel(Base):
     __tablename__ = "users"
 
-    # Primary key and user profile details
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    username: Mapped[str] = mapped_column(nullable=False)
-    email: Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
-    telegram: Mapped[str] = mapped_column(nullable=False)
-
-    # Hashed password for secure authentication
-    password_hash: Mapped[str] = mapped_column(nullable=False)
-
-    # Relationship: One user can have multiple team subscriptions (One-to-Many)
-    subscriptions = relationship("SubscriptionModel", back_populates="user")
+    chat_id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(nullable=True)
+    first_name: Mapped[str] = mapped_column(nullable=True)
+    email: Mapped[str] = mapped_column(nullable=True)
+    telegram: Mapped[str] = mapped_column(nullable=True)
+    password_hash: Mapped[str] = mapped_column(nullable=True)
+    link_code: Mapped[str] = mapped_column(nullable=True)
+    is_active: Mapped[int] = mapped_column(default=1)
+    registered_at = Column(DateTime, server_default=func.now())
 
 
-# --- Subscription Model ---
-# Represents the hockey teams that users subscribe to for notifications
 class SubscriptionModel(Base):
     __tablename__ = "subscriptions"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
-
-    # Foreign key linking the subscription to a specific user
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
-    team_name: Mapped[str] = mapped_column(nullable=False, index=True)
-    
-    # Relationship: Links the subscription back to its owner (UserModel)
-    user = relationship("UserModel", back_populates="subscriptions")
+    chat_id: Mapped[int] = mapped_column(primary_key=True)
+    type: Mapped[str] = mapped_column(primary_key=True)
+    value: Mapped[str] = mapped_column(primary_key=True)
+    created_at = Column(DateTime, server_default=func.now())
 
 
-# --- Match Model ---
-# Represents the sports matches tracked by the system
 class MatchModel(Base):
     __tablename__ = "matches"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    match_id: Mapped[str] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(nullable=True)
+    date: Mapped[str] = mapped_column(nullable=True, index=True)
+    place: Mapped[str] = mapped_column(nullable=True)
+    venue: Mapped[str] = mapped_column(nullable=True)
+    city: Mapped[str] = mapped_column(nullable=True)
+    teams: Mapped[str] = mapped_column(nullable=True)
+    price_min: Mapped[str] = mapped_column(nullable=True)
+    price_max: Mapped[str] = mapped_column(nullable=True)
+    availability: Mapped[str] = mapped_column(nullable=True)
+    link: Mapped[str] = mapped_column(nullable=True)
+    source: Mapped[str] = mapped_column(nullable=True)
+    sources: Mapped[str] = mapped_column(default="")
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now())
 
-    # Names of the competing teams
-    home_team: Mapped[str] = mapped_column(nullable=True, index=True)
-    away_team: Mapped[str] = mapped_column(nullable=True, index=True)
 
-    # Boolean flag showing whether tickets are currently available for sale
-    tickets_status: Mapped[bool] = mapped_column(default=False)
+class NotifiedEventModel(Base):
+    __tablename__ = "notified_events"
+
+    event_id: Mapped[str] = mapped_column(primary_key=True)
+    chat_id: Mapped[int] = mapped_column(primary_key=True)
+    notified_at = Column(DateTime, server_default=func.now())
+
+
+class SettingModel(Base):
+    __tablename__ = "settings"
+
+    key: Mapped[str] = mapped_column(primary_key=True)
+    value: Mapped[str] = mapped_column(nullable=True)
+
+
+class ProxyModel(Base):
+    __tablename__ = "proxies"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
+    url: Mapped[str] = mapped_column(nullable=False)
+    proxy_type: Mapped[str] = mapped_column(default="http")
+    country: Mapped[str] = mapped_column(default="")
+    enabled: Mapped[int] = mapped_column(default=1)
+    note: Mapped[str] = mapped_column(default="")
