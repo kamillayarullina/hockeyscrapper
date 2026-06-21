@@ -10,3 +10,12 @@
 AI assisted:
 * Report structure, editing. (Deepseek)
 
+## MVP v1 implementation
+
+AI assisted and supported with:
+* Reviewing, improving and debugging backend and frontend code
+AI tools:
+* ChatGPT
+* Deepseek
+* Opencode
+
