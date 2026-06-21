@@ -138,7 +138,7 @@ MVP v1 is delivered and deployed at [link](http://139.100.225.113:8000/). Workin
 | Artifact | Link |
 |---|---|
 | Root CHANGELOG | [CHANGELOG.md](../../CHANGELOG.md) |
-| Process & Requirements | [Process_Requirements.md](https://gitlab.pg.innopolis.university/swp_26/swp_26/-/blob/main/Process_Requirements.md) |
+| Process & Requirements | `https://gitlab.pg.innopolis.university/swp_26/swp_26/-/blob/main/Process_Requirements.md` |
 | Definition of Done | [docs/definition-of-done.md](../../docs/definition-of-done.md) |
 | Roadmap | [`docs/roadmap.md`](../../docs/roadmap.md) (PR [#101](https://github.com/kamillayarullina/hockeyscrapper/pull/101)) |
 | Issue templates | [`user-story.md`](../../.github/ISSUE_TEMPLATE/user-story.md), [`bug-report.md`](../../.github/ISSUE_TEMPLATE/bug-report.md), [`technical-pbi.md`](../../.github/ISSUE_TEMPLATE/technical-pbi.md), [`course-task.md`](../../.github/ISSUE_TEMPLATE/course-task.md) |
