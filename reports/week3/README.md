@@ -37,13 +37,13 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Backlog is
 
 - **Sprint milestone:** [Sprint MVP v1](https://github.com/kamillayarullina/hockeyscrapper/milestone/1)
 - **Sprint Goal:** Deliver complete user authentication, allow users to securely manage their profile, recover passwords, and receive notifications, and show price and date of a match.
-- **Sprint dates:** June 14, 2026 — June 20, 2026
+- **Sprint dates:** June 14, 2026 — June 21, 2026
 - **Total Sprint size:** 22 SP
 - [**Sprint Backlog view**](https://github.com/users/kamillayarullina/projects/4)
 
 ### MVP v1 Scope
 
-The MVP v1 scope is tracked via the **Sprint MVP v1 milestone** and the **MVP Version** field in each PBI (set to "MVP v1" in issue templates). The [milestone view](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) serves as the authoritative grouped view.
+The MVP v1 scope: [MVP v1 scope](https://github.com/users/kamillayarullina/projects/3/views/3)
 
 **Selected MVP v1 scope:**
 
