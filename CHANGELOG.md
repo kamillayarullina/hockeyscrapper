@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.0]
+
+### Added
+- Added password recovery
+
 ## [1.3.1]
 
 ### Added
