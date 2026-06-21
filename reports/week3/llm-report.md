@@ -3,12 +3,12 @@
 ## Customer Interview
 
 * AI tool https://speech2text.ru/ was used to make interview transcript
-* Deepseek was used to translate transcript
+* Deepseek V3 was used to translate transcript
 
 ## Documentation
 
 AI assisted:
-* Report structure, editing. (Deepseek)
+* Report structure, editing. (Deepseek V3)
 
 ## MVP v1 implementation
 
@@ -17,7 +17,7 @@ AI assisted and supported with:
   
 AI tools:
 
-* ChatGPT
-* Deepseek
+* ChatGPT-5.5 Instant
+* Deepseek V3
 * Opencode
 
