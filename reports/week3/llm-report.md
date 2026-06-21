@@ -14,7 +14,9 @@ AI assisted:
 
 AI assisted and supported with:
 * Reviewing, improving and debugging backend and frontend code
+  
 AI tools:
+
 * ChatGPT
 * Deepseek
 * Opencode
