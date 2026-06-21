@@ -149,7 +149,7 @@ MVP v1 is delivered and deployed at [link](http://139.100.225.113:8000/). Workin
 | SemVer release | [Semver](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
 | Sprint milestone | [Sprint](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
 | Product Backlog | [Backlog](https://github.com/users/kamillayarullina/projects/3/views/1) |
-| MVP v1 scope (milestone view) | [Sprint MVP v1 issues](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
+| MVP v1 scope (milestone view) | [MVP v1](https://github.com/users/kamillayarullina/projects/3/views/3) |
 | Delivered MVP v1 deployment | [hockeyscrapper](http://139.100.225.113:8000/) |
 | Run instructions | [Root README.md](../../README.md) |
 | Video demonstration | [Google Drive video](https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing) |
@@ -172,12 +172,10 @@ MVP v1 is delivered and deployed at [link](http://139.100.225.113:8000/). Workin
 
 ## Screenshots
 
-### Product Backlog view (all open issues)
+### Product Backlog view
 
-![Product Backlog view](images/Backlog_1.png)  
-![Product Backlog view](images/Backlog_2.png)  
-![Product Backlog view](images/Backlog_3.png)
-
+![Product Backlog view](images/Backlog.png)
+![Product Backlog view](images/Backlog2.png)
 ### Sprint Backlog view (milestone-filtered issues)
 
 ![Sprint Backlog view](images/SprintBacklog.png)
