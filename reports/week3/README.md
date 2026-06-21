@@ -146,12 +146,13 @@ MVP v1 is delivered and deployed at [link](http://139.100.225.113:8000/). Workin
 | Historical report (Week 2) | [`reports/week2/README.md`](../week2/README.md) |
 | Historical user stories | [`reports/week2/user-stories.md`](../week2/user-stories.md) |
 | Current user stories | [`docs/user-stories.md`](../../docs/user-stories.md) |
+| SemVer release | [Semver](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
 | Sprint milestone | [Sprint](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
 | Product Backlog | [Backlog](https://github.com/users/kamillayarullina/projects/3/views/1) |
 | MVP v1 scope (milestone view) | [Sprint MVP v1 issues](https://github.com/kamillayarullina/hockeyscrapper/milestone/1) |
 | Delivered MVP v1 deployment | [hockeyscrapper](http://139.100.225.113:8000/) |
 | Run instructions | [Root README.md](../../README.md) |
-| Video demonstration | [Google Drive video](https://drive.google.com/file/d/1F7rCt25XgOrvZRCbu4dqxDarWH1BV5li/view) (MVP v0/v1 walkthrough) |
+| Video demonstration | [Google Drive video](https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing) |
 
 ---
 
@@ -184,6 +185,10 @@ MVP v1 is delivered and deployed at [link](http://139.100.225.113:8000/). Workin
 ### Sprint milestone
 
 ![Sprint milestone](images/Milestone.png)
+
+### SemVer release
+
+![SemVer release](images/SemVer.png)
 
 ### Delivered MVP v1
 
