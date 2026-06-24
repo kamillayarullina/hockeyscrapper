@@ -1,5 +1,5 @@
 ## Sprint 1 (MVP v1)
-- **Dates:** June 14, 2026 — June 20, 2026
+- **Dates:** June 14, 2026 — June 21, 2026
 - **Sprint Goal:** Deliver a complete user authentication and team subscription experience, allowing users to securely manage their profile, recover passwords, and receive email notifications about their favorite KHL teams.
 - **Focus:** Core user authentication and team subscription management with email notifications.
 - **Link to the Sprint Milestone:** - https://github.com/kamillayarullina/hockeyscrapper/milestone/1
@@ -13,3 +13,16 @@
   - [PBI] US-01: Subscription to a team - https://github.com/kamillayarullina/hockeyscrapper/issues/80
   - [PBI] US-10: Recover the password Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/93
   - [PBI] Add icons - https://github.com/kamillayarullina/hockeyscrapper/issues/84
+
+## Sprint 2 (MVP v2)
+- **Dates:** June 22, 2026 — June 28, 2026
+- **Sprint Goal:** Deliver admin panel for managing options such as parsing time, validate password for stronger safety and validate the input of telegram alias.
+- **Focus:** Validation of user input information in registration/password recovery, admin commands
+- **Link to the Sprint Milestone:** - https://github.com/kamillayarullina/hockeyscrapper/milestone/2
+- **Planned Items:**
+  - [PBI] Telegram validation - https://github.com/kamillayarullina/hockeyscrapper/issues/126
+  - [PBI] Admin Panel Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/127
+  - [PBI] Removing admin panel and commands from telegram bot - https://github.com/kamillayarullina/hockeyscrapper/issues/128
+  - [PBI] Password validation Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/129
+  - [PBI] Password validation Backend - https://github.com/kamillayarullina/hockeyscrapper/issues/130
+  - [PBI] Admin Panel Backend - https://github.com/kamillayarullina/hockeyscrapper/issues/131
