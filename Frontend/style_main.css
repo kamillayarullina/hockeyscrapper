@@ -22,7 +22,7 @@ body {
 .profile-container {
     width: min(1000px, 90vw);
 
-    padding: 50px;
+    padding: 150px;
 
     background: rgba(255,255,255,0.95);
 
@@ -113,11 +113,10 @@ body {
 
     gap: 20px;
 
-    margin-bottom: 40px;
+    margin-bottom: 100px;
 }
 
-.team-card,
-.subscription-card {
+.team-card {
     background: white;
 
     border-radius: 20px;
@@ -183,4 +182,17 @@ body {
 .btn:hover {
     background: var(--lidark);
     transform: translateY(-2px);
+}
+.subscription-card {
+    background: white;
+
+    border-radius: 20px;
+
+    border: 2px solid #dbe4f5;
+
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
 }
