@@ -66,6 +66,7 @@ As a user, I want to have an opportunity to recover the password, so that I do n
 5. After pushing he is on the "New password" page
 6. User input email, code, new password and repeat password
 7. User push button "Change password"
+
 **Expected outcome:**
 After all steps:
 - On step 4: email notification with code send to user
