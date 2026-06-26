@@ -26,3 +26,5 @@
   - [PBI] Password validation Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/129
   - [PBI] Password validation Backend - https://github.com/kamillayarullina/hockeyscrapper/issues/130
   - [PBI] Admin Panel Backend - https://github.com/kamillayarullina/hockeyscrapper/issues/131
+  - [PBI] Creating tests - https://github.com/kamillayarullina/hockeyscrapper/issues/137
+
