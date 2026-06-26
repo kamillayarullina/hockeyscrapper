@@ -65,6 +65,26 @@ fill="currentColor" viewBox="0 0 24 24" >
                     alert('Пароли не совпадают');
                     return;
                 }
+                if (data.username.length < 3 || data.username.length > 30) {
+                    alert('Имя пользователя должно быть от 3 до 30 символов');
+                    return;
+                }
+                if (!/^[a-zA-Z0-9_]+$/.test(data.username)) {
+                    alert('Имя пользователя может содержать только буквы, цифры и подчёркивания');
+                    return;
+                }
+                if (data.password.length < 8) {
+                    alert('Пароль должен быть минимум 8 символов');
+                    return;
+                }
+                if (!/[a-z]/.test(data.password)) {
+                    alert('Пароль должен содержать хотя бы одну строчную букву');
+                    return;
+                }
+                if (!/\d/.test(data.password)) {
+                    alert('Пароль должен содержать хотя бы одну цифру');
+                    return;
+                }
                 try {
                     const response = await fetch('/register', {
                         method: 'POST',
