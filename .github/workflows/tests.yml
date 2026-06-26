@@ -22,13 +22,22 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Additional QA check — Bandit (security lint)
+      - name: Install Playwright Browsers with System Dependencies
         run: |
-          bandit -c pyproject.toml -r Backend services -f txt 2>&1 || true
+          playwright install chromium --with-deps
 
-      - name: Run unit and integration tests with coverage
+      - name: Run Additional QA Check — Dependency Security Audit (pip-audit)
         run: |
-          python -m pytest tests/ -v --cov=Backend --cov=services --cov-report=term --cov-report=xml --cov-config=.coveragerc
+          pip install pip-audit
+          pip-audit -r requirements.txt
+
+      - name: Run Security Linter (Bandit)
+        run: |
+          bandit -r Backend services -ll -ii
+
+      - name: Run unit, integration, and quality requirement tests (QRT) with coverage
+        run: |
+          python -m pytest tests/ -v --cov=Backend --cov-report=term --cov-report=xml --cov-config=.coveragerc
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
