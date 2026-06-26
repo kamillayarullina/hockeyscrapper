@@ -11,6 +11,15 @@ These are required for every work item without exception:
 
 ---
 
+## Quality Gates (Apply to All Work Items)
+
+- [ ] **All Continuous Integration (CI) checks pass** 
+- [ ] **Code coverage for critical modules meets the target**
+- [ ] **Automated Quality Requirement Tests (QRTs) pass** 
+- [ ] **Testing evidence is preserved** in the associated PR, CI run logs, or linked documentation
+
+---
+
 ## All Work Items
 
 - [ ] Code compiles/parses without errors

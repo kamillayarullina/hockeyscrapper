@@ -253,12 +253,12 @@ class Database:
         teams_lower = [t.lower().strip() for t in teams]
         placeholders = ", ".join(f":t{i}" for i in range(len(teams_lower)))
         values = {f"t{i}": t for i, t in enumerate(teams_lower)}
-        rows = await self.db.fetch_all(f"""
-            SELECT DISTINCT u.chat_id
-            FROM users u
-            JOIN subscriptions s ON u.chat_id = s.chat_id
-            WHERE s.type = 'team' AND s.value IN ({placeholders}) AND u.is_active = 1
-        """, values)
+        query = (
+            "SELECT DISTINCT u.chat_id FROM users u "
+            "JOIN subscriptions s ON u.chat_id = s.chat_id "
+            "WHERE s.type = 'team' AND s.value IN ({}) AND u.is_active = 1"
+        ).format(placeholders)
+        rows = await self.db.fetch_all(query, values)
         return [row[0] for row in rows]
 
     async def get_subscribers_for_venues(self, venues: list[str]) -> list[int]:
@@ -267,12 +267,12 @@ class Database:
         venues_lower = [v.lower().strip() for v in venues]
         placeholders = ", ".join(f":v{i}" for i in range(len(venues_lower)))
         values = {f"v{i}": t for i, t in enumerate(venues_lower)}
-        rows = await self.db.fetch_all(f"""
-            SELECT DISTINCT u.chat_id
-            FROM users u
-            JOIN subscriptions s ON u.chat_id = s.chat_id
-            WHERE s.type = 'venue' AND s.value IN ({placeholders}) AND u.is_active = 1
-        """, values)
+        query = (
+            "SELECT DISTINCT u.chat_id FROM users u "
+            "JOIN subscriptions s ON u.chat_id = s.chat_id "
+            "WHERE s.type = 'venue' AND s.value IN ({}) AND u.is_active = 1"
+        ).format(placeholders)
+        rows = await self.db.fetch_all(query, values)
         return [row[0] for row in rows]
 
     async def save_match(self, match: dict, source_name: str = "") -> None:
