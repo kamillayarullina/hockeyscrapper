@@ -44,5 +44,6 @@ class TestVerifyPassword:
         hashed = get_password_hash("testpassword")
         assert verify_password("", hashed) is False
 
-    def test_wrong_password_empty_hash(self):
-        assert verify_password("test", "") is False
+    def test_wrong_password_invalid_hash(self):
+        with pytest.raises(ValueError):
+            verify_password("test", "notavalidhash")

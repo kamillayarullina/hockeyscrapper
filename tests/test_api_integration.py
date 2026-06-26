@@ -131,7 +131,7 @@ class TestForgotPassword:
     def test_forgot_password_success(self, client):
         self._register_user(client)
         with patch("Backend.main.FastMail") as mock_fastmail:
-            mock_fastmail.return_value.send_message = TestAsyncMock()
+            mock_fastmail.return_value.send_message = _AsyncMock()
             response = client.post("/forgot_password", json={
                 "email": "forgot@example.com",
             })
@@ -168,7 +168,7 @@ class TestNewPassword:
             "password": "testpassword123",
         })
         with patch("Backend.main.FastMail") as mock_fastmail:
-            mock_fastmail.return_value.send_message = TestAsyncMock()
+            mock_fastmail.return_value.send_message = _AsyncMock()
             client.post("/forgot_password", json={"email": email})
 
     def test_new_password_success(self, client):
@@ -276,7 +276,7 @@ class TestStats:
             assert key in data
 
 
-class TestAsyncMock:
+class _AsyncMock:
     def __init__(self):
         self._call_count = 0
 
