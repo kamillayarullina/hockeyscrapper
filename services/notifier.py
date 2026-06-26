@@ -13,9 +13,8 @@ logger = logging.getLogger(__name__)
 class Notifier:
     """Sends personal notifications to subscribers via Telegram bot."""
 
-    def __init__(self, bot: Optional[Bot], admin_chat_id: int = 0):
+    def __init__(self, bot: Optional[Bot]):
         self.bot = bot
-        self.admin_chat_id = admin_chat_id
 
     async def notify_subscribers(
         self,
@@ -94,12 +93,3 @@ class Notifier:
             f"<i>Вы получили это сообщение, т.к. подписаны на одну из команд.</i>\n"
             f"<i>Управление подписками: /list</i>"
         )
-
-    async def notify_admin(self, text: str) -> None:
-        """Send notification to admin."""
-        if not self.bot or not self.admin_chat_id:
-            return
-        try:
-            await self.bot.send_message(self.admin_chat_id, text)
-        except Exception as e:
-            logger.error(f"Ошибка уведомления админа: {e}")

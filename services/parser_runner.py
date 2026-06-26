@@ -88,10 +88,9 @@ class ParserRunner:
         self._sites = [s for s in self._sites if s.get("enabled", True)]
 
         if self.telegram_bot:
-            admin_id = self._settings.get("telegram", {}).get("admin_chat_id", 0)
-            self.notifier = Notifier(self.telegram_bot.get_bot(), admin_id)
+            self.notifier = Notifier(self.telegram_bot.get_bot())
         else:
-            self.notifier = Notifier(None, 0)
+            self.notifier = Notifier(None)
 
         logger.info(f"Загружено {len(self._sites)} активных сайтов")
 
