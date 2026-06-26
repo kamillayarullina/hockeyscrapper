@@ -54,3 +54,9 @@ body {
 .btn:hover {
     opacity: 80%;
 }
+.password-hint {
+    margin-top: -10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #1f1c1c;
+}
