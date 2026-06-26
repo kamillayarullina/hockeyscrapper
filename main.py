@@ -70,7 +70,8 @@ def run_api():
         Backend.models.Base.metadata.create_all(bind=engine)
 
         port = int(os.environ.get("PORT", 8000))
-        uvicorn.run("Backend.main:app", host="0.0.0.0", port=port, reload=False)
+        host = os.environ.get("HOST", "127.0.0.1")
+        uvicorn.run("Backend.main:app", host=host, port=port, reload=False)
     except Exception as e:
         logger.exception(f"API failed to start: {e}")
 
