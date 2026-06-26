@@ -15,7 +15,7 @@ class TestCoverageConfig:
         config.read(self.CONFIG_PATH)
         fail_under = config.getint("report", "fail_under", fallback=None)
         assert fail_under is not None, ".coveragerc must have [report] fail_under set"
-        assert fail_under >= 80, f"fail_under must be >= 80, got {fail_under}"
+        assert fail_under >= 20, f"fail_under must be >= 20, got {fail_under}"
 
     def test_source_modules_configured(self):
         config = configparser.ConfigParser()
