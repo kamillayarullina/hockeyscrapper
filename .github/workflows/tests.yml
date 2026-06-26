@@ -24,11 +24,11 @@ jobs:
 
       - name: Additional QA check — Bandit (security lint)
         run: |
-          bandit -c pyproject.toml -r Backend services -f txt 2>&1 || true
+          bandit -c pyproject.toml -r Backend services -f txt 2>&1
 
       - name: Run unit and integration tests with coverage
         run: |
-          python -m pytest tests/ -v --cov=Backend --cov=services --cov-report=term --cov-report=xml --cov-config=.coveragerc
+          python -m pytest tests/ -v --cov=Backend --cov=services --cov-report=term --cov-report=xml --cov-config=.coveragerc --cov-fail-under=80
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
