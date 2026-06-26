@@ -41,7 +41,7 @@ fill="currentColor" viewBox="0 0 24 24" >
 </svg>
         </div>
         <div class="input-box">
-            <input type="password" name="password" placeholder="Пароль" required pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"
+            <input type="password" name="password" placeholder="Пароль" required pattern="^(?=.*[A-Za-z])(?=.*\d).{8,}$"
         title="Пароль должен содержать минимум 8 символов, хотя бы одну английскую букву и одну цифру">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"  
 fill="currentColor" viewBox="0 0 24 24" >
@@ -65,7 +65,7 @@ fill="currentColor" viewBox="0 0 24 24" >
                 e.preventDefault();
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData.entries());
-                const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+                const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
 
                 if (!passwordRegex.test(data.password)) {
                     alert('Пароль должен содержать минимум 8 символов, хотя бы одну английскую букву и одну цифру');
