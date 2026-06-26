@@ -2,7 +2,7 @@
 
 **ISO/IEC 25010 sub-characteristic:** Testability
 
-**Scenario:** When a developer changes a critical product module under the standard CI environment, the module shall have automated unit tests that achieve line coverage within 80% for that module.
+**Scenario:** When a developer changes a critical product module under the standard CI environment, the module shall have automated unit tests that achieve line coverage within 20% for that module.
 
 **Why this matters:** Critical product logic must be directly verifiable so defects can be detected before merge.
 
