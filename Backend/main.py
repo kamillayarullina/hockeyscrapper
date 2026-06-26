@@ -309,6 +309,294 @@ def get_stats(db: Session = Depends(get_db)):
     matches = db.query(models.MatchModel).count()
     return {"users": users, "team_subs": team_subs, "venue_subs": venue_subs, "matches": matches}
 
+# ─── Admin panel ────────────────────────────────────────────────────────────
+
+import logging
+from collections import deque
+
+ADMIN_EMAILS = [e.strip() for e in os.getenv("ADMIN_EMAILS", "").split(",") if e.strip()]
+
+class _LogBuffer(logging.Handler):
+    def __init__(self, maxlen=500):
+        super().__init__()
+        self.buffer = deque(maxlen=maxlen)
+    def emit(self, record):
+        self.buffer.append(self.format(record))
+
+_log_buffer = _LogBuffer()
+_log_buffer.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
+logging.getLogger().addHandler(_log_buffer)
+
+async def _require_admin(current_user=Depends(get_current_user)):
+    if current_user.get("email") not in ADMIN_EMAILS:
+        raise HTTPException(status_code=404, detail="Not found")
+    return current_user
+
+# ── Settings ─────────────────────────────────────────────────────────────────
+
+class ParseIntervalSchema(BaseModel):
+    minutes: int
+
+class BotProxySchema(BaseModel):
+    proxy_url: str
+
+class AddSubscriptionSchema(BaseModel):
+    type: str
+    value: str
+
+class AddProxySchema(BaseModel):
+    url: str
+    proxy_type: str = "http"
+    country: str = ""
+    note: str = ""
+
+# ── Routes ───────────────────────────────────────────────────────────────────
+
+@app.get("/admin/check")
+async def admin_check(admin=Depends(_require_admin)):
+    return {"admin": True, "email": admin["email"]}
+
+@app.get("/admin/stats")
+async def admin_stats(db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    total_users = db.query(models.UserModel).count()
+    active_users = db.query(models.UserModel).filter(models.UserModel.is_active == 1).count()
+    banned_users = db.query(models.UserModel).filter(models.UserModel.is_active == 0).count()
+    team_subs = db.query(models.SubscriptionModel).filter(models.SubscriptionModel.type == "team").count()
+    venue_subs = db.query(models.SubscriptionModel).filter(models.SubscriptionModel.type == "venue").count()
+    matches = db.query(models.MatchModel).count()
+    proxies = db.query(models.ProxyModel).count()
+    return {
+        "total_users": total_users,
+        "active_users": active_users,
+        "banned_users": banned_users,
+        "team_subs": team_subs,
+        "venue_subs": venue_subs,
+        "matches": matches,
+        "proxies": proxies,
+    }
+
+@app.get("/admin/users")
+def admin_users(db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    users = db.query(models.UserModel).order_by(models.UserModel.registered_at.desc()).all()
+    result = []
+    for u in users:
+        subs = db.query(models.SubscriptionModel).filter(
+            models.SubscriptionModel.chat_id == u.chat_id
+        ).all()
+        result.append({
+            "chat_id": u.chat_id,
+            "username": u.username,
+            "email": u.email,
+            "telegram": u.telegram,
+            "is_active": u.is_active,
+            "registered_at": str(u.registered_at) if u.registered_at else None,
+            "subscriptions": [{"type": s.type, "value": s.value} for s in subs],
+        })
+    return result
+
+@app.delete("/admin/users/{chat_id}")
+def admin_delete_user(chat_id: int, db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    user = db.query(models.UserModel).filter(models.UserModel.chat_id == chat_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.query(models.SubscriptionModel).filter(models.SubscriptionModel.chat_id == chat_id).delete()
+    db.query(models.NotifiedEventModel).filter(models.NotifiedEventModel.chat_id == chat_id).delete()
+    db.delete(user)
+    db.commit()
+    return {"status": "deleted"}
+
+@app.patch("/admin/users/{chat_id}/ban")
+def admin_toggle_ban(chat_id: int, db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    user = db.query(models.UserModel).filter(models.UserModel.chat_id == chat_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.is_active = 0 if user.is_active else 1
+    db.commit()
+    return {"status": "updated", "is_active": user.is_active}
+
+@app.post("/admin/users/{chat_id}/subscriptions")
+def admin_add_subscription(chat_id: int, body: AddSubscriptionSchema,
+                            db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    user = db.query(models.UserModel).filter(models.UserModel.chat_id == chat_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    existing = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == chat_id,
+        models.SubscriptionModel.type == body.type,
+        models.SubscriptionModel.value == body.value,
+    ).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Subscription already exists")
+    sub = models.SubscriptionModel(chat_id=chat_id, type=body.type, value=body.value)
+    db.add(sub)
+    db.commit()
+    return {"status": "added"}
+
+@app.delete("/admin/users/{chat_id}/subscriptions")
+def admin_remove_subscription(chat_id: int, type: str = "team", value: str = "",
+                               db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    sub = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == chat_id,
+        models.SubscriptionModel.type == type,
+        models.SubscriptionModel.value == value,
+    ).first()
+    if not sub:
+        raise HTTPException(status_code=404, detail="Subscription not found")
+    db.delete(sub)
+    db.commit()
+    return {"status": "deleted"}
+
+@app.get("/admin/proxies")
+def admin_proxies(db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    proxies = db.query(models.ProxyModel).order_by(models.ProxyModel.id).all()
+    return [{"id": p.id, "url": p.url, "proxy_type": p.proxy_type,
+             "country": p.country, "enabled": p.enabled, "note": p.note} for p in proxies]
+
+@app.post("/admin/proxies")
+def admin_add_proxy(body: AddProxySchema, db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    proxy = models.ProxyModel(url=body.url, proxy_type=body.proxy_type,
+                               country=body.country, note=body.note)
+    db.add(proxy)
+    db.commit()
+    return {"status": "added", "id": proxy.id}
+
+@app.delete("/admin/proxies/{proxy_id}")
+def admin_delete_proxy(proxy_id: int, db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    proxy = db.query(models.ProxyModel).filter(models.ProxyModel.id == proxy_id).first()
+    if not proxy:
+        raise HTTPException(status_code=404, detail="Proxy not found")
+    db.delete(proxy)
+    db.commit()
+    return {"status": "deleted"}
+
+@app.patch("/admin/proxies/{proxy_id}/toggle")
+def admin_toggle_proxy(proxy_id: int, db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    proxy = db.query(models.ProxyModel).filter(models.ProxyModel.id == proxy_id).first()
+    if not proxy:
+        raise HTTPException(status_code=404, detail="Proxy not found")
+    proxy.enabled = 0 if proxy.enabled else 1
+    db.commit()
+    return {"status": "updated", "enabled": proxy.enabled}
+
+@app.get("/admin/settings")
+def admin_settings(db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    rows = db.query(models.SettingModel).all()
+    return {r.key: r.value for r in rows}
+
+@app.put("/admin/settings/parse-interval")
+def admin_set_parse_interval(body: ParseIntervalSchema,
+                              db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    m = max(1, min(body.minutes, 1440))
+    setting = db.query(models.SettingModel).filter(models.SettingModel.key == "parse_interval_minutes").first()
+    if setting:
+        setting.value = str(m)
+    else:
+        db.add(models.SettingModel(key="parse_interval_minutes", value=str(m)))
+    db.commit()
+    return {"status": "updated", "value": m}
+
+@app.put("/admin/settings/bot-proxy")
+def admin_set_bot_proxy(body: BotProxySchema,
+                         db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    setting = db.query(models.SettingModel).filter(models.SettingModel.key == "bot_proxy_url").first()
+    if setting:
+        setting.value = body.proxy_url
+    else:
+        db.add(models.SettingModel(key="bot_proxy_url", value=body.proxy_url))
+    db.commit()
+    return {"status": "updated"}
+
+@app.get("/admin/sites")
+def admin_sites(admin=Depends(_require_admin)):
+    import yaml
+    config_path = Path(__file__).resolve().parent.parent / "config" / "sites.yaml"
+    if not config_path.exists():
+        raise HTTPException(status_code=404, detail="Config not found")
+    with open(config_path, encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+    sites = cfg.get("sites", [])
+    return [{"name": s["name"], "parser": s.get("parser", ""),
+             "enabled": s.get("enabled", True),
+             "interval_minutes": s.get("interval_minutes", 30)} for s in sites]
+
+@app.put("/admin/sites/{name}/toggle")
+def admin_toggle_site(name: str, db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    key = f"site:{name}:enabled"
+    import yaml
+    config_path = Path(__file__).resolve().parent.parent / "config" / "sites.yaml"
+    if not config_path.exists():
+        raise HTTPException(status_code=404, detail="Config not found")
+    with open(config_path, encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+    site = next((s for s in cfg.get("sites", []) if s["name"] == name), None)
+    if not site:
+        raise HTTPException(status_code=404, detail="Site not found")
+    current = db.query(models.SettingModel).filter(models.SettingModel.key == key).first()
+    if current:
+        new_val = "false" if current.value == "true" else "true"
+        current.value = new_val
+    else:
+        new_val = "false" if site.get("enabled", True) else "true"
+        db.add(models.SettingModel(key=key, value=new_val))
+    db.commit()
+    return {"status": "updated", "enabled": new_val == "true"}
+
+@app.post("/admin/trigger-parse")
+def admin_trigger_parse(db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    from datetime import datetime
+    setting = db.query(models.SettingModel).filter(models.SettingModel.key == "parse_trigger_requested_at").first()
+    if setting:
+        setting.value = str(datetime.now().timestamp())
+    else:
+        db.add(models.SettingModel(key="parse_trigger_requested_at", value=str(datetime.now().timestamp())))
+    db.commit()
+    return {"status": "parse_triggered", "message": "Парсер запустится в ближайшем цикле"}
+
+@app.post("/admin/notify")
+async def admin_notify_all(admin=Depends(_require_admin)):
+    BOT_TOKEN = os.getenv("BOT_TOKEN", "")
+    if not BOT_TOKEN:
+        raise HTTPException(status_code=400, detail="BOT_TOKEN not configured")
+    from aiogram import Bot
+    from aiogram.client.default import DefaultBotProperties
+    from aiogram.enums import ParseMode
+    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    from services.notifier import Notifier
+    from services.database import get_db as get_async_db
+    notifier = Notifier(bot)
+    adb = get_async_db()
+    await adb.init()
+    users = await adb.get_all_users()
+    chat_ids = [u["chat_id"] for u in users]
+    sent = await notifier.notify_subscribers(
+        event={
+            "title": "Тестовое уведомление",
+            "date": datetime.now().strftime("%d.%m.%Y"),
+            "place": "Админ-панель",
+            "price_min": "—",
+            "price_max": "—",
+            "availability": "—",
+            "link": "",
+        },
+        subscriber_chat_ids=chat_ids,
+        db=adb,
+        reason="available",
+    )
+    await bot.session.close()
+    return {"status": "notified", "sent": sent}
+
+@app.get("/admin/logs")
+def admin_logs(admin=Depends(_require_admin)):
+    return {"logs": list(_log_buffer.buffer)}
+
+@app.delete("/admin/matches")
+def admin_clear_matches(db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    count = db.query(models.MatchModel).count()
+    db.query(models.MatchModel).delete()
+    db.query(models.NotifiedEventModel).delete()
+    db.commit()
+    return {"status": "cleared", "deleted": count}
+
 frontend_path = Path(__file__).resolve().parent.parent / "Frontend"
 
 @app.get("/{full_path:path}")

@@ -85,6 +85,12 @@ class ParserRunner:
 
         if self.site_filter:
             self._sites = [s for s in self._sites if s["name"].lower() == self.site_filter.lower()]
+
+        for site in self._sites:
+            db_enabled = await self.db.get_setting(f"site:{site['name']}:enabled", "")
+            if db_enabled != "":
+                site["enabled"] = db_enabled == "true"
+
         self._sites = [s for s in self._sites if s.get("enabled", True)]
 
         if self.telegram_bot:
