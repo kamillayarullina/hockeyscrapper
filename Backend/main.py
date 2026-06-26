@@ -128,7 +128,7 @@ def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
         "message": "Registered!",
         "chat_id": new_chat_id,
         "access_token": token,
-        "token_type": "bearer"
+        "token_type": "bearer"  # nosec
     }
 
 @app.post("/login")
@@ -141,7 +141,7 @@ def login_user(login_data: UserLogin, db: Session = Depends(get_db)):
         "status": "success",
         "message": "Login successful!",
         "access_token": token,
-        "token_type": "bearer",
+        "token_type": "bearer",  # nosec
         "user": {
             "chat_id": user.chat_id,
             "username": user.username,
