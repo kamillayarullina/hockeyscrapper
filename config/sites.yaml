@@ -11,8 +11,7 @@ settings:
     enabled: false
 
   # Настройки Telegram-бота (токен из .env)
-  telegram:
-    admin_chat_id: 8061310741
+  telegram: {}
 
   # Email-уведомления админу (опционально)
   email:
