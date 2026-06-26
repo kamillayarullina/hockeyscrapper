@@ -55,6 +55,12 @@ class UserRegister(BaseModel):
     telegram: str
     password: str
 
+    @field_validator("telegram")
+    def telegram_valid(cls, v):
+        if not v.startswith("@"):
+            v = "@" + v
+        return v
+
     @field_validator("password")
     def password_valid(cls, v):
         if len(v) < 8:
