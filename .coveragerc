@@ -1,0 +1,15 @@
+[run]
+source = Backend,services
+omit =
+    */test_*
+    */migrations/*
+    */venv/*
+    */.venv/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if __name__ == "__main__":
+    raise NotImplementedError
+    raise AssertionError
+    pass
