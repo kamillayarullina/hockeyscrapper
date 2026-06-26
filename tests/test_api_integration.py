@@ -19,7 +19,7 @@ class TestRegister:
             "username": "testuser",
             "email": "test@example.com",
             "telegram": "@testuser",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
         assert response.status_code == 200
         data = response.json()
@@ -32,13 +32,13 @@ class TestRegister:
             "username": "user1",
             "email": "dup@example.com",
             "telegram": "@user1",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
         response = client.post("/register", json={
             "username": "user2",
             "email": "dup@example.com",
             "telegram": "@user2",
-            "password": "testpassword456",
+            "password": "Testpass456!",
         })
         assert response.status_code == 400
         assert "already" in response.json()["detail"].lower()
@@ -66,10 +66,36 @@ class TestRegister:
             "username": "testuser",
             "email": "notanemail",
             "telegram": "@testuser",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
         assert response.status_code == 422
 
+    def test_register_no_digit_password(self, client):
+        response = client.post("/register", json={
+            "username": "testuser",
+            "email": "nodigit@example.com",
+            "telegram": "@testuser",
+            "password": "NoDigit!x",
+        })
+        assert response.status_code == 422
+
+    def test_register_short_username(self, client):
+        response = client.post("/register", json={
+            "username": "ab",
+            "email": "shortuser@example.com",
+            "telegram": "@short",
+            "password": "Testpass123!",
+        })
+        assert response.status_code == 422
+
+    def test_register_invalid_username_chars(self, client):
+        response = client.post("/register", json={
+            "username": "user name!",
+            "email": "baduser@example.com",
+            "telegram": "@baduser",
+            "password": "Testpass123!",
+        })
+        assert response.status_code == 422
 
 class TestLogin:
 
@@ -78,11 +104,11 @@ class TestLogin:
             "username": "loginuser",
             "email": "login@example.com",
             "telegram": "@loginuser",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
         response = client.post("/login", json={
             "email": "login@example.com",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
         assert response.status_code == 200
         data = response.json()
@@ -95,7 +121,7 @@ class TestLogin:
             "username": "loginuser2",
             "email": "login2@example.com",
             "telegram": "@loginuser2",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
         response = client.post("/login", json={
             "email": "login2@example.com",
@@ -113,7 +139,7 @@ class TestLogin:
     def test_login_invalid_email(self, client):
         response = client.post("/login", json={
             "email": "notanemail",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
         assert response.status_code == 422
 
@@ -125,7 +151,7 @@ class TestForgotPassword:
             "username": "forgotuser",
             "email": email,
             "telegram": "@forgotuser",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
 
     def test_forgot_password_success(self, client):
@@ -165,7 +191,7 @@ class TestNewPassword:
             "username": "newpwduser",
             "email": email,
             "telegram": "@newpwduser",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
         with patch("Backend.main.FastMail") as mock_fastmail:
             mock_fastmail.return_value.send_message = _AsyncMock()
@@ -181,7 +207,7 @@ class TestNewPassword:
         response = client.post("/new_password", json={
             "email": email,
             "code": code,
-            "new_password": "newsecurepassword1",
+            "new_password": "Newsecure1!",
         })
         assert response.status_code == 200
         data = response.json()
@@ -195,7 +221,7 @@ class TestNewPassword:
         response = client.post("/new_password", json={
             "email": email,
             "code": 999999,
-            "new_password": "newsecurepassword1",
+            "new_password": "Newsecure1!",
         })
         assert response.status_code == 400
 
@@ -212,7 +238,7 @@ class TestNewPassword:
         response = client.post("/new_password", json={
             "email": email,
             "code": code,
-            "new_password": "newsecurepassword1",
+            "new_password": "Newsecure1!",
         })
         assert response.status_code == 400
         assert "истёк" in response.json()["detail"].lower()
@@ -221,7 +247,7 @@ class TestNewPassword:
         response = client.post("/new_password", json={
             "email": "neverrequested@example.com",
             "code": 123456,
-            "new_password": "newsecurepassword1",
+            "new_password": "Newsecure1!",
         })
         assert response.status_code == 400
 
@@ -247,7 +273,7 @@ class TestMe:
             "username": "meuser",
             "email": "me@example.com",
             "telegram": "@meuser",
-            "password": "testpassword123",
+            "password": "Testpass123!",
         })
         token = reg_resp.json()["access_token"]
         response = client.get("/me", headers={"Authorization": f"Bearer {token}"})

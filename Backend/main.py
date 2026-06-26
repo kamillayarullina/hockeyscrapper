@@ -49,6 +49,26 @@ conf_email = ConnectionConfig(
     MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True",
 ) 
 
+def _validate_password(v: str) -> str:
+    if len(v) < 8:
+        raise ValueError("Пароль должен быть минимум 8 символов")
+    if len(v) > 128:
+        raise ValueError("Пароль должен быть максимум 128 символов")
+    if not any(c.islower() for c in v):
+        raise ValueError("Пароль должен содержать хотя бы одну строчную букву")
+    if not any(c.isdigit() for c in v):
+        raise ValueError("Пароль должен содержать хотя бы одну цифру")
+    return v
+
+def _validate_username(v: str) -> str:
+    if len(v) < 3:
+        raise ValueError("Имя пользователя должно быть минимум 3 символа")
+    if len(v) > 30:
+        raise ValueError("Имя пользователя должно быть максимум 30 символов")
+    if not all(c.isalnum() or c == "_" for c in v):
+        raise ValueError("Имя пользователя может содержать только буквы, цифры и подчёркивания")
+    return v
+
 class UserRegister(BaseModel):
     username: str
     email: EmailStr
@@ -63,11 +83,11 @@ class UserRegister(BaseModel):
 
     @field_validator("password")
     def password_valid(cls, v):
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters")
-        if not any(c.isalpha() for c in v):
-            raise ValueError("Password must contain at least one letter")
-        return v
+        return _validate_password(v)
+
+    @field_validator("username")
+    def username_valid(cls, v):
+        return _validate_username(v)
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -84,11 +104,7 @@ class NewPasswordRequest(BaseModel):
 
     @field_validator("new_password")
     def password_valid(cls, v):
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters")
-        if not any(c.isalpha() for c in v):
-            raise ValueError("Password must contain at least one letter")
-        return v
+        return _validate_password(v)
 
 class LinkCodeRequest(BaseModel):
     chat_id: int
