@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HockeyScrapper — Презентация</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: #0a0e1a;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* === SLIDE CONTAINER === */
+.slide {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* === BACKGROUND EFFECTS === */
+.slide::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(ellipse at 30% 50%, rgba(0,157,213,.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(0,200,117,.05) 0%, transparent 60%);
+  z-index: 0;
+}
+
+/* === HOCKEY RINK PATTERN === */
+.slide::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(90deg, transparent, transparent 120px, rgba(255,255,255,.015) 120px, rgba(255,255,255,.015) 121px),
+    repeating-linear-gradient(0deg, transparent, transparent 120px, rgba(255,255,255,.015) 120px, rgba(255,255,255,.015) 121px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.slide > * { position: relative; z-index: 1; }
+
+/* === TITLE SLIDE === */
+.title-slide {
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a1128 40%, #0d2137 100%);
+  text-align: center;
+}
+.title-slide::before {
+  background: radial-gradient(ellipse at 50% 80%, rgba(0,157,213,.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 20% 20%, rgba(0,200,117,.08) 0%, transparent 40%);
+}
+.title-slide .logo {
+  font-size: 80px;
+  margin-bottom: 20px;
+  display: block;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.title-slide h1 {
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 900;
+  background: linear-gradient(135deg, #00c875, #009dd5, #6c5ce7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -2px;
+  margin-bottom: 10px;
+}
+.title-slide .subtitle {
+  font-size: clamp(20px, 3vw, 36px);
+  font-weight: 300;
+  color: rgba(255,255,255,.7);
+  margin-bottom: 30px;
+  letter-spacing: 4px;
+}
+.title-slide .team {
+  font-size: 16px;
+  color: rgba(255,255,255,.5);
+  max-width: 500px;
+  line-height: 1.8;
+}
+.title-slide .date {
+  margin-top: 20px;
+  font-size: 14px;
+  color: rgba(255,255,255,.3);
+}
+.title-slide .glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: .1;
+  pointer-events: none;
+}
+.title-slide .glow-1 { background: #009dd5; top: -200px; right: -200px; }
+.title-slide .glow-2 { background: #00c875; bottom: -200px; left: -200px; }
+
+/* === SECTION HEADERS === */
+.section-slide {
+  text-align: center;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1a1128 100%);
+  min-height: 60vh;
+}
+.section-slide h2 {
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+.section-slide .accent-line {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #009dd5, #00c875);
+  border-radius: 2px;
+  margin: 0 auto;
+}
+
+/* === CONTENT SLIDES === */
+.content-slide {
+  padding: 80px 60px;
+}
+.content-slide h2 {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 800;
+  margin-bottom: 40px;
+  color: #009dd5;
+  letter-spacing: -1px;
+}
+.content-slide h2 .highlight {
+  background: linear-gradient(135deg, #009dd5, #6c5ce7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* === PROBLEM LIST === */
+.problem-list {
+  list-style: none;
+  max-width: 800px;
+  width: 100%;
+}
+.problem-list li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  background: rgba(255,255,255,.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.05);
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 400;
+  color: rgba(255,255,255,.85);
+  transition: all .3s ease;
+}
+.problem-list li:hover {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(0,157,213,.3);
+  transform: translateX(4px);
+}
+.problem-list .icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,157,213,.1);
+  border-radius: 12px;
+}
+
+/* === SOLUTION CARD === */
+.solution-card {
+  background: linear-gradient(135deg, rgba(0,157,213,.1), rgba(0,200,117,.05));
+  border: 1px solid rgba(0,157,213,.2);
+  border-radius: 24px;
+  padding: 40px 50px;
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+.solution-card h3 {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800;
+  background: linear-gradient(135deg, #00c875, #009dd5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.solution-card .desc {
+  font-size: 20px;
+  color: rgba(255,255,255,.6);
+  margin: 16px 0 30px;
+}
+.solution-card .tags {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.solution-card .tag {
+  padding: 8px 24px;
+  border-radius: 100px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.tag-blue { background: rgba(0,157,213,.2); color: #009dd5; }
+.tag-green { background: rgba(0,200,117,.2); color: #00c875; }
+.tag-purple { background: rgba(108,92,231,.2); color: #6c5ce7; }
+
+/* === TEAM GRID === */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 900px;
+  width: 100%;
+}
+.team-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  transition: all .3s ease;
+}
+.team-card:hover {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(0,157,213,.3);
+  transform: translateY(-4px);
+}
+.team-card .avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #009dd5, #6c5ce7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 24px;
+  font-weight: 700;
+}
+.team-card .name {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.team-card .role {
+  font-size: 13px;
+  color: rgba(255,255,255,.5);
+}
+.team-card .contribution {
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+  margin-top: 8px;
+}
+
+/* === TWO COLUMN === */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1000px;
+  width: 100%;
+  align-items: start;
+}
+@media (max-width: 768px) {
+  .two-col { grid-template-columns: 1fr; }
+}
+
+.col-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 16px;
+  padding: 30px;
+}
+.col-card h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.col-card h3 .emoji { margin-right: 8px; }
+.col-card ul {
+  list-style: none;
+}
+.col-card ul li {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  font-size: 16px;
+  color: rgba(255,255,255,.75);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.col-card ul li:last-child { border-bottom: none; }
+.col-card ul li::before {
+  content: '✓';
+  color: #00c875;
+  font-weight: 700;
+}
+
+/* === ROADMAP === */
+.roadmap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 700px;
+  width: 100%;
+}
+.roadmap-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  background: rgba(255,255,255,.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.05);
+  font-size: 16px;
+  color: rgba(255,255,255,.8);
+}
+.roadmap-item .status {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.status-done { background: rgba(0,200,117,.2); color: #00c875; }
+.status-next { background: rgba(0,157,213,.2); color: #009dd5; }
+
+/* === STAKEHOLDERS === */
+.stakeholder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  width: 100%;
+}
+.stakeholder-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255,255,255,.03);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.05);
+}
+.stakeholder-item .big-icon { font-size: 40px; }
+.stakeholder-item .text h4 { font-size: 18px; font-weight: 700; }
+.stakeholder-item .text p { font-size: 14px; color: rgba(255,255,255,.5); }
+
+/* === QUOTE === */
+.quote-box {
+  max-width: 700px;
+  padding: 30px 40px;
+  background: rgba(255,255,255,.03);
+  border-left: 3px solid #009dd5;
+  border-radius: 0 16px 16px 0;
+  font-style: italic;
+  font-size: 18px;
+  color: rgba(255,255,255,.7);
+  line-height: 1.6;
+}
+
+/* === END SLIDE === */
+.end-slide {
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a1128 40%, #0d2137 100%);
+  text-align: center;
+}
+.end-slide h2 {
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 900;
+  background: linear-gradient(135deg, #00c875, #009dd5, #6c5ce7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+}
+.end-slide p {
+  font-size: 20px;
+  color: rgba(255,255,255,.5);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+.end-slide .question {
+  margin-top: 40px;
+  font-size: 28px;
+  font-weight: 300;
+  color: rgba(255,255,255,.4);
+}
+
+/* === NAV === */
+.nav {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+}
+.nav button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(10,14,26,.8);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.nav button:hover {
+  background: rgba(0,157,213,.2);
+  border-color: #009dd5;
+}
+
+/* === PROGRESS === */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #009dd5, #00c875);
+  z-index: 100;
+  transition: width .4s ease;
+}
+
+/* === ANIMATIONS === */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all .6s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 600px) {
+  .slide { padding: 40px 20px; }
+  .content-slide { padding: 40px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- === SLIDE 1: TITLE === -->
+<section class="slide title-slide">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <span class="logo">🏒</span>
+  <h1>HockeyScrapper</h1>
+  <p class="subtitle">Умный мониторинг хоккейных билетов</p>
+  <p class="team">
+    <strong>Team 25</strong><br>
+    Камилла Яруллина • Булат Булатов • Хамза Валиханов<br>
+    Глеб Шамиев • Самир Шакиров
+  </p>
+  <p class="date">📅 28.06.2026</p>
+</section>
+
+<!-- === SLIDE 2: PROBLEM === -->
+<section class="slide content-slide" id="problem">
+  <div class="fade-in">
+    <h2>🔥 <span class="highlight">Проблема</span></h2>
+    <ul class="problem-list">
+      <li><span class="icon">🏟️</span> Анонсы билетов разбросаны по разным сайтам клубов</li>
+      <li><span class="icon">⚡</span> Продажи могут открыться неожиданно</li>
+      <li><span class="icon">🔄</span> Болельщикам приходится вручную проверять множество источников</li>
+      <li><span class="icon">⏳</span> Иногда о старте продаж объявляют уже после фактического начала</li>
+    </ul>
+  </div>
+</section>
+
+<!-- === SLIDE 3: SOLUTION === -->
+<section class="slide content-slide">
+  <div class="fade-in">
+    <h2>💡 <span class="highlight">Решение</span></h2>
+    <div class="solution-card">
+      <h3>HockeyScrapper</h3>
+      <p class="desc">Единая система мониторинга билетов КХЛ</p>
+      <div class="tags">
+        <span class="tag tag-blue">🤖 Парсинг</span>
+        <span class="tag tag-green">📨 Уведомления</span>
+        <span class="tag tag-purple">✨ Удобство</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- === SLIDE 4: STAKEHOLDERS === -->
+<section class="slide content-slide">
+  <div class="fade-in">
+    <h2>👥 <span class="highlight">Стейкхолдеры</span></h2>
+    <div class="stakeholder-grid">
+      <div class="stakeholder-item">
+        <span class="big-icon">🏒</span>
+        <div class="text">
+          <h4>Хоккейные болельщики</h4>
+          <p>Основные пользователи продукта</p>
+        </div>
+      </div>
+      <div class="stakeholder-item">
+        <span class="big-icon">🏢</span>
+        <div class="text">
+          <h4>Заказчик</h4>
+          <p>Project customer / client</p>
+        </div>
+      </div>
+      <div class="stakeholder-item">
+        <span class="big-icon">👨‍💻</span>
+        <div class="text">
+          <h4>Команда разработки</h4>
+          <p>Team 25</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- === SLIDE 5: TEAM === -->
+<section class="slide content-slide">
+  <div class="fade-in">
+    <h2>👨‍💻 <span class="highlight">Команда</span></h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="avatar">Б</div>
+        <div class="name">Булат Булатов</div>
+        <div class="role">Team Lead, Backend</div>
+        <div class="contribution">Парсер, Telegram бот</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">Х</div>
+        <div class="name">Хамза Валиханов</div>
+        <div class="role">Backend Developer</div>
+        <div class="contribution">Backend сайта</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">К</div>
+        <div class="name">Камилла Яруллина</div>
+        <div class="role">Frontend, UI/UX</div>
+        <div class="contribution">Дизайн и фронтенд</div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">Г</div>
+        <div class="name">Глеб Шамиев</div>
+        <div class="role">—</div>
+        <div class="contribution"></div>
+      </div>
+      <div class="team-card">
+        <div class="avatar">С</div>
+        <div class="name">Самир Шакиров</div>
+        <div class="role">—</div>
+        <div class="contribution">Восстановление пароля</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- === SLIDE 6: DEMO === -->
+<section class="slide section-slide">
+  <div class="fade-in">
+    <h2>🎥 Демонстрация</h2>
+    <div class="accent-line"></div>
+  </div>
+</section>
+
+<!-- === SLIDE 7: REQUIREMENTS === -->
+<section class="slide content-slide">
+  <div class="fade-in" style="width:100%">
+    <h2>📋 <span class="highlight">Требования</span></h2>
+    <div class="two-col">
+      <div class="col-card">
+        <h3><span class="emoji">🔴</span> Высокий приоритет</h3>
+        <ul>
+          <li>Регистрация и вход</li>
+          <li>Управление подписками на команды</li>
+          <li>Мониторинг билетов</li>
+          <li>Отправка уведомлений</li>
+        </ul>
+      </div>
+      <div class="col-card">
+        <h3><span class="emoji">🟡</span> Средний приоритет</h3>
+        <ul>
+          <li>Профиль пользователя</li>
+          <li>Монетизация</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- === SLIDE 8: ROADMAP === -->
+<section class="slide content-slide">
+  <div class="fade-in" style="width:100%">
+    <h2>🗺️ <span class="highlight">Дорожная карта</span></h2>
+    <div class="two-col">
+      <div class="col-card">
+        <h3><span class="emoji">✅</span> Текущий этап</h3>
+        <div class="roadmap">
+          <div class="roadmap-item"><span class="status status-done">✓</span> Регистрация и аутентификация</div>
+          <div class="roadmap-item"><span class="status status-done">✓</span> Подписки на команды</div>
+          <div class="roadmap-item"><span class="status status-done">✓</span> Интеграция с БД</div>
+          <div class="roadmap-item"><span class="status status-done">✓</span> Мониторинг билетов</div>
+          <div class="roadmap-item"><span class="status status-done">✓</span> Восстановление пароля</div>
+          <div class="roadmap-item"><span class="status status-done">✓</span> Валидация данных</div>
+          <div class="roadmap-item"><span class="status status-done">✓</span> Админ-панель</div>
+        </div>
+      </div>
+      <div class="col-card">
+        <h3><span class="emoji">🚀</span> Следующие шаги</h3>
+        <div class="roadmap">
+          <div class="roadmap-item"><span class="status status-next">→</span> Монетизация</div>
+          <div class="roadmap-item"><span class="status status-next">→</span> Тестирование и баг-фиксинг</div>
+          <div class="roadmap-item"><span class="status status-next">→</span> Аватарки пользователей</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- === SLIDE 9: CLIENT === -->
+<section class="slide content-slide">
+  <div class="fade-in" style="width:100%">
+    <h2>🤝 <span class="highlight">Взаимодействие с заказчиком</span></h2>
+    <div class="two-col" style="grid-template-columns:1fr">
+      <div class="col-card">
+        <h3><span class="emoji">✅</span> Уже реализовано</h3>
+        <div class="quote-box">
+          Продукт нацелен на мониторинг билетов матчей КХЛ. Сейчас сезон не начат — нет активного использования.
+        </div>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top:20px;grid-template-columns:1fr 1fr">
+      <div class="col-card">
+        <h3><span class="emoji">💬</span> Полученный фидбек</h3>
+        <p style="color:rgba(255,255,255,.5);font-size:14px;">—</p>
+      </div>
+      <div class="col-card">
+        <h3><span class="emoji">⚠️</span> Текущие сложности</h3>
+        <p style="color:rgba(255,255,255,.5);font-size:14px;">Админ-панель</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- === SLIDE 10: QR CODES === -->
+<section class="slide content-slide">
+  <div class="fade-in">
+    <h2>📱 <span class="highlight">Ссылки</span></h2>
+    <div class="team-grid" style="max-width:800px">
+      <div class="team-card" style="padding:30px">
+        <div class="avatar" style="width:150px;height:150px;font-size:0;border-radius:12px;overflow:hidden;margin-bottom:16px">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://139.100.225.113:8000/" alt="Сайт" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div class="name">🌐 Сайт</div>
+        <div class="role">hockeyscrapper</div>
+      </div>
+      <div class="team-card" style="padding:30px">
+        <div class="avatar" style="width:150px;height:150px;font-size:0;border-radius:12px;overflow:hidden;margin-bottom:16px">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://github.com/kamillayarullina/hockeyscrapper" alt="GitHub" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div class="name">💻 GitHub</div>
+        <div class="role">Репозиторий</div>
+      </div>
+      <div class="team-card" style="padding:30px">
+        <div class="avatar" style="width:150px;height:150px;font-size:0;border-radius:12px;overflow:hidden;margin-bottom:16px">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://youtu.be/demo" alt="Demo" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div class="name">🎥 Demo</div>
+        <div class="role">Видео</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- === SLIDE 11: END === -->
+<section class="slide end-slide">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <h2>🏒 HockeyScrapper</h2>
+  <p>Спасибо за внимание!</p>
+  <p class="question">Вопросы?</p>
+</section>
+
+<!-- === NAV === -->
+<div class="nav">
+  <button id="prevBtn" onclick="changeSlide(-1)">◀</button>
+  <button id="nextBtn" onclick="changeSlide(1)">▶</button>
+</div>
+
+<script>
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+let slideIds = [];
+
+function updateSlide() {
+  slides.forEach((s, i) => {
+    s.style.display = i === currentSlide ? 'flex' : 'none';
+  });
+  const pct = ((currentSlide + 1) / slides.length) * 100;
+  document.getElementById('progress').style.width = pct + '%';
+  // Scroll to top
+  window.scrollTo(0, 0);
+  // Animate fade-in elements
+  const fades = slides[currentSlide].querySelectorAll('.fade-in');
+  fades.forEach(el => {
+    el.classList.remove('visible');
+    requestAnimationFrame(() => el.classList.add('visible'));
+  });
+}
+
+function changeSlide(dir) {
+  currentSlide = Math.max(0, Math.min(slides.length - 1, currentSlide + dir));
+  updateSlide();
+}
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+    e.preventDefault(); changeSlide(1);
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault(); changeSlide(-1);
+  }
+  if (e.key === 'Home') { currentSlide = 0; updateSlide(); }
+  if (e.key === 'End') { currentSlide = slides.length - 1; updateSlide(); }
+});
+
+// Touch
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', (e) => {
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+});
+
+updateSlide();
+</script>
+</body>
+</html>
