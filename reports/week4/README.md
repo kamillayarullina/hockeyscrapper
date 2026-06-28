@@ -58,7 +58,7 @@ We can not do admin panel as customer did not provide us the actions which admin
 
 ### Deployment
 
-- **Deployed product:** [http://139.100.225.113:8000/](http://139.100.225.113:8000/)
+- **Deployed product:** [http://89.125.169.128:8000/main.html](http://89.125.169.128:8000/main.html)
 
 ---
 
