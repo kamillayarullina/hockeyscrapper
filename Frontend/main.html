@@ -57,7 +57,7 @@
 
             <div class="teams-grid" id="myTeams"></div>
 
-            <div class="crop-modal" id="cropModal">
+            <div class="crop-modal" id="cropModal" style="display:none">
                 <div class="crop-modal-content">
                     <h3>Выберите область фото</h3>
                     <div class="crop-viewport" id="cropViewport">
@@ -145,6 +145,7 @@
                     cropState = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, lastX: 0, lastY: 0 };
                     zoomRange.value = 1;
                     applyCropTransform();
+                    cropModal.style.display = "";
                     cropModal.classList.add("active");
                 }
 
