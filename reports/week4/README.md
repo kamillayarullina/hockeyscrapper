@@ -271,7 +271,7 @@ review could not be conducted this week
 
 ### Example Reviewed Issue-Linked PR/MR
 
-![Reviewed PR](images/ReviewedPR.png)
+![Reviewed PR](images/Reviewedpr.png)
 
 ---
 
