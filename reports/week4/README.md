@@ -22,19 +22,22 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 - **Sprint milestone:** [Assignment 4 Sprint — Milestone 2](https://github.com/kamillayarullina/hockeyscrapper/milestone/2)
 - **Sprint Goal:** Validate password for stronger safety, and validate the input of Telegram alias.
 - **Sprint dates:** June 22, 2026 — June 28, 2026
-- **Total Sprint size:** 23 SP
+- **Total Sprint size:** 21 SP
 - [**Sprint Backlog view**](https://github.com/users/kamillayarullina/projects/6)
 
 ### Sprint 2 Scope
 
 | PBI | Issue | SP | Status |
 |---|---|---|---|
-| Telegram validation | [#126](https://github.com/kamillayarullina/hockeyscrapper/issues/126) | 2 | Done |
-| Admin Panel Frontend | [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | 5 | Done |
-| Remove admin panel from Telegram bot | [#128](https://github.com/kamillayarullina/hockeyscrapper/issues/128) | 3 | Done |
-| Password validation Frontend | [#129](https://github.com/kamillayarullina/hockeyscrapper/issues/129) | 3 | Done |
-| Password validation Backend | [#130](https://github.com/kamillayarullina/hockeyscrapper/issues/130) | 5 | Done |
+| Telegram validation | [#126](https://github.com/kamillayarullina/hockeyscrapper/issues/126) | 1 | Done |
+| Remove admin panel from Telegram bot | [#128](https://github.com/kamillayarullina/hockeyscrapper/issues/128) | 1 | Done |
+| Password validation Frontend | [#129](https://github.com/kamillayarullina/hockeyscrapper/issues/129) | 1 | Done |
+| Password validation Backend | [#130](https://github.com/kamillayarullina/hockeyscrapper/issues/130) | 2 | Done |
+| Creating tests| [137](https://github.com/kamillayarullina/hockeyscrapper/issues/137) | 3 | Done |
+| Avatar Adding Backend | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/153) | 2 | Done |
+| Avatar Adding Frontend | [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | 1 | Done |
 | Admin Panel Backend | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/131) | 5 | Done |
+| Admin Panel Frontend | [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | 5 | Done |
 
 ### Delivered Product Changes
 
@@ -193,9 +196,9 @@ Public sanitized demo video
 ## User Acceptance Testing
 
 - **UAT results summary:** [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md)
-  - UAT-001 (Subscribe to a team) — Active, verified
-  - UAT-002 (Unsubscribe team) — Active, verified
-  - UAT-003 (Password Recovery) — Active, verified
+  - UAT-001 (Subscribe to a team) — Active
+  - UAT-002 (Unsubscribe team) — Active
+  - UAT-003 (Password Recovery) — Active
 
 ---
 
