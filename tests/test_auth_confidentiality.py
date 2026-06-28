@@ -8,15 +8,11 @@ def test_qrt_02_unauthorized_access_rejection():
     Ensures that a request to secure, authenticated endpoints without valid JWT Bearer credentials 
     is immediately rejected with a 401 status code.
     """
-    # Dynamically define a mock protected endpoint under app to test Dependency injection
-    @app.get("/api/v1/test-quality-gate-confidentiality")
-    def secure_route(current_user: dict = pytest.importorskip("fastapi").Depends(pytest.importorskip("Backend.jwt_auth").get_current_user)):
-        return {"status": "success"}
-
     client = TestClient(app)
 
-    # Attempt request with NO token headers
-    response = client.get("/api/v1/test-quality-gate-confidentiality")
+    # Attempt request with NO token headers to a known protected endpoint like /me.
+    # Dynamically adding routes inside a test can lead to inconsistent behavior with TestClient.
+    response = client.get("/me")
     
     # Verify that the gateway blocks the request strictly with 401
     assert response.status_code == 401

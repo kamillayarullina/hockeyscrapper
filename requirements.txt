@@ -14,3 +14,7 @@ pytest
 pytest-asyncio
 pytest-cov
 ruff
+httpx2
+fastapi-mail
+
+fastapi-mail

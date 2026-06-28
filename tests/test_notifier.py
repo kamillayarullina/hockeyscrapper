@@ -45,10 +45,10 @@ async def test_notify_subscribers_skips_already_notified(mock_bot, mock_db):
     mock_bot.send_message.assert_not_called()
 
 @pytest.mark.parametrize("reason, expected_header", [
-    ("new", "<b>Новый хоккейный матч!</b>"),
-    ("available", "<b>БИЛЕТЫ ПОЯВИЛИСЬ В ПРОДАЖЕ!</b>"),
-    ("sold_out", "<b>БИЛЕТЫ ЗАКОНЧИЛИСЬ!</b>"),
-    ("changed", "<b>Изменение статуса матча</b>"),
+    ("new", "🏒 <b>Новый хоккейный матч!</b>"),
+    ("available", "🎟 <b>БИЛЕТЫ ПОЯВИЛИСЬ В ПРОДАЖЕ!</b>"),
+    ("sold_out", "❌ <b>БИЛЕТЫ ЗАКОНЧИЛИСЬ!</b>"),
+    ("changed", "🔄 <b>Изменение статуса матча</b>"),
 ])
 def test_format_message_uses_correct_header(reason, expected_header):
     """Тест: _format_message использует правильный заголовок в зависимости от причины."""

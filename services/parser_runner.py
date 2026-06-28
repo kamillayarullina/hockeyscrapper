@@ -134,10 +134,9 @@ class ParserRunner:
                 return
 
             total_notified = 0
-
             for event in events:
-                teams = extract_teams_from_title(event.get("title", ""))
-                teams_str = ", ".join(teams) if teams else "Не определены"
+                teams_list = sorted(list(extract_teams_from_title(event.get("title", ""))))
+                teams_str = ", ".join(teams_list) if teams_list else "Не определены"
 
                 place = event.get("place", "")
                 venue = ""
@@ -197,8 +196,8 @@ class ParserRunner:
                     logger.debug(f"Без изменений: {event.get('title')}")
 
                 if should_notify:
-                    subscriber_ids = await self.db.get_subscribers_for_teams(teams)
-                    logger.debug(f"Подписчиков на команды {teams}: {len(subscriber_ids)}")
+                    subscriber_ids = await self.db.get_subscribers_for_teams(teams_list)
+                    logger.debug(f"Подписчиков на команды {teams_list}: {len(subscriber_ids)}")
 
                     if venue and city:
                         venue_key = f"{city}, {venue}".lower()

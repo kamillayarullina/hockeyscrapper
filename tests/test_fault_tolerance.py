@@ -28,10 +28,11 @@ async def test_qrt_01_parser_retry_isolation_on_network_failure():
     
     # Intercept _fetch_with_playwright to simulate failures followed by a success
     with patch.object(parser, "_fetch_with_playwright", new_callable=AsyncMock) as mock_fetch:
-        # 1st attempt: TimeoutError/NetworkError, 2nd attempt: Success HTML
+        # 1st & 2nd attempts: NetworkError, 3rd attempt: Success HTML
         mock_fetch.side_effect = [
             NetworkError("HTTP 502 Bad Gateway"),
-            "<html><div class='game'>KHL Match</div></html>"
+            NetworkError("Timeout"),
+            "<html><body><h1>This is a very long line to make sure that the html content is more than 100 characters long to pass the check in the base parser.</h1><div class='game'>KHL Match</div></body></html>"
         ]
         
         events = await parser.run()
@@ -39,4 +40,4 @@ async def test_qrt_01_parser_retry_isolation_on_network_failure():
         # Verify parser isolated the error, retried, and processed the successful second response
         assert len(events) == 1
         assert events[0]["event"] == "Test KHL Game"
-        assert mock_fetch.call_count == 2
+        assert mock_fetch.call_count == 3

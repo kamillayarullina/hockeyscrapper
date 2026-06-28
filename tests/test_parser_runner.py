@@ -76,10 +76,10 @@ async def test_parser_runner_new_match_notification(
     mock_db.save_match.assert_called_once()
     saved_data = mock_db.save_match.call_args[0][0]
     assert saved_data["title"] == "ЦСКА - Спартак"
-    assert saved_data["teams"] == "ЦСКА, Спартак"
+    assert saved_data["teams"] == "Спартак, ЦСКА"
 
     # 2. Был вызван метод получения подписчиков для команд из матча
-    mock_db.get_subscribers_for_teams.assert_called_once_with(['ЦСКА', 'Спартак'])
+    mock_db.get_subscribers_for_teams.assert_called_once_with(['Спартак', 'ЦСКА'])
 
     # 3. Была вызвана отправка уведомлений с правильными параметрами
     mock_notifier.notify_subscribers.assert_called_once()
