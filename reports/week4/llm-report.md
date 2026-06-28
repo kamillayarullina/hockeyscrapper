@@ -17,3 +17,8 @@ AI tools:
 * Opencode
 * Qwen 3.7-Plus
 
+## Presentation
+
+AI assisted:
+* Design of presentation. (Big Pickle)
+
