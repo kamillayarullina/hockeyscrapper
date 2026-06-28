@@ -273,18 +273,6 @@ review could not be conducted this week
 
 ![Reviewed PR](images/ReviewedPR.png)
 
-### Product Backlog Board
-
-![Product Backlog](images/Backlog.png)
-
-### Sprint Backlog Board
-
-![Sprint Backlog](images/SprintBacklog.png)
-
-### Deployed Product
-
-![Main Page](images/Mainpage.png)
-
 ---
 
 ## Quick Links Summary
