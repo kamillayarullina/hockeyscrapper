@@ -284,9 +284,9 @@ review could not be conducted this week
 | Product Backlog | [Board](https://github.com/users/kamillayarullina/projects/3/views/1) |
 | Sprint Backlog | [Board](https://github.com/users/kamillayarullina/projects/6) |
 | Sprint 2 Milestone | [Milestone 2](https://github.com/kamillayarullina/hockeyscrapper/milestone/2) |
-| Deployed product | [http://139.100.225.113:8000/](http://139.100.225.113:8000/) |
+| Deployed product | [[http://139.100.225.113:8000/](http://89.125.169.128:8000/main.html)](http://89.125.169.128:8000/main.html) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
-| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
+| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v0.2.1) |
 | CI pipeline | [Tests & QA](https://github.com/kamillayarullina/hockeyscrapper/actions/workflows/tests.yml) |
-| Demo video | `https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing` |
+| Demo video | [https://drive.google.com/drive/folders/1STPn8drqVQ8jTalQJr-JKmn8CW1I13tT?usp=sharing](https://drive.google.com/drive/folders/1STPn8drqVQ8jTalQJr-JKmn8CW1I13tT?usp=sharing) |
 | Presentation | [`reports/week4/presentation.pdf`](presentation.pdf) |
