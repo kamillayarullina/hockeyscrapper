@@ -134,8 +134,7 @@ The project uses the **ISO/IEC 25010** quality model. The following sub-characte
 |---|---|
 | CI pipeline | [`.github/workflows/tests.yml`](../../.github/workflows/tests.yml) |
 | Latest protected-default-branch CI run | [Actions: Tests & QA](https://github.com/kamillayarullina/hockeyscrapper/actions/workflows/tests.yml) |
-| Link check CI | [`.github/workflows/lychee.yml`](../../.github/workflows/lychee.yml) |
-| Branch protection (main) | [Branch settings](https://github.com/kamillayarullina/hockeyscrapper/settings/branches) |
+| Link check CI | [`.github/workflows/lychee.yml`](../../.github/workflows/lychee.yml) |  
 
 ### CI Checks
 
@@ -173,14 +172,15 @@ Together these mechanisms ensure that Sprint 3+ work cannot bypass the quality p
 
 | Artifact | Link |
 |---|---|
-| SemVer release | [v.0.2.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.2.0) |
+| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
 
 ---
 
 ## Demo Video
 
-[Public sanitized demo video](https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing) — demonstration of key MVP v2 features.
+Public sanitized demo video  
+`https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing` — demonstration of key MVP v2 features.
 
 ---
 
@@ -293,7 +293,7 @@ review could not be conducted this week
 | Sprint 2 Milestone | [Milestone 2](https://github.com/kamillayarullina/hockeyscrapper/milestone/2) |
 | Deployed product | [http://139.100.225.113:8000/](http://139.100.225.113:8000/) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
-| SemVer release | [v.0.2.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.2.0) |
+| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
 | CI pipeline | [Tests & QA](https://github.com/kamillayarullina/hockeyscrapper/actions/workflows/tests.yml) |
-| Demo video | [Google Drive](https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing) |
+| Demo video | `https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing` |
 | Presentation | [`reports/week4/presentation.pdf`](presentation.pdf) |
