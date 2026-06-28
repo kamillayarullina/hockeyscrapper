@@ -253,7 +253,7 @@ review could not be conducted this week
 
 ### Latest Protected-Default-Branch CI Run
 
-![CI Run](images/CIRun.png)
+![CI Run](images/CI-screen.png)
 
 ### Branch Protection / Rules Evidence
 
