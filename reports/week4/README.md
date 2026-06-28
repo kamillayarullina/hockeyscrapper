@@ -177,7 +177,7 @@ Together these mechanisms ensure that Sprint 3+ work cannot bypass the quality p
 
 | Artifact | Link |
 |---|---|
-| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
+| SemVer release | [v0.2.1]([https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v0.2.1)) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
 
 ---
@@ -269,7 +269,7 @@ review could not be conducted this week
 
 ### SemVer Release
 
-![SemVer Release](images/SemVer.png)
+![SemVer Release](images/Semverrelease.png)
 
 ### Example Reviewed Issue-Linked PR/MR
 
