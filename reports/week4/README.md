@@ -36,8 +36,10 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 | Creating tests| [137](https://github.com/kamillayarullina/hockeyscrapper/issues/137) | 3 | Done |
 | Avatar Adding Backend | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/153) | 2 | Done |
 | Avatar Adding Frontend | [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | 1 | Done |
-| Admin Panel Backend | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/131) | 5 | Done |
-| Admin Panel Frontend | [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | 5 | Done |
+| Admin Panel Backend | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/131) | 5 | To Do |
+| Admin Panel Frontend | [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | 5 | To Do |
+
+We can not do admin panel as customer did not provide us the actions which admin panel should have
 
 ### Delivered Product Changes
 
@@ -67,7 +69,7 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 | Telegram handle registration fails if entered without "@" | [#126](https://github.com/kamillayarullina/hockeyscrapper/issues/126) | Done | System now normalises input — accepts with or without "@" |
 | Customer requested standalone admin panel | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/131), [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | To Do | Carried forward to future sprint |
 | Strengthen password validation | [#130](https://github.com/kamillayarullina/hockeyscrapper/issues/130), [#129](https://github.com/kamillayarullina/hockeyscrapper/issues/129) | Done | Min 8 chars, requires digit, letter, and special character |
-| Keep avatar feature with upload capability |[#152](https://github.com/kamillayarullina/hockeyscrapper/issues/152),[153](https://github.com/kamillayarullina/hockeyscrapper/issues/153) | Planned | Allow users to upload their pictures to the profile page |
+| Keep avatar feature with upload capability |[#152](https://github.com/kamillayarullina/hockeyscrapper/issues/152),[153](https://github.com/kamillayarullina/hockeyscrapper/issues/153) | Done | Allow users to upload their pictures to the profile page |
 
 ### Feedback Not Addressed
 
