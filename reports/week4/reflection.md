@@ -30,10 +30,6 @@ The team completed performance stabilization and debugging, significantly improv
 
 ### Technical risks
 - **Parser on Yandex.Afisha (World Cup tickets)**: Untested. Captcha and rate-limiting may block scraping. High risk for production.
-- **Proxy reliability**: Code is in place but no production test has been run.
-
-### Missing scope
-- Load testing not performed.
 
 ### Follow-up questions
 - How will the parser handle captcha on Yandex.Afisha?
