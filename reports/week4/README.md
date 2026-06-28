@@ -2,7 +2,7 @@
 
 **Team number:** 25
 
-**Project:** HockeyScrapper — a web platform that lets KHL fans follow teams, track ticket sales, and receive Telegram notifications.
+**Project:** HockeyScrapper — a web platform that lets KHL fans follow teams, track ticket sales, and receive Telegram and email notifications.
 
 **License:** [MIT](../../LICENSE)
 
@@ -20,10 +20,10 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 ### Sprint 2 — Assignment 4 Sprint
 
 - **Sprint milestone:** [Assignment 4 Sprint — Milestone 2](https://github.com/kamillayarullina/hockeyscrapper/milestone/2)
-- **Sprint Goal:** Deliver an admin panel for managing parsing configuration, validate password for stronger safety, and validate the input of Telegram alias.
+- **Sprint Goal:** Validate password for stronger safety, and validate the input of Telegram alias.
 - **Sprint dates:** June 22, 2026 — June 28, 2026
 - **Total Sprint size:** 23 SP
-- [**Sprint Backlog view**](https://github.com/users/kamillayarullina/projects/4)
+- [**Sprint Backlog view**](https://github.com/users/kamillayarullina/projects/6)
 
 ### Sprint 2 Scope
 
@@ -54,7 +54,6 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 ### Deployment
 
 - **Deployed product:** [http://139.100.225.113:8000/](http://139.100.225.113:8000/)
-- **Run instructions:** [README.md](../../README.md) — local setup via `python -m main --all`
 
 ---
 
@@ -63,17 +62,13 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 | Feedback point | Resulting PBI or issue | Status | Response |
 |---|---|---|---|
 | Telegram handle registration fails if entered without "@" | [#126](https://github.com/kamillayarullina/hockeyscrapper/issues/126) | Done | System now normalises input — accepts with or without "@" |
-| Customer requested standalone admin panel | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/131), [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | Done | Web-based admin panel built, admin removed from Telegram bot |
+| Customer requested standalone admin panel | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/131), [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | To Do | Carried forward to future sprint |
 | Strengthen password validation | [#130](https://github.com/kamillayarullina/hockeyscrapper/issues/130), [#129](https://github.com/kamillayarullina/hockeyscrapper/issues/129) | Done | Min 8 chars, requires digit, letter, and special character |
-| Keep avatar feature with upload capability | — | Planned | Carried forward to future sprint |
-| Test parsing on FIFA World Cup tickets | — | To Do | Parser testing on Yandex.Afisha scheduled for Sprint 3 |
-| Deploy to own server (not Render) | — | Done | Migrated to in-house server at 139.100.225.113 |
+| Keep avatar feature with upload capability |[#152](https://github.com/kamillayarullina/hockeyscrapper/issues/152),[153](https://github.com/kamillayarullina/hockeyscrapper/issues/153) | Planned | Allow users to upload their pictures to the profile page |
 
 ### Feedback Not Addressed
 
-- **Email notifications** (part of US-05): Not implemented. Customer did not re-emphasise this in the Week 4 review, but it remains in the Product Backlog.
-- **Avatar upload**: Identified as a desired feature but not scheduled in Sprint 2. Carried forward.
-- **Monetisation** (US-06) and **Number of subscriptions** (US-09): Deferred to post-MVP.
+- **Admin panel**: Identified as a desired feature but not rescheduled to futher sprints, due to the absence of customer response.
 
 ---
 
@@ -87,8 +82,6 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 | Quality Requirement Tests | [`docs/quality-requirement-tests.md`](../../docs/quality-requirement-tests.md) |
 | Testing Strategy | [`docs/testing.md`](../../docs/testing.md) |
 | User Acceptance Tests | [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md) |
-| User Stories | [`docs/user-stories.md`](../../docs/user-stories.md) |
-| Interface Documentation | [`docs/interface.md`](../../docs/interface.md) |
 
 ---
 
@@ -180,14 +173,14 @@ Together these mechanisms ensure that Sprint 3+ work cannot bypass the quality p
 
 | Artifact | Link |
 |---|---|
-| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
+| SemVer release | [v.0.2.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.2.0) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
 
 ---
 
 ## Demo Video
 
-[Public sanitized demo video](https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing) — shorter than 2 minutes, demonstrating the key MVP v2 features.
+[Public sanitized demo video](https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing) — demonstration of key MVP v2 features.
 
 ---
 
@@ -208,11 +201,7 @@ Together these mechanisms ensure that Sprint 3+ work cannot bypass the quality p
 
 ## Customer Review
 
-- **Transcript:** The full customer review transcript is shared only through Moodle (private instructor-sharing channel) as the customer refused public publication but permitted private sharing with instructors.
-- **Customer review notes:** [`reports/week4/customer-review-summary.md`](customer-review-summary.md)
-- **Customer review summary:** [`reports/week4/customer-review-summary.md`](customer-review-summary.md)
-
----
+review could not be conducted this week
 
 ## Week 4 Reports
 
@@ -226,22 +215,16 @@ Together these mechanisms ensure that Sprint 3+ work cannot bypass the quality p
 
 ## Product Status
 
-**Current state:** MVP v2 is delivered and deployed at [http://139.100.225.113:8000/](http://139.100.225.113:8000/).
+**Current state:** current product is delivered and deployed at [http://139.100.225.113:8000/](http://139.100.225.113:8000/).
 
-**Working features:** Registration with field validation, login with JWT auth, subscription management (web + Telegram sync), KHL team listing with icons, match data display, parser engine (khl.ru, ticket-hockey.ru, Yandex.Afisha), Telegram bot with subscription commands, password recovery via email code, Telegram account linking, standalone web admin panel, password/email/username field validators, Telegram alias normalisation, team icons in subscription UI.
-
-**Quality infrastructure:** Comprehensive automated test suite (66 tests), Bandit security lint CI gate, coverage gates, quality requirement tests, definition of done for all PBI types, user acceptance tests documented, branch protection on `main`.
+**Working features:** Registration with field validation, login with JWT auth, subscription management (web + Telegram sync), KHL team listing with icons, match data display, parser engine (khl.ru, ticket-hockey.ru, Yandex.Afisha), Telegram bot with commands, password recovery via email code, Telegram account linking, password/email/username field validators, Telegram alias normalisation, team icons in subscription UI.
 
 ---
 
 ## Next Steps
 
-1. **Email notifications** (US-05) — implement email-based ticket sale notifications
-2. **Parser testing on Yandex.Afisha** — test captcha handling and rate limits for World Cup tickets
-3. **Avatar upload feature** — allow users to upload custom profile pictures
-4. **Load testing** — conduct formal load/performance testing before production scale
-5. **Monetisation (US-06)** — begin planning subscription tiers or payment integration
-6. **Raise coverage threshold** — increase `fail_under` as the test suite matures
+1. **Parser testing on Yandex.Afisha** — test captcha handling and rate limits for World Cup tickets
+2. **Monetisation (US-06)** — begin planning subscription tiers or payment integration
 
 ---
 
@@ -254,8 +237,6 @@ Together these mechanisms ensure that Sprint 3+ work cannot bypass the quality p
 | Samir Shakirov | [samirshakirov6](https://github.com/samirshakirov6) | [issues](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Aissue+author%3Asamirshakirov6) | [PRs](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+author%3Asamirshakirov6) | [reviews](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+reviewed-by%3Asamirshakirov6) |
 | Bulat Bulatov | [bulat1223312](https://github.com/bulat1223312) | [issues](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Aissue+author%3Abulat1223312) | [PRs](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+author%3Abulat1223312) | [reviews](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+reviewed-by%3Abulat1223312) |
 | Khamza Valikhanov | [h-vlhnv](https://github.com/h-vlhnv) | [issues](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Aissue+author%3Ah-vlhnv) | [PRs](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+author%3Ah-vlhnv) | [reviews](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+reviewed-by%3Ah-vlhnv) |
-
-Tests and QRTs were contributed by the team as part of Sprint 2 scope. The test suite (`tests/`) was authored collaboratively, with each team member contributing tests for their respective modules. CI configuration, coverage setup, and quality requirement documentation were collectively maintained.
 
 ---
 
@@ -300,7 +281,6 @@ Tests and QRTs were contributed by the team as part of Sprint 2 scope. The test 
 ### Deployed Product
 
 ![Main Page](images/Mainpage.png)
-![Admin Panel](images/AdminPanel.png)
 
 ---
 
@@ -309,11 +289,11 @@ Tests and QRTs were contributed by the team as part of Sprint 2 scope. The test 
 | Artifact | Link |
 |---|---|
 | Product Backlog | [Board](https://github.com/users/kamillayarullina/projects/3/views/1) |
-| Sprint Backlog | [Board](https://github.com/users/kamillayarullina/projects/4) |
+| Sprint Backlog | [Board](https://github.com/users/kamillayarullina/projects/6) |
 | Sprint 2 Milestone | [Milestone 2](https://github.com/kamillayarullina/hockeyscrapper/milestone/2) |
 | Deployed product | [http://139.100.225.113:8000/](http://139.100.225.113:8000/) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
-| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
+| SemVer release | [v.0.2.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.2.0) |
 | CI pipeline | [Tests & QA](https://github.com/kamillayarullina/hockeyscrapper/actions/workflows/tests.yml) |
 | Demo video | [Google Drive](https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing) |
 | Presentation | [`reports/week4/presentation.pdf`](presentation.pdf) |
