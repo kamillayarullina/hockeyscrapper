@@ -185,7 +185,7 @@ Together these mechanisms ensure that Sprint 3+ work cannot bypass the quality p
 ## Demo Video
 
 Public sanitized demo video  
-[https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing](https://drive.google.com/drive/folders/1STPn8drqVQ8jTalQJr-JKmn8CW1I13tT?usp=sharing) — demonstration of key MVP v2 features.
+[https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing](https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing) — demonstration of key MVP v2 features.
 
 ---
 
