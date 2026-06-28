@@ -1,25 +1,24 @@
 ## What went well
 
-1. **All 7 planned issues were successfully completed:** The team fully delivered the Sprint Goal, including Telegram alias validation (#126), admin panel (#127, #128, #131), code debugging, and performance stabilization. Milestone 2 is 100% complete.
+1.  The team almost fully delivered the Sprint Goal, including Telegram alias validation (#126), removing admin panel from telegram (#128), avatar adding(#152, #153) ,code debugging, and performance stabilization. Milestone 2 is almost complete.
 
-2. **Product stability improved:** Code optimization and performance tuning eliminated bottlenecks and prepared the product for load testing.
+2.  Code optimization and performance tuning eliminated bottlenecks and prepared the product for load testing.
 
-3. **Telegram alias validation fixed:** The `@` prefix issue is resolved — the system now normalizes input automatically, accepting usernames with or without the symbol.
+3.  The `@` prefix issue is resolved — the system now normalizes input automatically, accepting usernames with or without the symbol.
 
 ---
 
 ## What did not go well
 
-1. **Insufficient performance testing:** Although stabilization was completed, load testing was not conducted fully due to time constraints. This leaves some risk for production.
+- We didn't add the admin panel as customer did not provide which actions should be there.
 
 ---
 
 ## What we changed compared to the previous Sprint
 
-- **Improved the review process:** Assigning reviewers when creating PRs was implemented and sped up validation for all 7 issues.
-- **Improved task decomposition:** The admin panel was split into multiple Issues (#127, #128, #131), allowing work distribution across developers and enabling progress tracking by component.
+- Nothing
 
 ---
 
 ## Concrete improvements for the next Sprint
-добавить после interview
+- Making Admin pannel

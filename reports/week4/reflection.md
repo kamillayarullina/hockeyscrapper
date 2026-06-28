@@ -2,7 +2,7 @@
 
 ### Customer review
 
-будет написано
+The Sprint interview did not take place because our customer was unable to participate in it.
 
 ### Release preparation
 
@@ -15,7 +15,7 @@ The team completed performance stabilization and debugging, significantly improv
 | Assumption | Validation | Verdict |
 |---|---|---|
 | Telegram alias validation is a quick fix | Implemented | ✅ Confirmed |
-| Admin panel can be built and deployed as a standalone page | Implemented | ✅ Confirmed |
+| Inserting a photo into profiles | Implemented | ✅ Confirmed |
 | Performance stabilization can be done in one Sprint | Implemented | ✅ Confirmed |
 | Password must contain only letters and numbers | This addition makes the password less secure| ❌ Rejected|
 
@@ -30,10 +30,6 @@ The team completed performance stabilization and debugging, significantly improv
 
 ### Technical risks
 - **Parser on Yandex.Afisha (World Cup tickets)**: Untested. Captcha and rate-limiting may block scraping. High risk for production.
-- **Proxy reliability**: Code is in place but no production test has been run.
-
-### Missing scope
-- Load testing not performed.
 
 ### Follow-up questions
 - How will the parser handle captcha on Yandex.Afisha?
@@ -44,5 +40,4 @@ The team completed performance stabilization and debugging, significantly improv
 ---
 
 ## Planned response
-
-сделаю после интервью
+- Making admin pannel

@@ -38,7 +38,7 @@ playwright install         # for parsers
 
 # 4. Environment
 cp .env.example .env
-# Edit .env — set BOT_TOKEN and ADMIN_CHAT_ID (get token from @BotFather)
+# Edit .env — set BOT_TOKEN (get token from @BotFather)
 ```
 
 ### Run
