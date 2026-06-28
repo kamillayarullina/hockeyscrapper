@@ -3,7 +3,6 @@ import argparse
 import asyncio
 import logging
 import os
-import sys
 from pathlib import Path
 
 import uvicorn
@@ -63,14 +62,14 @@ async def run_bot():
 
 def run_api():
     try:
-        import Backend.main as api_app
         from Backend.database import engine
         import Backend.models
 
         Backend.models.Base.metadata.create_all(bind=engine)
 
         port = int(os.environ.get("PORT", 8000))
-        uvicorn.run("Backend.main:app", host="0.0.0.0", port=port, reload=False)
+        host = os.environ.get("HOST", "127.0.0.1")
+        uvicorn.run("Backend.main:app", host=host, port=port, reload=False)
     except Exception as e:
         logger.exception(f"API failed to start: {e}")
 

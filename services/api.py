@@ -1,6 +1,5 @@
 """REST API for the future website."""
 
-import json
 from aiohttp import web
 from services.database import get_db
 from services.team_matcher import get_all_team_names, get_team_info
@@ -68,5 +67,8 @@ def create_api_app():
 
 
 if __name__ == "__main__":
+    import os
     app = create_api_app()
-    web.run_app(app, host="0.0.0.0", port=8080)
+    host = os.environ.get("HOST", "127.0.0.1")
+    port = int(os.environ.get("PORT", 8080))
+    web.run_app(app, host=host, port=port)

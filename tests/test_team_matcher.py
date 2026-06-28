@@ -1,4 +1,3 @@
-import pytest
 from services.team_matcher import (
     extract_teams_from_title,
     get_team_info,

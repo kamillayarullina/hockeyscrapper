@@ -3,12 +3,10 @@ import sys
 
 import os
 import time
-from datetime import datetime, timedelta
 from pathlib import Path
 
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 from pydantic import BaseModel, EmailStr, field_validator
 from sqlalchemy.orm import Session
@@ -20,7 +18,7 @@ from Backend import models
 from Backend.database import engine, get_db
 from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
-from services.team_matcher import get_team_info, normalize_team_name
+from services.team_matcher import get_team_info
 
 import random
 

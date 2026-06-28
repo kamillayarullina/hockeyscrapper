@@ -227,7 +227,7 @@ async def cmd_list(message: Message):
         )
         return
 
-    text = f"📋 <b>Ваши подписки:</b>\n\n"
+    text = "📋 <b>Ваши подписки:</b>\n\n"
 
     if teams:
         text += f"<b>🏒 Команды ({len(teams)}):</b>\n"
