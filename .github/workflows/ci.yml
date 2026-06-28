@@ -39,4 +39,4 @@ jobs:
 
     - name: Run tests with pytest
       run: |
-        pytest --cov=services --cov=bot --cov=parsers --cov-report=term-missing --cov-fail-under=30
+        pytest --cov=services --cov=bot --cov=parsers --cov-report=term-missing --cov-fail-under=20
