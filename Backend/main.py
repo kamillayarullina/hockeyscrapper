@@ -15,7 +15,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from Backend import models
 from Backend.database import engine, get_db
 from Backend.security import get_password_hash, verify_password
-from Backend.jwt_auth import create_token, get_current_user, status
+from Backend.jwt_auth import create_token, get_current_user
 from services.team_matcher import get_team_info
 
 import random

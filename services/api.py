@@ -1,6 +1,5 @@
 """REST API for the future website."""
 
-import json
 from aiohttp import web
 from services.database import get_db
 from services.team_matcher import get_all_team_names, get_team_info
