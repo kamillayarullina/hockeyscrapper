@@ -58,7 +58,7 @@ We can not do admin panel as customer did not provide us the actions which admin
 
 ### Deployment
 
-- **Deployed product:** [http://89.125.169.128:8000/main.html](http://89.125.169.128:8000/main.html)
+- **Deployed product:** [http://89.125.169.128:8000](http://89.125.169.128:8000)
 
 ---
 
@@ -284,7 +284,7 @@ review could not be conducted this week
 | Product Backlog | [Board](https://github.com/users/kamillayarullina/projects/3/views/1) |
 | Sprint Backlog | [Board](https://github.com/users/kamillayarullina/projects/6) |
 | Sprint 2 Milestone | [Milestone 2](https://github.com/kamillayarullina/hockeyscrapper/milestone/2) |
-| Deployed product | [[http://139.100.225.113:8000/](http://89.125.169.128:8000/main.html)](http://89.125.169.128:8000/main.html) |
+| Deployed product | [http://139.100.225.113:8000](http://89.125.169.128:8000) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
 | SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v0.2.1) |
 | CI pipeline | [Tests & QA](https://github.com/kamillayarullina/hockeyscrapper/actions/workflows/tests.yml) |
