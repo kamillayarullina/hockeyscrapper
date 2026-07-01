@@ -96,3 +96,48 @@ These tests confirm that passwords are stored only as bcrypt hashes and never in
 **CI evidence location:** `.github/workflows/tests.yml` — step "Run unit and integration tests with coverage" (included in the full test suite).
 
 **Evidence link:** Latest protected default-branch CI run showing test results.
+
+---
+
+## QRT-004: Code lint compliance
+
+**Linked quality requirement:** QR-004
+
+**Verification method:** Automated CI check (ruff lint gate) + repository test.
+
+**Test data, setup, or environment:** Standard CI build environment for pull requests and protected default-branch updates.
+
+**Automated command or CI check:** `ruff check .`
+
+**Expected measurable result:**
+- `ruff check .` exits with code 0 (zero lint errors).
+- The QRT test `test_qrt_ruff.py` validates that `[tool.ruff]` is configured in `pyproject.toml` and that `ruff check .` completes successfully within 60 seconds.
+
+**Repository test location:** `tests/test_qrt_ruff.py` — validates ruff config exists and lint check passes.
+
+**CI evidence location:** `.github/workflows/ci.yml` — step "Lint with ruff" and `.github/workflows/tests.yml` — step "Run quality requirement tests (QRT)" (includes `test_qrt_ruff.py`).
+
+**Evidence link:** Latest protected default-branch CI run showing ruff exit code 0.
+
+---
+
+## QRT-005: Startup import integrity
+
+**Linked quality requirement:** QR-005
+
+**Verification method:** Automated repository test (unit tests).
+
+**Test data, setup, or environment:** Standard test environment with pytest.
+
+**Automated command or CI check:** `python -m pytest tests/test_qrt_startup.py -v`
+
+**Expected measurable result:**
+- All top-level module imports (`main`, `Backend.main`, `bot.telegram_bot`, `services.database`, `parsers.base_parser`) succeed without `ImportError` or `SyntaxError`.
+- The CLI argument parser (`main.py --help`) responds with usage text within 10 seconds.
+- The `load_env()` function runs without error when no `.env` file exists (graceful degradation).
+
+**Repository test location:** `tests/test_qrt_startup.py`
+
+**CI evidence location:** `.github/workflows/tests.yml` — step "Run quality requirement tests (QRT)".
+
+**Evidence link:** Latest protected default-branch CI run showing test results.
