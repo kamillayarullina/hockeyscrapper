@@ -227,7 +227,7 @@ async def cmd_list(message: Message):
         )
         return
 
-    text = f"📋 <b>Ваши подписки:</b>\n\n"
+    text = "📋 <b>Ваши подписки:</b>\n\n"
 
     if teams:
         text += f"<b>🏒 Команды ({len(teams)}):</b>\n"
@@ -409,7 +409,7 @@ async def cmd_admin_interval(message: Message):
         db = get_db()
         await db.set_setting("parse_interval_minutes", str(minutes))
         await message.answer(f"✅ Интервал парсинга изменён на <b>{minutes}</b> мин.")
-        await _notify_admin(f"🕐 Интервал парсинга изменён на {minutes} мин.", admin_id)
+        await _notify_admin(f"🕐 Интервал парсинга изменён на {minutes} мин.")
     except ValueError:
         await message.answer("❗ Введите число.")
 

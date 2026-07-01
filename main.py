@@ -3,7 +3,6 @@ import argparse
 import asyncio
 import logging
 import os
-import sys
 from pathlib import Path
 
 import uvicorn
@@ -63,7 +62,6 @@ async def run_bot():
 
 def run_api():
     try:
-        import Backend.main as api_app
         from Backend.database import engine
         import Backend.models
 

@@ -1,6 +1,5 @@
 """Personal notifications for subscribers."""
 
-import asyncio
 import logging
 from typing import Optional
 

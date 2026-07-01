@@ -1,10 +1,10 @@
 import re
 from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 from urllib.parse import urlparse
 import asyncio
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 from .base_parser import BaseParser
 
 
@@ -67,7 +67,7 @@ class YandexParser(BaseParser):
                     events.append(event_data)
                     self.logger.info(f"  ✅ Извлечено: {event_data.get('title')}")
                 else:
-                    self.logger.warning(f"  ❌ Не удалось извлечь данные")
+                    self.logger.warning("  ❌ Не удалось извлечь данные")
 
                 await asyncio.sleep(1)
 

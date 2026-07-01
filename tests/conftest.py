@@ -21,8 +21,8 @@ _db.SessionLocal = sessionmaker(
     autocommit=False, autoflush=False, bind=_db.engine
 )
 
-from Backend.database import Base, get_db
-from Backend.main import app
+from Backend.database import Base, get_db  # noqa: E402
+from Backend.main import app  # noqa: E402
 
 
 @pytest.fixture(scope="function", autouse=True)
