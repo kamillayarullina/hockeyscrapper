@@ -267,6 +267,15 @@
                     profileAvatar.style.backgroundPosition = "center";
                     profileAvatar.textContent = "";
 
+                    const token = localStorage.getItem("token");
+                    if (token) {
+                        fetch("/upload-avatar", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                            body: JSON.stringify({ avatar: dataUrl }),
+                        }).catch(() => {});
+                    }
+
                     closeCropModal();
                 });
 
@@ -279,6 +288,14 @@
                         document.getElementById("profileUsername").textContent = userFromApi.username || "—";
                         document.getElementById("profileEmail").textContent = userFromApi.email || "—";
                         document.getElementById("profileTelegram").textContent = userFromApi.telegram || "—";
+                        if (userFromApi.avatar_url) {
+                            localStorage.setItem("avatar", userFromApi.avatar_url);
+                            profileAvatar.innerHTML = "";
+                            profileAvatar.style.backgroundImage = `url(${userFromApi.avatar_url})`;
+                            profileAvatar.style.backgroundSize = "cover";
+                            profileAvatar.style.backgroundPosition = "center";
+                            profileAvatar.textContent = "";
+                        }
                     }
                     const tgBtn = document.getElementById("telegramBtn");
                     if (chatId_ && chatId_ > 0) {

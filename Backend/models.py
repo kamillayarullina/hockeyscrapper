@@ -13,6 +13,7 @@ class UserModel(Base):
     telegram: Mapped[str] = mapped_column(nullable=True)
     password_hash: Mapped[str] = mapped_column(nullable=True)
     link_code: Mapped[str] = mapped_column(nullable=True)
+    avatar_path: Mapped[str] = mapped_column(nullable=True)
     is_active: Mapped[int] = mapped_column(default=1)
     registered_at = Column(DateTime, server_default=func.now())
 
