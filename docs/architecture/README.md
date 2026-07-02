@@ -1,5 +1,25 @@
 # Architecture Documentation
 
+## Architecture Decisions
+
+The architecture is driven by three key decisions, each documented as an Architecture Decision Record (ADR):
+
+| ADR | Decision | Key quality impact |
+|---|---|---|
+| [ADR-001](adr/ADR-001-modular-parser-architecture.md) | Modular parser architecture with Strategy pattern | Enables QR-001 (testability) by isolating each source's parsing logic |
+| [ADR-002](adr/ADR-002-bcrypt-jwt-authentication.md) | bcrypt password hashing + JWT Bearer tokens | Satisfies QR-003 (password confidentiality); shapes all authenticated API routes |
+| [ADR-003](adr/ADR-003-dual-service-deployment.md) | Separate API and bot services sharing one Docker image | Supports QR-005 (startup reliability) by isolating each service's import chain |
+
+These decisions map to the views below: ADR-001 shapes the static parser structure, ADR-002 defines the authentication boundary visible in the static and dynamic views, and ADR-003 explains the deployment topology.
+
+## Traceability
+
+Architecture elements are traceable to quality requirements, ADRs, and tests:
+
+- `parsers/` (BaseParser + subclasses) ← ADR-001 ← QR-001 → QRT-001 → `tests/test_qrt_coverage.py`
+- `Backend/security.py` + `Backend/jwt_auth.py` ← ADR-002 ← QR-003 → QRT-003 → `tests/test_security.py`
+- `main.py` + `docker-compose.yml` + `render.yaml` ← ADR-003 ← QR-005 → QRT-005 → `tests/test_qrt_startup.py`
+
 ## Static View
 
 ### What the Diagram Shows
