@@ -8,6 +8,7 @@ These are required for every work item without exception:
 - [ ] **Reviewed by another team member**
 - [ ] **Required tests or checks pass**
 - [ ] **Verification evidence preserved**
+- [ ] **Architecture Decision Records (ADRs) updated**
 
 ---
 
@@ -16,7 +17,8 @@ These are required for every work item without exception:
 - [ ] **All Continuous Integration (CI) checks pass** 
 - [ ] **Code coverage for critical modules meets the target**
 - [ ] **Automated Quality Requirement Tests (QRTs) pass** 
-- [ ] **Testing evidence is preserved** in the associated PR, CI run logs, or linked documentation
+- [ ] **Testing evidence is preserved**
+- [ ] **Email notification logic tested**
 
 ---
 
@@ -48,6 +50,8 @@ These are required for every work item without exception:
 - [ ] Async code uses proper await patterns (no blocking calls in async paths)
 - [ ] Playwright/parser changes handle timeout and retry gracefully
 - [ ] Proxy rotator changes maintain health-check compatibility
+- [ ] Email notification changes handle SMTP failure gracefully without breaking the parser cycle
+- [ ] Team-matcher or parser changes preserve whole-word matching and do not introduce false positives
 - [ ] for every user-visible change update CHANGELOG.md
 ---
 
