@@ -399,7 +399,7 @@
                                 const displayName = found ? found.name : team;
                                 const logoFile = found ? found.logo : "";
                                 const imgHtml = logoFile ? `<img src="images/${logoFile}" alt="">` : "";
-                                teamsContainer.innerHTML += `<div class="team-card">${imgHtml}<span>${displayName}</span></div>`;
+                                teamsContainer.innerHTML += `<div class="team-card"><div class="card-info">${imgHtml}<span>${displayName}</span></div></div>`;
                             });
                         }
                     } catch {
