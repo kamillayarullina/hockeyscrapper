@@ -662,7 +662,7 @@ class AvatarUpload(BaseModel):
     avatar: str
 
 @app.post("/upload-avatar")
-def upload_avatar(body: AvatarUpload, payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+def upload_avatar_base64(body: AvatarUpload, payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
     import base64
     user = db.query(models.UserModel).filter(models.UserModel.chat_id == int(payload["sub"])).first()
     if not user:
