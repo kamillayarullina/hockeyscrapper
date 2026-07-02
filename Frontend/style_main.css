@@ -6,6 +6,7 @@
 :root {
     --darkblue: #0D398C;
     --lidark: #3059a6;
+    --accent: #D4A843;
 }
 body {
     font-family: 'Nunito', sans-serif;
@@ -32,45 +33,57 @@ body {
 .profile-container h1 {
     text-align: center;
     color: var(--darkblue);
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 800;
-    margin-bottom: 32px;
-    letter-spacing: -0.4px;
+    margin-bottom: 36px;
+    letter-spacing: -0.3px;
+}
+.profile-container h1::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    margin: 14px auto 0;
+    opacity: 0.5;
 }
 .profile-header {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 60px;
-    margin-bottom: 40px;
+    margin-bottom: 36px;
     flex-wrap: wrap;
 }
 .avatar-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
     min-width: 200px;
 }
 .profile-avatar {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--darkblue), #1f62b5);
     color: white;
-    font-size: 80px;
+    font-size: 72px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    box-shadow: 0 8px 30px rgba(13,57,140,0.2);
+    border: 3px solid rgba(255,255,255,0.8);
+    box-shadow: 0 0 0 1px rgba(13,57,140,0.12), 0 12px 40px rgba(13,57,140,0.18);
+    transition: box-shadow 0.3s;
 }
 .btn-upload {
     width: 100%;
-    padding: 12px 20px;
+    padding: 10px 24px;
     border: 2px solid var(--darkblue);
-    border-radius: 14px;
-    background: white;
+    border-radius: 12px;
+    background: transparent;
     color: var(--darkblue);
     font-family: 'Nunito', sans-serif;
     font-size: 14px;
@@ -81,38 +94,96 @@ body {
 .btn-upload:hover {
     background: var(--darkblue);
     color: white;
-    box-shadow: 0 6px 20px rgba(13,57,140,0.25);
+    box-shadow: 0 4px 16px rgba(13,57,140,0.2);
 }
 .profile-info {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     min-width: 260px;
 }
 .info-card {
     background: white;
-    border: 2px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 16px 22px;
-    transition: border-color 0.25s;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid var(--darkblue);
+    border-radius: 12px;
+    padding: 14px 20px;
+    transition: border-color 0.25s, box-shadow 0.25s;
 }
 .info-card:hover {
     border-color: #c8d2e0;
+    box-shadow: 0 2px 12px rgba(13,57,140,0.05);
 }
 .info-card span {
     display: block;
-    color: #94a3b8;
-    font-size: 13px;
-    font-weight: 600;
+    color: #8899b0;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
 }
 .info-card strong {
     color: var(--darkblue);
+    font-size: 20px;
+    font-weight: 700;
+}
+.action-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+.action-row .btn {
+    flex: 1;
+}
+.divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #c8d2e0, transparent);
+    margin: 28px 0;
+}
+.teams-section h2 {
+    color: var(--darkblue);
     font-size: 22px;
     font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: -0.2px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e6ecf3;
+}
+.teams-grid,
+.subscriptions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+}
+.team-card,
+.subscription-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+.team-card:hover,
+.subscription-card:hover {
+    border-color: var(--darkblue);
+    box-shadow: 0 2px 12px rgba(13,57,140,0.06);
+}
+.team-card img,
+.subscription-card img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
 }
 .card-info {
     display: flex;
@@ -132,50 +203,10 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.teams-section h2 {
-    color: var(--darkblue);
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    letter-spacing: -0.3px;
-}
-.teams-grid,
-.subscriptions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
-    margin-bottom: 32px;
-}
-.team-card,
-.subscription-card {
-    background: white;
-    border-radius: 14px;
-    border: 2px solid #e2e8f0;
-    padding: 16px 20px;
-    font-size: 17px;
-    font-weight: 600;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    transition: border-color 0.25s, box-shadow 0.25s;
-}
-.team-card:hover,
-.subscription-card:hover {
-    border-color: var(--darkblue);
-    box-shadow: 0 4px 16px rgba(13,57,140,0.08);
-}
-.team-card img,
-.subscription-card img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    flex-shrink: 0;
-}
 .btn-small {
     border: none;
     padding: 6px 14px;
-    border-radius: 10px;
+    border-radius: 8px;
     background: linear-gradient(135deg, var(--darkblue), #1f62b5);
     color: white;
     font-family: 'Nunito', sans-serif;
@@ -195,22 +226,22 @@ body {
 }
 .btn {
     width: 100%;
-    height: 52px;
+    height: 46px;
     background: linear-gradient(135deg, var(--darkblue), #1f62b5);
     border: none;
-    border-radius: 14px;
+    border-radius: 12px;
     cursor: pointer;
     color: white;
     font-family: 'Nunito', sans-serif;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 6px 20px rgba(13,57,140,0.25);
+    box-shadow: 0 4px 16px rgba(13,57,140,0.2);
 }
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 28px rgba(13,57,140,0.3);
+    box-shadow: 0 8px 24px rgba(13,57,140,0.25);
 }
 .btn:active {
     transform: translateY(0);
@@ -303,8 +334,9 @@ body {
 }
 @media (max-width: 600px) {
     body { padding: 16px; }
-    .profile-container { padding: 24px 18px 28px; }
+    .profile-container { padding: 24px 16px 28px; }
     .profile-container h1 { font-size: 26px; }
     .profile-header { gap: 30px; }
     .profile-avatar { width: 140px; height: 140px; font-size: 56px; }
+    .action-row { flex-direction: column; }
 }
