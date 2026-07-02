@@ -115,14 +115,18 @@
 
                 let cropState = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, lastX: 0, lastY: 0 };
 
+                function setAvatar(url) {
+                    profileAvatar.innerHTML = "";
+                    profileAvatar.style.backgroundImage = `url(${url})`;
+                    profileAvatar.style.backgroundSize = "cover";
+                    profileAvatar.style.backgroundPosition = "center";
+                    profileAvatar.textContent = "";
+                }
+
                 function loadSavedAvatar() {
                     const saved = localStorage.getItem("avatar");
                     if (saved) {
-                        profileAvatar.innerHTML = "";
-                        profileAvatar.style.backgroundImage = `url(${saved})`;
-                        profileAvatar.style.backgroundSize = "cover";
-                        profileAvatar.style.backgroundPosition = "center";
-                        profileAvatar.textContent = "";
+                        setAvatar(saved);
                     }
                 }
                 loadSavedAvatar();
@@ -277,6 +281,28 @@
                     }
 
                     closeCropModal();
+
+                    canvas.toBlob(async (blob) => {
+                        const token = localStorage.getItem("token");
+                        if (!token) return;
+                        const formData = new FormData();
+                        formData.append("avatar", blob, "avatar.jpg");
+                        try {
+                            const r = await fetch(`${API}/me/avatar`, {
+                                method: "PUT",
+                                headers: { "Authorization": `Bearer ${token}` },
+                                body: formData
+                            });
+                            if (r.ok) {
+                                const result = await r.json();
+                                if (result.avatar_url) {
+                                    localStorage.setItem("avatar_url", result.avatar_url);
+                                }
+                            }
+                        } catch (e) {
+                            console.error("Failed to upload avatar", e);
+                        }
+                    }, "image/jpeg", 0.92);
                 });
 
                 async function loadProfile() {
