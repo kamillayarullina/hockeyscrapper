@@ -61,6 +61,16 @@ class UserRegister(BaseModel):
             raise ValueError("Password must be at least 8 characters")
         if not any(c.isalpha() for c in v):
             raise ValueError("Password must contain at least one letter")
+        if not any(c.isdigit() for c in v):
+            raise ValueError("Password must contain at least one digit")
+        return v
+
+    @field_validator("username")
+    def username_valid(cls, v):
+        if len(v) < 3:
+            raise ValueError("Username must be at least 3 characters")
+        if not v.isalnum():
+            raise ValueError("Username must contain only letters and digits")
         return v
 
 class UserLogin(BaseModel):
