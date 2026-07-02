@@ -55,14 +55,16 @@ def extract_teams_from_title(title: str) -> list[str]:
         for match in re.finditer(re.escape(variant), title_lower):
             start, end = match.start(), match.end()
 
-            is_whole_word = True
             if start > 0 and title_lower[start - 1].isalpha():
-                is_whole_word = False
-            if end < len(title_lower) and title_lower[end].isalpha():
-                is_whole_word = False
-
-            if not is_whole_word:
                 continue
+
+            if end < len(title_lower) and title_lower[end].isalpha():
+                remaining = end + 1
+                while remaining < len(title_lower) and title_lower[remaining].isalpha():
+                    remaining += 1
+                if remaining - end > 2:
+                    continue
+                end = remaining
 
             pos_range = set(range(start, end))
             if pos_range & consumed:

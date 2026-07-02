@@ -271,6 +271,15 @@
                     profileAvatar.style.backgroundPosition = "center";
                     profileAvatar.textContent = "";
 
+                    const token = localStorage.getItem("token");
+                    if (token) {
+                        fetch("/upload-avatar", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                            body: JSON.stringify({ avatar: dataUrl }),
+                        }).catch(() => {});
+                    }
+
                     closeCropModal();
 
                     canvas.toBlob(async (blob) => {
@@ -306,7 +315,12 @@
                         document.getElementById("profileEmail").textContent = userFromApi.email || "—";
                         document.getElementById("profileTelegram").textContent = userFromApi.telegram || "—";
                         if (userFromApi.avatar_url) {
-                            setAvatar(userFromApi.avatar_url);
+                            localStorage.setItem("avatar", userFromApi.avatar_url);
+                            profileAvatar.innerHTML = "";
+                            profileAvatar.style.backgroundImage = `url(${userFromApi.avatar_url})`;
+                            profileAvatar.style.backgroundSize = "cover";
+                            profileAvatar.style.backgroundPosition = "center";
+                            profileAvatar.textContent = "";
                         }
                     }
                     const tgBtn = document.getElementById("telegramBtn");
@@ -356,19 +370,39 @@
                     }
                 }
 
-                const teamLogos = {
-                    "цска": "CSKA.png", "спартак": "Spartak.png",
-                    "динамо москва": "DinMsk.png", "ска": "SKA.png",
-                    "авангард": "Avangard.png", "ак барс": "AkBars.png",
-                    "салават юлаев": "Salavat.png", "трактор": "Traktor.png",
-                    "металлург": "Metallurg.png", "локомотив": "Lokomotiv.png",
-                    "сибирь": "Sibir.png", "торпедо": "Torpedo.png",
-                    "лада": "Lada.png", "витязь": "Vityaz.png",
-                    "северсталь": "Severstal.png", "нефтехимик": "Neftekhimik.png",
-                    "амур": "Amur.png", "адмирал": "Admiral.png",
-                    "куньлунь": "Kunlun.png", "барыс": "Barys.png",
-                    "динамо минск": "DynamoMin.png", "сочи": "Sochi.png"
-                };
+                const khlTeams = [
+                    { name: "СКА",  logo: "SKA.png" },
+                    { name: "ЦСКА", logo: "CSKA.png" },
+                    { name: "Ак Барс", logo: "AkBars.png" },
+                    { name: "Динамо Москва", logo: "DinMsk.png" },
+                    { name: "Локомотив", logo: "Lokomotiv.png" },
+                    { name: "Спартак", logo: "Spartak.png" },
+                    { name: "Трактор", logo: "Traktor.png" },
+                    { name: "Авангард", logo: "Avangard.png" },
+                    { name: "Металлург Мг", logo: "Metallurg.png" },
+                    { name: "Салават Юлаев", logo: "Salavat.png" },
+                    { name: "Северсталь", logo: "Severstal.png" },
+                    { name: "Торпедо", logo: "Torpedo.png" },
+                    { name: "Нефтехимик", logo: "Neftekhimik.png" },
+                    { name: "Сибирь", logo: "Sibir.png" },
+                    { name: "Витязь", logo: "Vityaz.png" },
+                    { name: "Амур", logo: "Amur.png" },
+                    { name: "Адмирал", logo: "Admiral.png" },
+                    { name: "Барыс", logo: "Barys.png" },
+                    { name: "Куньлунь Ред Стар", logo: "Kunlun.png" },
+                    { name: "Лада", logo: "Lada.png" },
+                    { name: "Сочи", logo: "Sochi.png" },
+                    { name: "Динамо Минск", logo: "DynamoMin.png" },
+                    { name: "Автомобилист", logo: "Avto.png" },
+                ];
+
+                function lookupTeam(name) {
+                    const lower = name.toLowerCase().trim();
+                    for (const t of khlTeams) {
+                        if (t.name.toLowerCase() === lower) return t;
+                    }
+                    return null;
+                }
 
                 async function loadSubscriptions() {
                     const teamsContainer = document.getElementById("myTeams");
@@ -387,9 +421,11 @@
                         } else {
                             localStorage.setItem("subscriptions", JSON.stringify(subs));
                             subs.forEach(team => {
-                                const logo = teamLogos[team.toLowerCase()] || "";
-                                const imgHtml = logo ? `<img src="images/${logo}" style="width:32px;height:32px;object-fit:contain;flex-shrink:0">` : "";
-                                teamsContainer.innerHTML += `<div class="team-card" style="gap:10px;overflow:hidden">${imgHtml}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${team}</span></div>`;
+                                const found = lookupTeam(team);
+                                const displayName = found ? found.name : team;
+                                const logoFile = found ? found.logo : "";
+                                const imgHtml = logoFile ? `<img src="images/${logoFile}" alt="">` : "";
+                                teamsContainer.innerHTML += `<div class="team-card"><div class="card-info">${imgHtml}<span>${displayName}</span></div></div>`;
                             });
                         }
                     } catch {

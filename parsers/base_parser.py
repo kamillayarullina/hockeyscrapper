@@ -14,8 +14,8 @@ from playwright.async_api import (
 )
 
 if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
     from services.proxy_rotator import ProxyRotator, ProxyServer
-
 
 class ParseError(Exception):
     """Parsing error (failed to extract data)."""
@@ -329,7 +329,7 @@ class BaseParser(abc.ABC):
         """Abstract HTML parsing method. Subclasses must implement data extraction."""
         ...
 
-    async def run(self) -> list[dict]:
+    async def run(self, db: Optional["Session"] = None) -> list[dict]:
         """Main method: load page and parse it."""
         self.logger.info(f"[{self.name}] Запуск парсинга {self.url}")
         try:
@@ -338,6 +338,20 @@ class BaseParser(abc.ABC):
             self.logger.info(
                 f"[{self.name}] Успешно получено {len(events)} событий"
             )
+            if db is not None:
+                from Backend import models
+
+                new_events = []
+                for event in events:
+                    existing = db.query(models.MatchModel).filter(
+                        models.MatchModel.title == event.get('title'),
+                        models.MatchModel.date == event.get('date')
+                    ).first()
+                    if not existing:
+                        new_events.append(event)
+                for event in new_events:
+                    self.logger.info(f"Новый матч: {event.get('title')}")
+                    await self._send_email_notifications(event, db)
             return events
         except ProtectionError as e:
             self.logger.error(f"[{self.name}] Антибот-защита: {e}")
@@ -359,3 +373,118 @@ class BaseParser(abc.ABC):
             f"<{self.__class__.__name__} name={self.name!r} "
             f"url={self.url!r}>"
         )
+    
+    async def _send_email_notifications(self, match_data: dict, db: "Session") -> None:
+        from Backend import models
+
+        try:
+            team_names = self._extract_team_names(match_data)
+            if not team_names:
+                self.logger.warning(f"Не удалось извлечь названия команд из матча: {match_data.get('title')}")
+                return
+            
+            self.logger.info(f"Поиск подписчиков для команд: {team_names}")
+            
+            subscribers = db.query(models.SubscriptionModel).filter(
+                models.SubscriptionModel.type == "team",
+                models.SubscriptionModel.value.in_([name.lower() for name in team_names])
+            ).all()
+            
+            if not subscribers:
+                self.logger.info(f"Нет подписчиков для команд {team_names}")
+                return
+            
+            user_ids = list(set([sub.chat_id for sub in subscribers]))
+            
+            users = db.query(models.UserModel).filter(
+                models.UserModel.chat_id.in_(user_ids),
+                models.UserModel.is_active == 1
+            ).all()
+            
+            self.logger.info(f"Найдено {len(users)} активных подписчиков")
+            
+            email_sent = 0
+            for user in users:
+                try:
+                    await self._send_match_notification_email(user, match_data)
+                    email_sent += 1
+                except Exception as e:
+                    self.logger.error(f"Ошибка отправки письма пользователю {user.email}: {e}")
+                    continue
+            
+            self.logger.info(f"Успешно отправлено {email_sent} уведомлений")
+            
+        except Exception as e:
+            self.logger.error(f"Ошибка при отправке уведомлений: {e}")
+    
+    def _extract_team_names(self, match_data: dict) -> list[str]:
+        from services.team_matcher import extract_teams_from_title
+        return extract_teams_from_title(match_data.get('title', ''))
+    
+    async def _send_match_notification_email(self, user, match_data: dict) -> None:
+        import os
+        from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
+
+        conf_email = ConnectionConfig(
+            MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "hqbo bhdk cxfg gabq"),
+            MAIL_USERNAME = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
+            MAIL_FROM = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
+            MAIL_PORT = int(os.getenv("MAIL_PORT", "587")),
+            MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com"),
+            MAIL_STARTTLS = os.getenv("MAIL_STARTTLS", "True") == "True",
+            MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True",
+        )
+
+        try:
+            html_body = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body {{ font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; }}
+                    .match {{ background: white; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+                    .price {{ color: #28a745; font-weight: bold; }}
+                    .button {{ display: inline-block; background: #667eea; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }}
+                    .footer {{ margin-top: 20px; color: #6c757d; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h2>🏒 Новый матч по хоккею!</h2>
+                </div>
+                <div class="content">
+                    <div class="match">
+                        <h3>📋 {match_data.get('title', 'Матч')}</h3>
+                        <p>📅 <strong>Дата:</strong> {match_data.get('date', 'Дата не указана')}</p>
+                        <p>📍 <strong>Место:</strong> {match_data.get('place', 'Место не указано')}</p>
+                        <p>💰 <strong>Цена:</strong> <span class="price">{match_data.get('price_min', 'Не указана')}</span>
+                        {f" - <span class='price'>{match_data.get('price_max', '')}</span>" if match_data.get('price_max') and match_data.get('price_max') != match_data.get('price_min') else ''}</p>
+                        <p>🎟️ <strong>Доступность:</strong> {match_data.get('availability', 'Уточняется')}</p>
+                        <p>🔗 <strong>Источник:</strong> {self.name}</p>
+                    </div>
+                    <div class="footer">
+                        <p>Вы получили это письмо, потому что подписаны на обновления о матчах.</p>
+                        <p>Для отписки перейдите в настройки профиля.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            message = MessageSchema(
+                subject=f"🏒 Новый матч: {match_data.get('title', 'Хоккей')}",
+                recipients=[user.email],
+                body=html_body,
+                subtype=MessageType.html
+            )
+            
+            fm = FastMail(conf_email)
+            await fm.send_message(message)
+            
+            self.logger.debug(f"Письмо отправлено на {user.email}")
+            
+        except Exception as e:
+            self.logger.error(f"Ошибка отправки письма на {user.email}: {e}")
+            raise
