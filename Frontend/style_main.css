@@ -44,9 +44,11 @@ body {
 .profile-header {
     display: flex;
     align-items: center;
-    gap: 60px;
+    justify-content: center;
+    gap: 80px;
 
     margin-bottom: 50px;
+    flex-wrap: wrap;
 }
 
 .profile-avatar {
@@ -190,4 +192,139 @@ body {
     background: var(--lidark);
     transform: translateY(-2px);
 }
+.avatar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+}
 
+.btn-upload {
+    width: 100%;
+    padding: 12px 24px;
+    border: 2px solid var(--darkblue);
+    border-radius: 25px;
+    background: white;
+    color: var(--darkblue);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    letter-spacing: 0.3px;
+}
+
+.btn-upload:hover {
+    background: var(--darkblue);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(13,57,140,0.3);
+}
+
+.btn-upload:active {
+    transform: translateY(0);
+}
+
+.profile-avatar {
+    overflow: hidden; 
+}
+
+.crop-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.crop-modal.active {
+    display: flex;
+}
+
+.crop-modal-content {
+    background: white;
+    border-radius: 25px;
+    padding: 30px;
+    width: min(500px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.crop-modal-content h3 {
+    margin: 0 0 20px;
+    color: var(--darkblue);
+    text-align: center;
+    font-size: 22px;
+}
+
+.crop-viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #000;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+}
+
+.crop-viewport img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform-origin: center center;
+    will-change: transform;
+    pointer-events: none;
+}
+
+.crop-mask {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,0.9);
+    pointer-events: none;
+}
+
+.crop-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.crop-controls input[type="range"] {
+    flex: 1;
+    accent-color: var(--darkblue);
+}
+
+.crop-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.crop-actions .btn-small {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.crop-save {
+    background: var(--darkblue) !important;
+}
+
+.crop-save:hover {
+    background: var(--lidark) !important;
+}

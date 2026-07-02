@@ -5,6 +5,7 @@ from unittest.mock import patch, MagicMock
 from jose import jwt
 from fastapi import HTTPException
 
+
 from Backend.jwt_auth import (
     create_token,
     verify_token,
