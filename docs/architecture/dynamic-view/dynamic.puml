@@ -1,0 +1,83 @@
+@startuml dynamic
+!theme plain
+
+title Sequence Diagram — Full Parser Cycle with Notification
+
+actor "Config\n(sites.yaml)" as config
+actor "Target Website" as site
+actor "Telegram User" as user
+
+participant "ParserRunner" as runner
+participant "ParserFactory" as factory
+participant "KHLParser" as parser
+participant "ProxyRotator" as proxy
+participant "Database" as db
+participant "TeamMatcher" as matcher
+participant "Notifier" as notifier
+participant "Telegram Bot API" as tg
+
+== Config Loading ==
+runner -> config : read site configs
+config --> runner : site list + parser types
+
+== Scraping Cycle (for each site) ==
+loop for each configured site
+  runner -> factory : get_parser(site_type)
+  factory --> runner : KHLParser instance
+
+  runner -> parser : fetch()
+  parser -> proxy : get_proxy()
+  proxy --> parser : proxy address
+
+  parser -> site : HTTP GET (Playwright)
+  activate site
+  site --> parser : HTML page
+  deactivate site
+
+  parser -> parser : parse HTML → events
+  parser --> runner : list[MatchEvent]
+
+  == Change Detection & Persistence ==
+  runner -> db : get_existing_matches(site)
+  db --> runner : previous events
+
+  runner -> db : save_new_matches(events)
+  note right #FEF9E7
+    Detects: new, sold-out,
+    price-changed, re-available
+  end note
+
+  == Team Extraction ==
+  runner -> matcher : extract_teams(event.title)
+  matcher --> runner : list[Team]
+
+  == Subscriber Lookup ==
+  runner -> db : get_subscribers(team, venue)
+  db --> runner : list[Subscriber]
+
+  == Notification Dispatch ==
+  alt has subscribers and changes
+    loop for each subscriber
+      runner -> notifier : notify(chat_id, event, change_type)
+      notifier -> db : check_notified(event_id, chat_id)
+      db --> notifier : not notified yet
+      notifier -> tg : send_message(chat_id, formatted_msg)
+      activate tg
+      tg -> user : push notification
+      tg --> notifier : success
+      deactivate tg
+      notifier -> db : mark_notified(event_id, chat_id)
+    end
+  end
+end
+
+== Cycle Complete ==
+runner -> runner : sleep(interval)
+
+note over runner #F5EEF8
+  The entire cycle repeats
+  every N minutes (configurable
+  in sites.yaml)
+end note
+
+@enduml

@@ -72,3 +72,47 @@ After all steps:
 - On step 4: email notification with code send to user
 - On step 7: password changes in database
 - User can Log in with new password
+
+## UAT-004: Managing parsing time
+
+**Status:** Active
+
+**User goal:** 
+As an admin, I want to manage the parsing time, so that I make parsing time faster on playoff and make it slower in other time.
+
+**Preconditions:**
+- Admin is in admin website
+- Admin logged in and pass the verification
+- Admin wants to change parsing time
+
+**Step-by-step instructions:**
+1. Admin push the button "Manage parsing time"
+2. After pushing he see the input box "Parsing time"
+3. Admin input the parsing time
+4. Admin push button "Apply"
+
+**Expected outcome:**
+After all steps:
+- On step 4: the parsing time is changed
+
+## UAT-005: Add proxy
+
+**Status:** Active
+
+**User goal:** 
+As an admin, I want to add proxy, so that I can by pass CAPTCHA to parse information from KHL teams websites.
+
+**Preconditions:**
+- Admin is in admin website
+- Admin logged in and pass the verification
+- Admin wants to add proxy
+
+**Step-by-step instructions:**
+1. Admin push the button "Add proxy"
+2. After pushing he see the input box "Add proxy"
+3. Admin input the proxy
+4. Admin push button "Apply"
+
+**Expected outcome:**
+After all steps:
+- On step 4: new proxy added

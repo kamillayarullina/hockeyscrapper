@@ -14,7 +14,7 @@
   - [PBI] US-10: Recover the password Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/93
   - [PBI] Add icons - https://github.com/kamillayarullina/hockeyscrapper/issues/84
 
-## Sprint 2 (MVP v2)
+## Sprint 2 (MVP v1)
 - **Dates:** June 22, 2026 — June 28, 2026
 - **Sprint Goal:** Deliver admin panel for managing options such as parsing time, validate password for stronger safety, add option ti upload avalar to the users and validate the input of telegram alias.
 - **Focus:** Validation of user input information in registration/password recovery, admin commands, user's avatar
@@ -29,5 +29,16 @@
   - [PBI] Creating tests - https://github.com/kamillayarullina/hockeyscrapper/issues/137
   - [PBI] Avatar adding Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/152
   - [PBI] Avatar Adding Backend - https://github.com/kamillayarullina/hockeyscrapper/issues/153
+ 
+  ## Sprint 3 (MVP v2)
+- **Dates:** June 29, 2026 — July 5, 2026
+- **Sprint Goal:** Deliver admin panel for managing options such as parsing time, improve interface of website (customer requirement), add email notification, tests.
+- **Focus:** Admin panel, improving interface, email notifications.
+- **Link to the Sprint Milestone:** - https://github.com/kamillayarullina/hockeyscrapper/milestone/3
+- **Planned Items:**
+  - [PBI] Admin Panel - https://github.com/kamillayarullina/hockeyscrapper/issues/131
+  - [PBI] Interface improving - https://github.com/kamillayarullina/hockeyscrapper/issues/179
+  - [PBI] Email notification - https://github.com/kamillayarullina/hockeyscrapper/issues/182
+  - [Testing] Quality-requirements tests - https://github.com/kamillayarullina/hockeyscrapper/issues/186
 
 
