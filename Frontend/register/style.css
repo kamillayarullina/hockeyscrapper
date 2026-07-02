@@ -65,7 +65,7 @@ a {
     border-radius: 14px;
     padding: 0 48px 0 18px;
     font-family: 'Nunito', sans-serif;
-    font-size: 16px;
+    font-size: 20px;
     color: #1a1a2e;
     background: #f8faff;
     outline: none;
@@ -78,7 +78,7 @@ a {
 }
 .input-box input::placeholder {
     color: #8899b4;
-    font-size: 15px;
+    font-size: 18px;
 }
 .input-box svg {
     position: absolute;
