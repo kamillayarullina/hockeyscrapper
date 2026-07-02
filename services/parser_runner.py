@@ -11,6 +11,7 @@ from typing import Any, Optional, Type
 
 import yaml
 
+from Backend.database import SessionLocal
 from parsers.base_parser import BaseParser
 from parsers.club_parser import ClubParser
 from parsers.yandex_parser import YandexParser
@@ -127,7 +128,11 @@ class ParserRunner:
         try:
             enriched_config = self._apply_global_settings(site_config.copy())
             parser = ParserFactory.create(site_config["parser"], enriched_config)
-            events = await parser.run()
+            db_sync = SessionLocal()
+            try:
+                events = await parser.run(db=db_sync)
+            finally:
+                db_sync.close()
 
             if not events:
                 logger.info(f"[{name}] Событий не найдено")
