@@ -1,0 +1,83 @@
+@startuml deployment
+!theme plain
+
+title Deployment Diagram — HockeyScrapper
+
+' ─── Skin ───
+skinparam node {
+  BackgroundColor #F5EEF8
+  BorderColor #8E44AD
+}
+skinparam database {
+  BackgroundColor #E8F8F5
+  BorderColor #1ABC9C
+}
+skinparam cloud {
+  BackgroundColor #FEF9E7
+  BorderColor #F1C40F
+}
+skinparam actor {
+  BackgroundColor #FADBD8
+  BorderColor #E74C3C
+}
+skinparam rectangle {
+  BackgroundColor #D6EAF8
+  BorderColor #2E86C1
+}
+
+' ─── Network Boundaries ───
+node "User Device" as device {
+  actor "User" as user
+  rectangle "Browser" as browser
+  rectangle "Telegram App" as tg_app
+}
+
+cloud "Internet" as internet
+
+' ─── Render Platform ───
+node "Render (Frankfurt)" as render {
+  rectangle "Render Web Service\nhockeyscrapper-api\n:8000" as webservice <<docker>>
+  rectangle "Render Worker\nhockeyscrapper-bot\n(no HTTP)" as worker <<docker>>
+
+  database "Managed PostgreSQL\nhockeyscrapper-db" as pg <<PostgreSQL>>
+}
+
+' ─── External Services ───
+cloud "External Services" as ext {
+  cloud "Telegram Bot API" as tg_api
+  cloud "KHL.ru" as khl
+  cloud "ticket-hockey.ru" as club
+  cloud "Yandex Afisha" as yandex
+  cloud "Gmail SMTP" as gmail
+}
+
+' ─── Customer-Facing Access Path ───
+user --> browser
+browser --> internet : HTTPS
+internet --> webservice : HTTPS (port 443)
+
+tg_app --> internet
+internet --> tg_api : HTTPS
+
+' ─── Internal Render Communication ───
+webservice --> pg : SQL (internal)
+worker --> pg : SQL (internal)
+
+' ─── Worker Outbound ───
+worker --> tg_api : HTTPS (Bot API)
+worker --> khl : HTTPS (Playwright)
+worker --> club : HTTPS (Playwright)
+worker --> yandex : HTTPS (Playwright)
+worker --> gmail : SMTP
+
+' ─── Alternative: Local Dev ───
+note bottom of render
+  **Local development options:**
+  • docker compose up (api + bot containers)
+  • python -m main --all (single process)
+  • python -m main --api-only (api only)
+  • python -m main --bot-only (bot+parser only)
+  SQLite replaces PostgreSQL in dev.
+end note
+
+@enduml

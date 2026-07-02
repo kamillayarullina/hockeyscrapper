@@ -1,0 +1,118 @@
+@startuml static
+!theme plain
+
+title Component Diagram — HockeyScrapper Architecture
+
+skinparam component {
+  BackgroundColor White
+  BorderColor #2E86C1
+  FontColor #2E86C1
+}
+
+skinparam database {
+  BackgroundColor #E8F8F5
+  BorderColor #1ABC9C
+}
+
+skinparam actor {
+  BackgroundColor #FADBD8
+  BorderColor #E74C3C
+}
+
+skinparam node {
+  BackgroundColor #F5EEF8
+  BorderColor #8E44AD
+}
+
+skinparam rectangle {
+  BackgroundColor #FEF9E7
+  BorderColor #F1C40F
+}
+
+' ── External Systems ──
+node "External Systems" as ext #F5EEF8 {
+  actor "Telegram User" as user
+  actor "Web User" as webuser
+
+  rectangle "Telegram Bot API" as tg_api <<HTTPS>>
+  rectangle "KHL.ru" as khl <<HTTPS>>
+  rectangle "ticket-hockey.ru" as club <<HTTPS>>
+  rectangle "Yandex Afisha" as yandex <<HTTPS>>
+  rectangle "Gmail SMTP" as gmail <<SMTP>>
+}
+
+' ── Internal Components ──
+package "Internal Components" {
+  component "main.py\n[Orchestrator]" as main
+
+  component "FastAPI Backend" as backend <<REST API>>
+  component "Frontend\n(Static HTML)" as frontend
+
+  component "Telegram Bot\n(aiogram)" as bot
+
+  component "Parser Runner" as runner
+  database "Config\n(sites.yaml)" as config
+
+  component "Club Parser" as clubp
+  component "KHL Parser" as khlp
+  component "Yandex Parser" as yandexp
+  component "Proxy Rotator" as proxy
+
+  component "Notifier" as notifier
+  component "Team Matcher" as matcher
+
+  component "Database Layer\n(services/database.py)" as db_layer
+
+  database "PostgreSQL / SQLite" as db <<Database>>
+}
+
+' ── Communications ──
+
+' Scraping data flow
+main --> runner : starts
+runner --> config : reads
+runner --> clubp : creates
+runner --> khlp : creates
+runner --> yandexp : creates
+clubp --> proxy : uses
+khlp --> proxy : uses
+yandexp --> proxy : uses
+clubp --> club : HTTP (Playwright)
+khlp --> khl : HTTP (Playwright)
+yandexp --> yandex : HTTP (Playwright)
+
+' Storage
+runner --> db_layer : saves matches
+db_layer --> db : SQL
+backend --> db : SQL (SQLAlchemy)
+
+' Matching & Notification
+runner --> matcher : extract teams
+runner --> notifier : notify subscribers
+notifier --> bot : send messages
+bot --> tg_api : HTTPS (aiogram)
+tg_api --> user : notifications
+
+' User facing
+webuser --> frontend : HTTP
+frontend --> backend : HTTP (REST)
+backend --> gmail : SMTP (password reset)
+bot <-- tg_api : commands
+user --> tg_api : /subscribe, /list
+
+' Bot to DB
+bot --> db_layer : queries
+matcher --> db_layer : queries
+
+' Config read
+backend --> db_layer : settings
+
+legend right
+  <size:10>Communication protocols:</size>
+  <size:10>-- HTTP / HTTPS</size>
+  <size:10>-- SQL / SQLAlchemy ORM</size>
+  <size:10>-- SMTP (Email)</size>
+  <size:10>-- Telegram Bot API</size>
+end legend
+
+@enduml
