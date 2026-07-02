@@ -8,6 +8,8 @@
 
 **Linked quality requirement tests:** [QRT-001](quality-requirement-tests.md#qrt-001-critical-module-unit-coverage)
 
+**Linked ADRs:** [ADR-001](architecture/adr/ADR-001-modular-parser-architecture.md) — modular parser architecture enables isolated unit testing of each parser subclass.
+
 ## QR-002: Security-lint feedback time
 
 **ISO/IEC 25010 sub-characteristic:** Analysability
@@ -17,6 +19,8 @@
 **Why this matters:** Developers need fast feedback about security mistakes so they can diagnose and fix vulnerabilities before merging.
 
 **Linked quality requirement tests:** [QRT-002](quality-requirement-tests.md#qrt-002-ci-security-lint-feedback-time)
+
+**Linked ADRs:** [ADR-002](architecture/adr/ADR-002-bcrypt-jwt-authentication.md) — authentication architecture defines security-sensitive code paths that security-lint gates target.
 
 ## QR-003: Password storage confidentiality
 
@@ -28,6 +32,8 @@
 
 **Linked quality requirement tests:** [QRT-003](quality-requirement-tests.md#qrt-003-password-hash-confidentiality)
 
+**Linked ADRs:** [ADR-002](architecture/adr/ADR-002-bcrypt-jwt-authentication.md) — bcrypt password hashing decision directly ensures password storage confidentiality.
+
 ## QR-004: Code maintainability тАФ ruff lint compliance
 
 **ISO/IEC 25010 sub-characteristic:** Maintainability / Analysability
@@ -38,6 +44,8 @@
 
 **Linked quality requirement tests:** [QRT-004](quality-requirement-tests.md#qrt-004-code-lint-compliance)
 
+**Linked ADRs:** [ADR-001](architecture/adr/ADR-001-modular-parser-architecture.md) — consistent interface patterns across parser modules reduce lint noise and improve maintainability.
+
 ## QR-005: Startup reliability
 
 **ISO/IEC 25010 sub-characteristic:** Reliability / Availability
@@ -47,3 +55,5 @@
 **Why this matters:** A system that fails at startup is completely unusable. Verifying the import and initialization chain catches missing dependencies, broken imports, and configuration errors before deployment.
 
 **Linked quality requirement tests:** [QRT-005](quality-requirement-tests.md#qrt-005-startup-import-integrity)
+
+**Linked ADRs:** [ADR-003](architecture/adr/ADR-003-dual-service-deployment.md) — dual-service deployment isolates startup paths so each service validates its import chain independently.
