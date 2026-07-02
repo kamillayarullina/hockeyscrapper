@@ -17,6 +17,16 @@ if DATABASE_URL.startswith("sqlite"):
     db_path = DATABASE_URL.replace("sqlite:///", "", 1)
     Path(db_path).parent.mkdir(parents=True, exist_ok=True)
     engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+
+    from sqlalchemy import event
+    from sqlalchemy.engine import Engine
+    @event.listens_for(Engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA busy_timeout=5000")
+        cursor.close()
+
     logger.info("Using SQLite at %s", db_path)
 else:
     engine = create_engine(DATABASE_URL)

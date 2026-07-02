@@ -27,6 +27,10 @@ class Database:
 
     async def init(self) -> None:
         await self.db.connect()
+        db_url = _build_url()
+        if db_url.startswith("sqlite"):
+            await self.db.execute("PRAGMA journal_mode=WAL")
+            await self.db.execute("PRAGMA busy_timeout=5000")
         await self.db.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 chat_id INTEGER PRIMARY KEY,
