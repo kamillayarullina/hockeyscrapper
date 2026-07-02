@@ -40,6 +40,7 @@ class Database:
                 telegram TEXT,
                 password_hash TEXT,
                 link_code TEXT,
+                avatar_url TEXT,
                 registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 is_active INTEGER DEFAULT 1
             )
