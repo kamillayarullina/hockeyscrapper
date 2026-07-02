@@ -117,7 +117,7 @@ body {
 .card-info {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     min-width: 0;
     flex: 1;
 }
@@ -149,15 +149,15 @@ body {
 .team-card,
 .subscription-card {
     background: white;
-    border-radius: 16px;
+    border-radius: 14px;
     border: 2px solid #e2e8f0;
-    padding: 18px 20px;
-    font-size: 18px;
+    padding: 12px 16px;
+    font-size: 16px;
     font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     transition: border-color 0.25s, box-shadow 0.25s;
 }
 .team-card:hover,
@@ -174,12 +174,12 @@ body {
 }
 .btn-small {
     border: none;
-    padding: 10px 20px;
-    border-radius: 12px;
+    padding: 6px 14px;
+    border-radius: 10px;
     background: linear-gradient(135deg, var(--darkblue), #1f62b5);
     color: white;
     font-family: 'Nunito', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -288,8 +288,8 @@ body {
 }
 .crop-actions .btn-small {
     flex: 1;
-    padding: 12px;
-    font-size: 15px;
+    padding: 10px;
+    font-size: 13px;
 }
 .crop-save {
     background: var(--darkblue) !important;
