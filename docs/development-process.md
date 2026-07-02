@@ -96,6 +96,8 @@ The diagram illustrates:
 - **Description**: Summary of changes, linked issue, testing notes
 - **Review**: At least one approval required
 - **CI Checks**: All workflows must pass (see Section 5)
+- **Lychee Checks**: All workflows must pass (see Section 5)
+- **Tests/QA Checks**: All workflows must pass (see Section 5)
 - **No merge conflicts**: Branch must be up-to-date with `main`
 
 ---
@@ -111,18 +113,18 @@ The diagram illustrates:
 
 The `.gitignore` excludes:
 - `.env` — environment variables with secrets
-- `__pycache__/`, `*.pyc`, `*.egg-info/` — Python bytecode
-- `.venv/`, `venv/` — virtual environments
+- `__pycache__/`, `*.py[cod]`, `*.pyc`, `*.egg-info/`, `dist/`, `build/` — Python cache, bytecode, and build artifacts
 - `data/`, `hockey.db` — local SQLite database
 - `*.log` — log files
-- `.vscode/`, `.idea/` — IDE settings
-- `node_modules/` — Node.js dependencies (if any)
+- `.vscode/`, `.idea/`, `*.swp`, `*.swo` — IDE and editor configuration
+- `node_modules/`, `.npm/` — Node.js dependencies (if any)
+- `.DS_Store`, `Thumbs.db` — OS-specific metadata
 
 ### Runtime Configuration
 
 - **Local**: `.env` file loaded via `python-dotenv` or similar
 - **CI/CD**: GitHub Secrets injected as environment variables
-- **Production**: Environment variables set in the hosting platform (Render / Fly.io dashboard)
+- **Production**: Environment variables set in the hosting platform
 
 ### Example Configuration
 
@@ -133,18 +135,18 @@ The repository includes `.env.example` with placeholder values:
 BOT_TOKEN=your_bot_token_here
 ADMIN_CHAT_ID=your_chat_id_here
 
-# Mail (Gmail app password)
-MAIL_USERNAME=your_email@gmail.com
-MAIL_PASSWORD=your_app_password
+# Mail (Gmail app password) — для восстановления пароля
+MAIL_USERNAME=sakirovsamir401@gmail.com
+MAIL_PASSWORD=hqbo bhdk cxfg gabq
 MAIL_PORT=587
 MAIL_SERVER=smtp.gmail.com
 MAIL_STARTTLS=True
 MAIL_SSL_TLS=False
 
-# JWT
-JWT_SECRET_KEY=change-this-in-production
+# JWT (подпись токенов) — смените на своё значение в production!
+JWT_SECRET_KEY=hockeyscrapper-secret-change-in-production
 
-# Database
+# База данных (по умолчанию SQLite)
 DATABASE_URL=sqlite:///data/tickets.db
 DB_PATH=data/tickets.db
 
@@ -175,25 +177,27 @@ PORT=8000
 ### Setup Steps
 
 ```bash
-# 1. Clone the repository
+# 1. Clone
 git clone https://github.com/kamillayarullina/hockeyscrapper.git
 cd hockeyscrapper
 
-# 2. Create and activate virtual environment
+# 2. Virtual environment
 python -m venv .venv
-source .venv/bin/activate      # Linux/macOS
-.venv\Scripts\activate        # Windows
+.venv\Scripts\activate    # Windows
 
-# 3. Install dependencies
+# 3. Dependencies
 pip install -r requirements.txt
-playwright install             # Install browsers for parsers
+playwright install         # for parsers
 
-# 4. Configure environment
+# 4. Environment
 cp .env.example .env
-# Edit .env with your local settings (BOT_TOKEN, DATABASE_URL, etc.)
+# Edit .env — set BOT_TOKEN (get token from @BotFather)
 
-# 5. Run the application
-python -m main --all           # API + bot + parser
+# 5. Run 
+# Everything (API + frontend + bot + parser)
+python -m main --all
+# Open in browser
+start http://localhost:8000
 ```
 
 ### Running Components Separately
@@ -245,11 +249,12 @@ The team uses **GitHub Actions** for CI. Three workflows run on every push and p
 
 ### Continuous Delivery
 
-- **Deployment** is handled via the hosting platform (Render / Fly.io):
-  - Production server pulls from `main` branch
-  - Environment variables are set in the platform dashboard
-  - Database migrations are run manually or via deployment scripts
-- **No automated deployment** is currently configured. Merges to `main` require manual deployment.
+- **Deployment** is manual and performed via SSH:
+  - After merging to `main`, a team member connects to the production server via SSH
+  - The server pulls the latest changes from the `main` branch (`git pull origin main`)
+  - Environment variables are set on the server (not in the repository)
+  - Database migrations are run manually after the pull
+- **No automated deployment** is currently configured. All deployments require manual SSH access and execution.
 
 ---
 
