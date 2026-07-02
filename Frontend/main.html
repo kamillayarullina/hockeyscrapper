@@ -16,7 +16,13 @@
 
         <div class="profile-header">
 
-            <div class="profile-avatar">👤</div>
+            <div class="avatar-wrapper">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <input type="file" id="avatarInput" accept="image/*" hidden>
+                <button class="btn-upload" type="button" onclick="document.getElementById('avatarInput').click()">
+                    Загрузить фото
+                </button>
+            </div>
 
             <div class="profile-info">
                 <div class="info-card">
@@ -50,6 +56,26 @@
             <h2>Подписки</h2>
 
             <div class="teams-grid" id="myTeams"></div>
+
+            <div class="crop-modal" id="cropModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;justify-content:center;align-items:center;padding:20px;box-sizing:border-box">
+                <div class="crop-modal-content">
+                    <h3>Выберите область фото</h3>
+                    <div class="crop-viewport" id="cropViewport">
+                        <img id="cropImage" alt="">
+                        <div class="crop-mask"></div>
+                    </div>
+                    <div class="crop-controls">
+                        <button class="btn-small" id="zoomOut" type="button">−</button>
+                        <input type="range" id="zoomRange" min="1" max="3" step="0.01" value="1">
+                        <button class="btn-small" id="zoomIn" type="button">+</button>
+                    </div>
+                    <div class="crop-actions">
+                        <button class="btn-small" id="cropCancel" type="button">Отмена</button>
+                        <button class="btn-small crop-save" id="cropSave" type="button">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+
             <script>
                 const API = "";
 
@@ -75,6 +101,174 @@
                     }
                     return null;
                 }
+
+                const avatarInput = document.getElementById("avatarInput");
+                const cropModal   = document.getElementById("cropModal");
+                const cropImage   = document.getElementById("cropImage");
+                const cropViewport= document.getElementById("cropViewport");
+                const zoomRange   = document.getElementById("zoomRange");
+                const zoomIn      = document.getElementById("zoomIn");
+                const zoomOut     = document.getElementById("zoomOut");
+                const cropSave    = document.getElementById("cropSave");
+                const cropCancel  = document.getElementById("cropCancel");
+                const profileAvatar = document.getElementById("profileAvatar");
+
+                let cropState = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, lastX: 0, lastY: 0 };
+
+                function loadSavedAvatar() {
+                    const saved = localStorage.getItem("avatar");
+                    if (saved) {
+                        profileAvatar.innerHTML = "";
+                        profileAvatar.style.backgroundImage = `url(${saved})`;
+                        profileAvatar.style.backgroundSize = "cover";
+                        profileAvatar.style.backgroundPosition = "center";
+                        profileAvatar.textContent = "";
+                    }
+                }
+                loadSavedAvatar();
+
+                avatarInput.addEventListener("change", (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        cropImage.src = ev.target.result;
+                        cropImage.onload = () => {
+                            openCropModal();
+                        };
+                    };
+                    reader.readAsDataURL(file);
+                    avatarInput.value = ""; 
+                });
+
+                function openCropModal() {
+                    cropState = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, lastX: 0, lastY: 0 };
+                    zoomRange.value = 1;
+                    applyCropTransform();
+                    cropModal.style.display = "flex";
+                }
+
+                function closeCropModal() {
+                    cropModal.style.display = "none";
+                }
+
+                function applyCropTransform() {
+                    cropImage.style.transform = `translate(${cropState.x}px, ${cropState.y}px) scale(${cropState.scale})`;
+                }
+
+                cropViewport.addEventListener("mousedown", (e) => {
+                    cropState.dragging = true;
+                    cropState.startX = e.clientX - cropState.x;
+                    cropState.startY = e.clientY - cropState.y;
+                    cropImage.style.cursor = "grabbing";
+                });
+                document.addEventListener("mousemove", (e) => {
+                    if (!cropState.dragging) return;
+                    cropState.x = e.clientX - cropState.startX;
+                    cropState.y = e.clientY - cropState.startY;
+                    applyCropTransform();
+                });
+                document.addEventListener("mouseup", () => {
+                    cropState.dragging = false;
+                    cropImage.style.cursor = "grab";
+                });
+
+                cropViewport.addEventListener("touchstart", (e) => {
+                    if (e.touches.length !== 1) return;
+                    cropState.dragging = true;
+                    cropState.startX = e.touches[0].clientX - cropState.x;
+                    cropState.startY = e.touches[0].clientY - cropState.y;
+                }, { passive: true });
+                cropViewport.addEventListener("touchmove", (e) => {
+                    if (!cropState.dragging || e.touches.length !== 1) return;
+                    cropState.x = e.touches[0].clientX - cropState.startX;
+                    cropState.y = e.touches[0].clientY - cropState.startY;
+                    applyCropTransform();
+                    e.preventDefault();
+                }, { passive: false });
+                cropViewport.addEventListener("touchend", () => { cropState.dragging = false; });
+
+                cropViewport.addEventListener("wheel", (e) => {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                    cropState.scale = Math.max(1, Math.min(3, cropState.scale + delta));
+                    zoomRange.value = cropState.scale;
+                    applyCropTransform();
+                }, { passive: false });
+
+                zoomRange.addEventListener("input", () => {
+                    cropState.scale = parseFloat(zoomRange.value);
+                    applyCropTransform();
+                });
+                zoomIn.addEventListener("click", () => {
+                    cropState.scale = Math.min(3, cropState.scale + 0.1);
+                    zoomRange.value = cropState.scale;
+                    applyCropTransform();
+                });
+                zoomOut.addEventListener("click", () => {
+                    cropState.scale = Math.max(1, cropState.scale - 0.1);
+                    zoomRange.value = cropState.scale;
+                    applyCropTransform();
+                });
+
+                cropCancel.addEventListener("click", closeCropModal);
+
+                cropSave.addEventListener("click", () => {
+                    const size = 440;
+                    const canvas = document.createElement("canvas");
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext("2d");
+
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.clip();
+
+                    const vpSize = cropViewport.clientWidth;
+                    if (vpSize === 0) return;
+                    const ratio = size / vpSize;
+
+                    const natW = cropImage.naturalWidth;
+                    const natH = cropImage.naturalHeight;
+
+                    const coverScale = Math.max(vpSize / natW, vpSize / natH);
+                    const dispW = natW * coverScale;
+                    const dispH = natH * coverScale;
+                    const elOffX = (vpSize - dispW) / 2;
+                    const elOffY = (vpSize - dispH) / 2;
+
+                    const cx = vpSize / 2;
+                    const cy = vpSize / 2;
+                    const s = cropState.scale;
+                    const x = cropState.x;
+                    const y = cropState.y;
+
+                
+                    const finalX = (elOffX - cx) * s + cx + x;
+                    const finalY = (elOffY - cy) * s + cy + y;
+
+                    const finalW = dispW * s;
+                    const finalH = dispH * s;
+
+                    const canvasX = finalX * ratio;
+                    const canvasY = finalY * ratio;
+                    const canvasW = finalW * ratio;
+                    const canvasH = finalH * ratio;
+
+                    ctx.drawImage(cropImage, canvasX, canvasY, canvasW, canvasH);
+
+                    const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
+                    localStorage.setItem("avatar", dataUrl);
+
+                    profileAvatar.innerHTML = "";
+                    profileAvatar.style.backgroundImage = `url(${dataUrl})`;
+                    profileAvatar.style.backgroundSize = "cover";
+                    profileAvatar.style.backgroundPosition = "center";
+                    profileAvatar.textContent = "";
+
+                    closeCropModal();
+                });
 
                 async function loadProfile() {
                     const token = localStorage.getItem("token");

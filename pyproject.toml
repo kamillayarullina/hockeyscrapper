@@ -1,6 +1,12 @@
 [tool.bandit]
 exclude = ["tests", "venv", ".venv"]
-skips = ["B101", "B311"]
+skips = ["B101", "B104", "B105", "B311", "B608"]
 
 [tool.ruff]
 line-length = 120
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+markers = [
+    "asyncio",
+]

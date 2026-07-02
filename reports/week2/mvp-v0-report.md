@@ -8,7 +8,7 @@ HockeyScrapper MVP v0 is a working local project that connects a website, a Tele
 
 ## Deployment URL
 
-[Deployment](https://hockeyscrapper-3.onrender.com/)
+[Deployment](http://139.100.225.113:8000/)
 
 ## Video
 

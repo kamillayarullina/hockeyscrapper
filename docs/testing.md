@@ -1,70 +1,61 @@
-# Testing Strategy
+# Testing Strategy and QA Report — HockeyScrapper 🏒
 
-## Overview
+This document outlines the testing architecture, module coverage targets, automated quality gates, and Continuous Integration (CI) checks for the HockeyScrapper application.
 
-This document describes the testing approach for the HockeyScrapper project.
-Tests are located in `tests/` and run via pytest with coverage reporting.
+## 1. Testing Infrastructure & Environment
 
-## Test Types
+We utilize **Pytest** as our primary test runner due to its native support for asynchronous execution via `pytest-asyncio` (required for `FastAPI` and `aiogram` bots).
 
-### Unit Tests
+### Test Databases & Mocking
 
-| Module | File | Scope |
-|---|---|---|
-| `services/team_matcher.py` | `tests/test_team_matcher.py` | Team name extraction, normalization, team info lookup |
-| `Backend/security.py` | `tests/test_security.py` | Password hashing and verification |
-| `Backend/jwt_auth.py` | `tests/test_jwt_auth.py` | JWT token creation, verification, expiration |
+* **Database Isolation:** To avoid state pollution, all backend integration tests run against an in-memory **SQLite database** (`sqlite:///:memory:`). The DB schema is rebuilt from scratch for every single test case using the `_setup_db` fixture in `tests/conftest.py`.
 
-### Integration Tests
+* **FastAPI Client:** Fast and isolated API endpoint testing is handled by standard FastAPI `TestClient` injection.
 
-| Endpoint | File | Scope |
-|---|---|---|
-| `POST /register` | `tests/test_api_integration.py` | User registration, duplicate emails, password validation |
-| `POST /login` | `tests/test_api_integration.py` | Authentication, wrong credentials |
-| `POST /forgot_password` | `tests/test_api_integration.py` | Password reset request, rate limiting |
-| `POST /new_password` | `tests/test_api_integration.py` | Code verification, expiration, password update |
-| `GET /me` | `tests/test_api_integration.py` | Authenticated profile access, invalid tokens |
-| `GET /stats` | `tests/test_api_integration.py` | Statistics endpoint |
+* **Network Mocking:** For Playwright-based web parsers, we mock outgoing HTTP requests and DOM structures to prevent network variance and rate-limiting from causing flaky builds in CI.
 
-## Running Tests
+## 2. Test Locations & Modules
 
-```bash
-# Install test dependencies
-pip install -r requirements.txt
+All test assets are maintained in the `tests/` directory:
 
-# Run all tests
-python -m pytest tests/ -v
+* `tests/conftest.py` — Database session overrides and global pytest fixtures.
+* `tests/test_jwt_auth.py` — Unit tests for token creation, encoding, expiration, and invalid signatures.
+* `tests/test_security.py` — Unit tests for password hashing correctness and hash matching (`bcrypt`).
+* `tests/test_team_matcher.py` — Unit tests for team name normalization and extraction logic.
+* `tests/test_api_integration.py` — Integration tests for authentication flow and profile endpoints.
+* `tests/test_fault_tolerance.py` — **[QRT-01]** Verifies the parser's retry mechanisms and isolation under network downtime (5xx errors).
+* `tests/test_auth_confidentiality.py` — **[QRT-02]** Verifies that secure API endpoints block unauthorized actors without JWT credentials.
+* `tests/test_notification_performance.py` — **[QRT-03]** Measures the speed of the notification matching service under load (50 matches simultaneously).
 
-# With coverage
-python -m pytest tests/ -v --cov=Backend --cov=services --cov-report=term
+## 3. Coverage Analysis & Targets
 
-# With coverage report
-python -m pytest tests/ -v --cov=Backend --cov=services --cov-report=html
-```
+We enforce a strict quality minimum of **at least 30% line coverage** for all critical backend and service modules.
 
-## Coverage
+### Target Modules vs Coverage Targets
 
-Coverage is configured in `.coveragerc`. Critical modules:
+| Module File | Critical Logic | Expected Target Coverage | Actual Status |
+| ----- | ----- | ----- | ----- |
+| `Backend/security.py` | Password encryption & verification | $\ge 80\%$ | Fully Covered |
+| `Backend/jwt_auth.py` | Token signature, expiration checks, and Dependency-injection | $\ge 80\%$ | Fully Covered |
+| `services/team_matcher.py` | Normalizing KHL and club naming conventions | $\ge 90\%$ | Fully Covered |
+| `parsers/base_parser.py` | Playwright loader, user-agent generation, and retry logic | $\ge 40\%$ | Covered via Mock integration |
+| `services/notifications` | Matching ticket updates to bot subscription models | $\ge 30\%$ | Covered via performance benchmark |
 
-| Module | Target coverage |
-|---|---|
-| `Backend/security.py` | >= 80% |
-| `Backend/jwt_auth.py` | >= 80% |
-| `services/team_matcher.py` | >= 90% |
-| `Backend/main.py` (API endpoints) | >= 30% |
+## 4. Additional QA Check — Dependency Vulnerability Audit
 
-## CI
+To secure the HockeyScrapper application against supply-chain attacks, we have introduced an automatic **dependency vulnerability audit** step utilizing **`pip-audit`**.
 
-Tests and QA checks run automatically on push/PR to `main` via
-`.github/workflows/tests.yml`.
+### 1. Options Considered
 
-## Additional QA Check
+* **Safety:** Very popular tool for checking python packages, but its public database is often delayed unless a paid API key is supplied.
+* **Pip-audit (Selected):** Backed by the PyPI advisory database, runs natively without keys, and scans local packages against active OSV (Open Source Vulnerabilities) databases.
 
-**Bandit** — Python security linter — runs as an additional QA step in CI.
-It is distinct from unit tests, integration tests, coverage, and link checking.
+### 2. QA Objective & Risk Addressed
 
-## Quality Requirement Tests
+* **Objective:** Ensure no third-party libraries listed in `requirements.txt` contain known, unpatched security vulnerabilities (CVEs).
+* **Why it matters:** Web scraping frequently pulls packages that handle raw HTML, network sockets, and browser drivers (`playwright`, `aiohttp`, `beautifulsoup4`). A vulnerability in those libraries could lead to Remote Code Execution (RCE) or arbitrary file read on the deployed crawler server.
 
-Quality requirement tests (QRTs) are documented in
-`docs/quality-requirement-tests.md` and linked to specific quality
-requirements in `docs/quality-requirements.md`.
+### 3. CI Integration & Limitations
+
+* **CI Stage:** This check runs inside the main `test` job of the `Tests & QA` workflow (`.github/workflows/tests.yml`) right before the test suite. If any vulnerability is detected, **the build fails immediately**, preventing deployment.
+* **Limitations:** It only scans packages listed in `requirements.txt`. Native system dependencies (such as Chromium library updates or host OS CVEs) are outside its scope and must be scanned at the Docker base-image level.
