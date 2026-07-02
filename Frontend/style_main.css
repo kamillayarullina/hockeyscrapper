@@ -24,18 +24,28 @@ body {
     background: rgba(255,255,255,0.92);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    border-radius: 28px;
-    padding: 40px 42px 42px;
+    border-radius: 24px;
+    padding: 36px 40px 40px;
     box-shadow: 0 30px 70px rgba(13,57,140,0.12), 0 10px 30px rgba(0,0,0,0.04);
     animation: fadeUp 0.5s ease-out;
 }
 .profile-container h1 {
     text-align: center;
     color: var(--darkblue);
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 800;
-    margin-bottom: 32px;
-    letter-spacing: -0.4px;
+    margin-bottom: 36px;
+    letter-spacing: -0.3px;
+}
+.profile-container h1::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: var(--darkblue);
+    border-radius: 2px;
+    margin: 12px auto 0;
+    opacity: 0.25;
 }
 .profile-header {
     display: flex;
@@ -53,17 +63,18 @@ body {
     min-width: 200px;
 }
 .profile-avatar {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--darkblue), #1f62b5);
     color: white;
-    font-size: 80px;
+    font-size: 72px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    box-shadow: 0 8px 30px rgba(13,57,140,0.2);
+    border: 3px solid rgba(255,255,255,0.7);
+    box-shadow: 0 0 0 1px rgba(13,57,140,0.1), 0 8px 30px rgba(13,57,140,0.15);
 }
 .btn-upload {
     width: 100%;
@@ -92,26 +103,29 @@ body {
 }
 .info-card {
     background: white;
-    border: 2px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 16px 22px;
-    transition: border-color 0.25s;
+    border: 1px solid #dce2ec;
+    border-left: 4px solid var(--darkblue);
+    border-radius: 10px;
+    padding: 14px 20px;
+    transition: border-color 0.25s, box-shadow 0.25s;
 }
 .info-card:hover {
     border-color: #c8d2e0;
+    border-left-color: var(--darkblue);
+    box-shadow: 0 2px 12px rgba(13,57,140,0.06);
 }
 .info-card span {
     display: block;
     color: #94a3b8;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
 }
 .info-card strong {
     color: var(--darkblue);
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
 }
 .card-info {
@@ -132,12 +146,20 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.section-divider {
+    border: none;
+    height: 1px;
+    background: #e0e6ee;
+    margin: 28px 0 28px;
+}
 .teams-section h2 {
     color: var(--darkblue);
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     margin-bottom: 20px;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e8ecf2;
 }
 .teams-grid,
 .subscriptions-grid {
@@ -149,8 +171,8 @@ body {
 .team-card,
 .subscription-card {
     background: white;
-    border-radius: 14px;
-    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    border: 1px solid #dce2ec;
     padding: 16px 20px;
     font-size: 17px;
     font-weight: 600;
@@ -163,7 +185,7 @@ body {
 .team-card:hover,
 .subscription-card:hover {
     border-color: var(--darkblue);
-    box-shadow: 0 4px 16px rgba(13,57,140,0.08);
+    box-shadow: 0 2px 12px rgba(13,57,140,0.06);
 }
 .team-card img,
 .subscription-card img {
@@ -195,16 +217,16 @@ body {
 }
 .btn {
     width: 100%;
-    height: 52px;
+    height: 48px;
     background: linear-gradient(135deg, var(--darkblue), #1f62b5);
     border: none;
-    border-radius: 14px;
+    border-radius: 10px;
     cursor: pointer;
     color: white;
     font-family: 'Nunito', sans-serif;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
     transition: transform 0.2s, box-shadow 0.2s;
     box-shadow: 0 6px 20px rgba(13,57,140,0.25);
 }
@@ -306,5 +328,5 @@ body {
     .profile-container { padding: 24px 18px 28px; }
     .profile-container h1 { font-size: 26px; }
     .profile-header { gap: 30px; }
-    .profile-avatar { width: 140px; height: 140px; font-size: 56px; }
+    .profile-avatar { width: 130px; height: 130px; font-size: 52px; }
 }
