@@ -11,12 +11,31 @@ body {
     background-image: url('b.jpg');
     background-size: cover;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     min-height: 100vh;
+}
+.header {
+    flex-shrink: 0;
+    padding-block: 30px;
+}
+[class*="__container"] {
+    max-width: 1069px;
+    margin-inline: auto;
+}
+.header__nav {
+    display: flex;
+    justify-content: space-between;
+}
+.header__svg {
+    width: 450px;
+    height: auto;
+}
+a {
+    text-decoration: none;
 }
 .wrapper {
     width: 420px;
+    margin: auto;
 }
 .wrapper h1{
     color: #0D398C;
