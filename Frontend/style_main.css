@@ -1,3 +1,8 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 :root {
     --darkblue: #0D398C;
     --lidark: #3059a6;
@@ -7,287 +12,258 @@ body {
     background-image: url('b.jpg');
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
-
+    background-attachment: fixed;
     min-height: 100vh;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
-    padding: 40px 0;
-    box-sizing: border-box;
+    padding: 30px;
 }
-
 .profile-container {
-    width: min(1000px, 90vw);
-
-    padding: 50px;
-
-    background: rgba(255,255,255,0.95);
-
-    border-radius: 35px;
-
-    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    width: min(920px, 94vw);
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 28px;
+    padding: 40px 42px 42px;
+    box-shadow: 0 30px 70px rgba(13,57,140,0.12), 0 10px 30px rgba(0,0,0,0.04);
+    animation: fadeUp 0.5s ease-out;
 }
-
 .profile-container h1 {
     text-align: center;
-
     color: var(--darkblue);
-
-    font-size: 48px;
-
-    margin-bottom: 40px;
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 32px;
+    letter-spacing: -0.4px;
 }
-
 .profile-header {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 80px;
-
-    margin-bottom: 50px;
-    flex-wrap: wrap;
-}
-
-.profile-avatar {
-    min-width: 220px;
-    height: 220px;
-
-    border-radius: 50%;
-
-    background: var(--darkblue);
-
-    color: white;
-
-    font-size: 100px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.profile-info {
-    flex: 1;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 20px;
-}
-
-.info-card {
-    background: white;
-
-    border: 2px solid #dbe4f5;
-
-    border-radius: 20px;
-
-    padding: 20px 25px;
-}
-
-.info-card span {
-    display: block;
-
-    color: #888;
-
-    font-size: 16px;
-}
-
-.info-card strong {
-    color: var(--darkblue);
-
-    font-size: 24px;
-}
-
-.teams-section h2 {
-    color: var(--darkblue);
-
-    margin-bottom: 25px;
-}
-
-.teams-grid,
-.subscriptions-grid {
-    display: grid;
-
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 20px;
-
+    gap: 60px;
     margin-bottom: 40px;
-}
-
-.team-card,
-.subscription-card {
-    background: white;
-
-    border-radius: 20px;
-
-    border: 2px solid #dbe4f5;
-
-    padding: 25px;
-
-    font-size: 22px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 12px;
-
-    overflow: hidden;
-
-    box-sizing: border-box;
-}
-
-.btn-small {
-    border: none;
-
-    padding: 10px 18px;
-
-    border-radius: 20px;
-
-    background: #537cc9;
-
-    color: white;
-
-    font-family: 'Nunito', sans-serif;
-
-    cursor: pointer;
-}
-
-.unsubscribe {
-    background: #d9534f;
-}
-
-.unsubscribe {
-    background: #d9534f;
-}
-
-.btn {
-    width: 100%;
-
-    height: 60px;
-
-    border: none;
-    border-radius: 20px;
-
-    background-color: var(--darkblue);
-
-    color: white;
-
-    font-family: 'Nunito', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.btn:hover {
-    background: var(--lidark);
-    transform: translateY(-2px);
+    flex-wrap: wrap;
 }
 .avatar-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    min-width: 220px;
+    gap: 14px;
+    min-width: 200px;
 }
-
+.profile-avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--darkblue), #1f62b5);
+    color: white;
+    font-size: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(13,57,140,0.2);
+}
 .btn-upload {
     width: 100%;
-    padding: 12px 24px;
+    padding: 12px 20px;
     border: 2px solid var(--darkblue);
-    border-radius: 25px;
+    border-radius: 14px;
     background: white;
     color: var(--darkblue);
     font-family: 'Nunito', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    transition: 0.3s;
-    letter-spacing: 0.3px;
+    transition: all 0.25s;
 }
-
 .btn-upload:hover {
     background: var(--darkblue);
     color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(13,57,140,0.3);
+    box-shadow: 0 6px 20px rgba(13,57,140,0.25);
 }
-
-.btn-upload:active {
+.profile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 260px;
+}
+.info-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px 22px;
+    transition: border-color 0.25s;
+}
+.info-card:hover {
+    border-color: #c8d2e0;
+}
+.info-card span {
+    display: block;
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+.info-card strong {
+    color: var(--darkblue);
+    font-size: 22px;
+    font-weight: 700;
+}
+.card-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+}
+.card-info img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+.card-info span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.teams-section h2 {
+    color: var(--darkblue);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+}
+.teams-grid,
+.subscriptions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 32px;
+}
+.team-card,
+.subscription-card {
+    background: white;
+    border-radius: 14px;
+    border: 2px solid #e2e8f0;
+    padding: 16px 20px;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+.team-card:hover,
+.subscription-card:hover {
+    border-color: var(--darkblue);
+    box-shadow: 0 4px 16px rgba(13,57,140,0.08);
+}
+.team-card img,
+.subscription-card img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+.btn-small {
+    border: none;
+    padding: 6px 14px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--darkblue), #1f62b5);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(13,57,140,0.2);
+    white-space: nowrap;
+}
+.btn-small:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(13,57,140,0.3);
+}
+.btn-small.unsubscribe {
+    background: linear-gradient(135deg, #dc3545, #e74c5e);
+}
+.btn {
+    width: 100%;
+    height: 52px;
+    background: linear-gradient(135deg, var(--darkblue), #1f62b5);
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 6px 20px rgba(13,57,140,0.25);
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(13,57,140,0.3);
+}
+.btn:active {
     transform: translateY(0);
 }
-
-.profile-avatar {
-    overflow: hidden; 
-}
-
 .crop-modal {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0,0,0,0.75);
     z-index: 9999;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    box-sizing: border-box;
 }
-
 .crop-modal.active {
     display: flex;
 }
-
 .crop-modal-content {
     background: white;
-    border-radius: 25px;
+    border-radius: 24px;
     padding: 30px;
-    width: min(500px, 100%);
+    width: min(480px, 100%);
     max-height: 90vh;
     overflow: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
 }
-
 .crop-modal-content h3 {
     margin: 0 0 20px;
     color: var(--darkblue);
     text-align: center;
-    font-size: 22px;
+    font-size: 20px;
+    font-weight: 700;
 }
-
 .crop-viewport {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1;
     border-radius: 50%;
     overflow: hidden;
     background: #000;
     cursor: grab;
     user-select: none;
-    -webkit-user-select: none;
     touch-action: none;
 }
-
 .crop-viewport img {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     object-fit: cover;
     transform-origin: center center;
     will-change: transform;
     pointer-events: none;
 }
-
 .crop-mask {
     position: absolute;
     inset: 0;
@@ -295,36 +271,40 @@ body {
     box-shadow: inset 0 0 0 3px rgba(255,255,255,0.9);
     pointer-events: none;
 }
-
 .crop-controls {
     display: flex;
     align-items: center;
     gap: 12px;
     margin: 20px 0;
 }
-
 .crop-controls input[type="range"] {
     flex: 1;
     accent-color: var(--darkblue);
 }
-
 .crop-actions {
     display: flex;
     justify-content: space-between;
     gap: 12px;
 }
-
 .crop-actions .btn-small {
     flex: 1;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: 700;
+    padding: 10px;
+    font-size: 13px;
 }
-
 .crop-save {
     background: var(--darkblue) !important;
 }
-
 .crop-save:hover {
     background: var(--lidark) !important;
+}
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 600px) {
+    body { padding: 16px; }
+    .profile-container { padding: 24px 18px 28px; }
+    .profile-container h1 { font-size: 26px; }
+    .profile-header { gap: 30px; }
+    .profile-avatar { width: 140px; height: 140px; font-size: 56px; }
 }
