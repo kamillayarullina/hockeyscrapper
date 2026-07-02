@@ -351,6 +351,182 @@ async def cmd_stats(message: Message):
     await message.answer(text)
 
 
+def _is_admin(chat_id: int) -> bool:
+    """Check if user is admin."""
+    admin_id = os.environ.get("ADMIN_CHAT_ID", "0")
+    try:
+        return chat_id == int(admin_id)
+    except (ValueError, TypeError):
+        return False
+
+
+@router.message(Command("admin"))
+async def cmd_admin(message: Message):
+    """Admin panel."""
+    if not _is_admin(message.from_user.id):
+        await message.answer("⛔ У вас нет доступа к админ-панели.")
+        return
+
+    db = get_db()
+    settings = await db.get_all_settings()
+    proxies = await db.get_all_proxies()
+    interval = settings.get("parse_interval_minutes", "30")
+
+    proxy_lines = []
+    for p in proxies:
+        status = "✅" if p["enabled"] else "❌"
+        proxy_lines.append(f"  #{p['id']} {status} {p['url']} [{p['country']}]")
+
+    text = (
+        f"🔧 <b>Админ-панель</b>\n\n"
+        f"⏱ <b>Интервал парсинга:</b> {interval} мин\n\n"
+        f"<b>Команды:</b>\n"
+        f"• /admin_interval <code>N</code> — сменить интервал (мин)\n"
+        f"• /admin_proxy — список прокси\n"
+        f"• /admin_proxy_add <code>http://host:port</code> — добавить прокси\n"
+        f"• /admin_proxy_del <code>ID</code> — удалить прокси\n"
+        f"• /admin_proxy_toggle <code>ID</code> — вкл/выкл прокси\n"
+        f"• /admin_run — принудительный цикл парсинга\n\n"
+        f"<b>Прокси ({len(proxy_lines)}):</b>\n" + "\n".join(proxy_lines) if proxy_lines else "<b>Прокси:</b> не настроены\n"
+    )
+    await message.answer(text)
+
+
+@router.message(Command("admin_interval"))
+async def cmd_admin_interval(message: Message):
+    """Change parse interval (minutes)."""
+    if not _is_admin(message.from_user.id):
+        return
+    args = message.text.split(maxsplit=1)
+    if len(args) < 2:
+        await message.answer("❗ Укажите интервал в минутах.\nПример: /admin_interval 15")
+        return
+    try:
+        minutes = int(args[1])
+        if minutes < 1 or minutes > 1440:
+            await message.answer("❗ Интервал должен быть от 1 до 1440 минут.")
+            return
+        db = get_db()
+        await db.set_setting("parse_interval_minutes", str(minutes))
+        await message.answer(f"✅ Интервал парсинга изменён на <b>{minutes}</b> мин.")
+        await _notify_admin(f"🕐 Интервал парсинга изменён на {minutes} мин.")
+    except ValueError:
+        await message.answer("❗ Введите число.")
+
+
+@router.message(Command("admin_proxy"))
+async def cmd_admin_proxy(message: Message):
+    """Show proxy list."""
+    if not _is_admin(message.from_user.id):
+        return
+    db = get_db()
+    proxies = await db.get_all_proxies()
+    if not proxies:
+        await message.answer("📭 Прокси не настроены.\nДобавить: /admin_proxy_add <code>http://user:pass@host:port</code>")
+        return
+    lines = []
+    for p in proxies:
+        status = "✅" if p["enabled"] else "❌"
+        typ = p.get("proxy_type", "http")
+        country = f"[{p['country']}]" if p.get("country") else ""
+        note = f" — {p['note']}" if p.get("note") else ""
+        lines.append(f"#{p['id']} {status} <code>{typ}://{p['url']}</code> {country}{note}")
+    text = "📡 <b>Прокси:</b>\n\n" + "\n".join(lines)
+    text += "\n\n➕ /admin_proxy_add — добавить\n❌ /admin_proxy_del <code>ID</code> — удалить\n🔄 /admin_proxy_toggle <code>ID</code> — вкл/выкл"
+    await message.answer(text)
+
+
+@router.message(Command("admin_proxy_add"))
+async def cmd_admin_proxy_add(message: Message):
+    """Add a proxy."""
+    if not _is_admin(message.from_user.id):
+        return
+    args = message.text.split(maxsplit=1)
+    if len(args) < 2:
+        await message.answer("❗ Укажите URL прокси.\nПример:\n/admin_proxy_add http://user:pass@1.2.3.4:8080\n/admin_proxy_add socks5://1.2.3.4:1080 ru мой_прокси")
+        return
+    parts = args[1].strip().split(maxsplit=2)
+    url = parts[0]
+    country = parts[1] if len(parts) > 1 else ""
+    note = parts[2] if len(parts) > 2 else ""
+    typ = "socks5" if url.startswith("socks5") else "http"
+    db = get_db()
+    pid = await db.add_proxy(url, typ, country, note)
+    await message.answer(f"✅ Прокси #{pid} добавлен: <code>{url}</code>")
+
+
+@router.message(Command("admin_proxy_del"))
+async def cmd_admin_proxy_del(message: Message):
+    """Delete a proxy."""
+    if not _is_admin(message.from_user.id):
+        return
+    args = message.text.split(maxsplit=1)
+    if len(args) < 2:
+        await message.answer("❗ Укажите ID прокси.\nСписок: /admin_proxy")
+        return
+    try:
+        pid = int(args[1])
+        db = get_db()
+        if await db.remove_proxy(pid):
+            await message.answer(f"✅ Прокси #{pid} удалён.")
+        else:
+            await message.answer(f"❌ Прокси #{pid} не найден.")
+    except ValueError:
+        await message.answer("❗ ID должен быть числом.")
+
+
+@router.message(Command("admin_proxy_toggle"))
+async def cmd_admin_proxy_toggle(message: Message):
+    """Toggle a proxy."""
+    if not _is_admin(message.from_user.id):
+        return
+    args = message.text.split(maxsplit=1)
+    if len(args) < 2:
+        await message.answer("❗ Укажите ID прокси.\nСписок: /admin_proxy")
+        return
+    try:
+        pid = int(args[1])
+        db = get_db()
+        if await db.toggle_proxy(pid):
+            await message.answer(f"🔄 Прокси #{pid} переключён.")
+        else:
+            await message.answer(f"❌ Прокси #{pid} не найден.")
+    except ValueError:
+        await message.answer("❗ ID должен быть числом.")
+
+
+@router.message(Command("admin_run"))
+async def cmd_admin_run(message: Message):
+    """Force a parse cycle."""
+    if not _is_admin(message.from_user.id):
+        return
+    await message.answer("⏳ Запуск принудительного цикла парсинга...")
+    from services.parser_runner import ParserRunner
+    runner = ParserRunner()
+    await runner.load_config()
+    await runner.run_cycle()
+    await message.answer("✅ Цикл парсинга завершён.")
+
+
+async def _notify_admin(text: str, admin_id: Optional[int] = None) -> None:
+    """Send notification to admin (from router without direct bot access)."""
+    if not admin_id:
+        try:
+            admin_id = int(os.environ.get("ADMIN_CHAT_ID", "0"))
+        except (ValueError, TypeError):
+            return
+    if not admin_id:
+        return
+    try:
+        from aiogram import Bot
+        token = os.environ.get("BOT_TOKEN", "")
+        if token:
+            bot = Bot(token=token)
+            await bot.send_message(admin_id, text)
+            await bot.session.close()
+    except Exception:
+        pass
+
 
 class TelegramBot:
     """Wrapper for starting the Telegram bot."""
@@ -390,6 +566,7 @@ class TelegramBot:
             BotCommand(command="teams", description="Все команды"),
             BotCommand(command="stats", description="Статистика"),
             BotCommand(command="help", description="Помощь"),
+            BotCommand(command="admin", description="Админ-панель"),
         ])
 
         logger.info("Telegram-бот запущен")

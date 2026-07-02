@@ -36,8 +36,10 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 | Creating tests| [137](https://github.com/kamillayarullina/hockeyscrapper/issues/137) | 3 | Done |
 | Avatar Adding Backend | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/153) | 2 | Done |
 | Avatar Adding Frontend | [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | 1 | Done |
-| Admin Panel Backend | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/131) | 5 | Done |
-| Admin Panel Frontend | [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | 5 | Done |
+| Admin Panel Backend | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/131) | 5 | To Do |
+| Admin Panel Frontend | [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | 5 | To Do |
+
+We can not do admin panel as customer did not provide us the actions which admin panel should have
 
 ### Delivered Product Changes
 
@@ -56,7 +58,7 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 
 ### Deployment
 
-- **Deployed product:** [http://139.100.225.113:8000/](http://139.100.225.113:8000/)
+- **Deployed product:** [http://89.125.169.128:8000](http://89.125.169.128:8000)
 
 ---
 
@@ -67,7 +69,7 @@ The Product Backlog contains all issues not yet assigned to a Sprint. Managed vi
 | Telegram handle registration fails if entered without "@" | [#126](https://github.com/kamillayarullina/hockeyscrapper/issues/126) | Done | System now normalises input — accepts with or without "@" |
 | Customer requested standalone admin panel | [#131](https://github.com/kamillayarullina/hockeyscrapper/issues/131), [#127](https://github.com/kamillayarullina/hockeyscrapper/issues/127) | To Do | Carried forward to future sprint |
 | Strengthen password validation | [#130](https://github.com/kamillayarullina/hockeyscrapper/issues/130), [#129](https://github.com/kamillayarullina/hockeyscrapper/issues/129) | Done | Min 8 chars, requires digit, letter, and special character |
-| Keep avatar feature with upload capability |[#152](https://github.com/kamillayarullina/hockeyscrapper/issues/152),[153](https://github.com/kamillayarullina/hockeyscrapper/issues/153) | Planned | Allow users to upload their pictures to the profile page |
+| Keep avatar feature with upload capability |[#152](https://github.com/kamillayarullina/hockeyscrapper/issues/152),[153](https://github.com/kamillayarullina/hockeyscrapper/issues/153) | Done | Allow users to upload their pictures to the profile page |
 
 ### Feedback Not Addressed
 
@@ -175,7 +177,7 @@ Together these mechanisms ensure that Sprint 3+ work cannot bypass the quality p
 
 | Artifact | Link |
 |---|---|
-| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
+| SemVer release | [v0.2.1]([https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v0.2.1)) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
 
 ---
@@ -183,7 +185,7 @@ Together these mechanisms ensure that Sprint 3+ work cannot bypass the quality p
 ## Demo Video
 
 Public sanitized demo video  
-`https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing` — demonstration of key MVP v2 features.
+[https://drive.google.com/drive/folders/1STPn8drqVQ8jTalQJr-JKmn8CW1I13tT?usp=sharing](https://drive.google.com/drive/folders/1STPn8drqVQ8jTalQJr-JKmn8CW1I13tT?usp=sharing) — demonstration of key MVP v2 features.
 
 ---
 
@@ -251,7 +253,7 @@ review could not be conducted this week
 
 ### Latest Protected-Default-Branch CI Run
 
-![CI Run](images/CIRun.png)
+![CI Run](images/CI-screen.png)
 
 ### Branch Protection / Rules Evidence
 
@@ -267,7 +269,7 @@ review could not be conducted this week
 
 ### SemVer Release
 
-![SemVer Release](images/SemVer.png)
+![SemVer Release](images/Semverrelease.png)
 
 ### Example Reviewed Issue-Linked PR/MR
 
@@ -282,9 +284,9 @@ review could not be conducted this week
 | Product Backlog | [Board](https://github.com/users/kamillayarullina/projects/3/views/1) |
 | Sprint Backlog | [Board](https://github.com/users/kamillayarullina/projects/6) |
 | Sprint 2 Milestone | [Milestone 2](https://github.com/kamillayarullina/hockeyscrapper/milestone/2) |
-| Deployed product | [http://139.100.225.113:8000/](http://139.100.225.113:8000/) |
+| Deployed product | [http://139.100.225.113:8000](http://89.125.169.128:8000) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
-| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v.0.1.0) |
+| SemVer release | [v.0.1.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v0.2.1) |
 | CI pipeline | [Tests & QA](https://github.com/kamillayarullina/hockeyscrapper/actions/workflows/tests.yml) |
-| Demo video | `https://drive.google.com/file/d/1DDY8UqRslHofFnP6QJy0ni2vLmquPmyX/view?usp=sharing` |
+| Demo video | [https://drive.google.com/drive/folders/1STPn8drqVQ8jTalQJr-JKmn8CW1I13tT?usp=sharing](https://drive.google.com/drive/folders/1STPn8drqVQ8jTalQJr-JKmn8CW1I13tT?usp=sharing) |
 | Presentation | [`reports/week4/presentation.pdf`](presentation.pdf) |

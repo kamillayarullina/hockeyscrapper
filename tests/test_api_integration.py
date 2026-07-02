@@ -302,6 +302,197 @@ class TestStats:
             assert key in data
 
 
+class TestAdmin:
+
+    ADMIN_EMAIL = "admin@example.com"
+
+    def _register_admin(self, client):
+        return client.post("/register", json={
+            "username": "adminuser",
+            "email": self.ADMIN_EMAIL,
+            "telegram": "@adminuser",
+            "password": "adminpass123",
+        })
+
+    def _register_user(self, client, email="user@example.com"):
+        return client.post("/register", json={
+            "username": "regularuser",
+            "email": email,
+            "telegram": "@regularuser",
+            "password": "userpass123",
+        })
+
+    def test_admin_check_success(self, client):
+        resp = self._register_admin(client)
+        token = resp.json()["access_token"]
+        response = client.get("/admin/check", headers={"Authorization": f"Bearer {token}"})
+        assert response.status_code == 200
+        data = response.json()
+        assert data["admin"] is True
+        assert data["email"] == self.ADMIN_EMAIL
+
+    def test_admin_check_non_admin(self, client):
+        resp = self._register_user(client)
+        token = resp.json()["access_token"]
+        response = client.get("/admin/check", headers={"Authorization": f"Bearer {token}"})
+        assert response.status_code == 404
+
+    def test_admin_check_unauthenticated(self, client):
+        response = client.get("/admin/check")
+        assert response.status_code == 401
+
+    def test_admin_stats(self, client):
+        resp = self._register_admin(client)
+        token = resp.json()["access_token"]
+        response = client.get("/admin/stats", headers={"Authorization": f"Bearer {token}"})
+        assert response.status_code == 200
+        data = response.json()
+        for key in ("total_users", "active_users", "banned_users", "team_subs", "venue_subs", "matches", "proxies"):
+            assert key in data
+
+    def test_admin_users_list(self, client):
+        resp = self._register_admin(client)
+        token = resp.json()["access_token"]
+        response = client.get("/admin/users", headers={"Authorization": f"Bearer {token}"})
+        assert response.status_code == 200
+        data = response.json()
+        assert isinstance(data, list)
+
+    def test_admin_delete_user(self, client, db_session):
+        resp = self._register_admin(client)
+        admin_token = resp.json()["access_token"]
+
+        user_resp = self._register_user(client, email="delete_me@example.com")
+        target_chat_id = user_resp.json()["chat_id"]
+
+        response = client.delete(
+            f"/admin/users/{target_chat_id}",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+        assert response.status_code == 200
+        assert response.json()["status"] == "deleted"
+
+    def test_admin_delete_nonexistent_user(self, client):
+        resp = self._register_admin(client)
+        token = resp.json()["access_token"]
+        response = client.delete(
+            "/admin/users/999999",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert response.status_code == 404
+
+    def test_admin_toggle_ban(self, client):
+        resp = self._register_admin(client)
+        admin_token = resp.json()["access_token"]
+
+        user_resp = self._register_user(client, email="ban_test@example.com")
+        target_chat_id = user_resp.json()["chat_id"]
+
+        response = client.patch(
+            f"/admin/users/{target_chat_id}/ban",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "updated"
+        assert data["is_active"] == 0
+
+        response = client.patch(
+            f"/admin/users/{target_chat_id}/ban",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+        assert response.status_code == 200
+        assert response.json()["is_active"] == 1
+
+    def test_admin_toggle_ban_nonexistent_user(self, client):
+        resp = self._register_admin(client)
+        token = resp.json()["access_token"]
+        response = client.patch(
+            "/admin/users/999999/ban",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        assert response.status_code == 404
+
+    def test_admin_add_subscription(self, client):
+        resp = self._register_admin(client)
+        admin_token = resp.json()["access_token"]
+        admin_chat_id = resp.json()["chat_id"]
+
+        response = client.post(
+            f"/admin/users/{admin_chat_id}/subscriptions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"type": "team", "value": "СКА"},
+        )
+        assert response.status_code == 200
+        assert response.json()["status"] == "added"
+
+    def test_admin_add_duplicate_subscription(self, client):
+        resp = self._register_admin(client)
+        admin_token = resp.json()["access_token"]
+        admin_chat_id = resp.json()["chat_id"]
+
+        client.post(
+            f"/admin/users/{admin_chat_id}/subscriptions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"type": "team", "value": "ЦСКА"},
+        )
+        response = client.post(
+            f"/admin/users/{admin_chat_id}/subscriptions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"type": "team", "value": "ЦСКА"},
+        )
+        assert response.status_code == 400
+        assert "already" in response.json()["detail"].lower()
+
+    def test_admin_remove_subscription(self, client):
+        resp = self._register_admin(client)
+        admin_token = resp.json()["access_token"]
+        admin_chat_id = resp.json()["chat_id"]
+
+        client.post(
+            f"/admin/users/{admin_chat_id}/subscriptions",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            json={"type": "team", "value": "Ак Барс"},
+        )
+
+        response = client.delete(
+            f"/admin/users/{admin_chat_id}/subscriptions?type=team&value=Ак%20Барс",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+        assert response.status_code == 200
+        assert response.json()["status"] == "deleted"
+
+    def test_admin_remove_nonexistent_subscription(self, client):
+        resp = self._register_admin(client)
+        admin_token = resp.json()["access_token"]
+        admin_chat_id = resp.json()["chat_id"]
+
+        response = client.delete(
+            f"/admin/users/{admin_chat_id}/subscriptions?type=team&value=NoTeam",
+            headers={"Authorization": f"Bearer {admin_token}"},
+        )
+        assert response.status_code == 404
+
+    def test_admin_non_admin_cannot_access(self, client):
+        resp = self._register_user(client, email="regular@example.com")
+        token = resp.json()["access_token"]
+
+        for method, path in [
+            ("get", "/admin/check"),
+            ("get", "/admin/stats"),
+            ("get", "/admin/users"),
+            ("delete", "/admin/users/1"),
+            ("patch", "/admin/users/1/ban"),
+        ]:
+            if method == "get":
+                response = client.get(path, headers={"Authorization": f"Bearer {token}"})
+            elif method == "delete":
+                response = client.delete(path, headers={"Authorization": f"Bearer {token}"})
+            elif method == "patch":
+                response = client.patch(path, headers={"Authorization": f"Bearer {token}"})
+            assert response.status_code == 404, f"{method.upper()} {path} should return 404 for non-admin"
+
+
 class _AsyncMock:
     def __init__(self):
         self._call_count = 0

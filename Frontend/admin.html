@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>╨Р╨┤╨╝╨╕╨╜-╨┐╨░╨╜╨╡╨╗╤М</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Nunito', sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { font-weight: 700; font-size: 28px; margin-bottom: 20px; color: #fff; }
+        .tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab { padding: 10px 20px; background: #1a1a2e; border: none; color: #888; cursor: pointer; border-radius: 8px 8px 0 0; font-weight: 600; font-size: 14px; transition: .2s; }
+        .tab:hover { color: #fff; background: #252540; }
+        .tab.active { color: #fff; background: #6c63ff; }
+        .tab-content { display: none; background: #1a1a2e; border-radius: 0 8px 8px 8px; padding: 24px; }
+        .tab-content.active { display: block; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #2a2a45; }
+        th { color: #6c63ff; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+        tr:hover td { background: #252540; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 700; }
+        .badge-active { background: #1b8a3a; color: #fff; }
+        .badge-banned { background: #8a1b1b; color: #fff; }
+        .badge-enabled { background: #1b8a3a; color: #fff; }
+        .badge-disabled { background: #555; color: #ccc; }
+        .btn { padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: .2s; }
+        .btn-sm { font-size: 12px; padding: 4px 10px; }
+        .btn-danger { background: #d32f2f; color: #fff; }
+        .btn-danger:hover { background: #b71c1c; }
+        .btn-primary { background: #6c63ff; color: #fff; }
+        .btn-primary:hover { background: #5a52e0; }
+        .btn-secondary { background: #333; color: #e0e0e0; }
+        .btn-secondary:hover { background: #444; }
+        .btn-success { background: #2e7d32; color: #fff; }
+        .btn-success:hover { background: #1b5e20; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .card { background: #252540; border-radius: 10px; padding: 16px; text-align: center; }
+        .card .num { font-size: 32px; font-weight: 800; color: #6c63ff; display: block; }
+        .card .label { font-size: 13px; color: #999; margin-top: 4px; }
+        .form-row { display: flex; gap: 10px; margin: 12px 0; flex-wrap: wrap; align-items: end; }
+        .form-row label { font-size: 13px; color: #999; display: block; margin-bottom: 4px; }
+        .form-row input, .form-row select { padding: 8px 12px; background: #0f0f1a; border: 1px solid #333; border-radius: 6px; color: #e0e0e0; font-size: 14px; }
+        .form-row input:focus { border-color: #6c63ff; outline: none; }
+        .msg { padding: 10px; border-radius: 6px; margin: 8px 0; font-size: 13px; }
+        .msg-ok { background: #1b3a1b; color: #8bc34a; }
+        .msg-err { background: #3a1b1b; color: #ef5350; }
+        .log-line { font-family: monospace; font-size: 12px; padding: 4px 0; border-bottom: 1px solid #222; color: #aaa; }
+        .log-line .level-ERROR { color: #ef5350; font-weight: 700; }
+        .log-line .level-WARNING { color: #ffa726; }
+        .inp { padding: 8px 12px; background: #0f0f1a; border: 1px solid #333; border-radius: 6px; color: #e0e0e0; font-size: 14px; }
+        .inp:focus { border-color: #6c63ff; outline: none; }
+        .subs-list { font-size: 12px; color: #aaa; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>тЪЩ ╨Я╨░╨╜╨╡╨╗╤М ╤Г╨┐╤А╨░╨▓╨╗╨╡╨╜╨╕╤П</h1>
+    <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="dashboard">╨Ф╨░╤И╨▒╨╛╤А╨┤</button>
+        <button class="tab" data-tab="users">╨Я╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╨╕</button>
+        <button class="tab" data-tab="proxies">╨Я╤А╨╛╨║╤Б╨╕</button>
+        <button class="tab" data-tab="settings">╨Э╨░╤Б╤В╤А╨╛╨╣╨║╨╕</button>
+        <button class="tab" data-tab="sites">╨б╨░╨╣╤В╤Л</button>
+        <button class="tab" data-tab="logs">╨Ы╨╛╨│╨╕</button>
+    </div>
+
+    <div id="tab-dashboard" class="tab-content active"></div>
+    <div id="tab-users" class="tab-content"></div>
+    <div id="tab-proxies" class="tab-content"></div>
+    <div id="tab-settings" class="tab-content"></div>
+    <div id="tab-sites" class="tab-content"></div>
+    <div id="tab-logs" class="tab-content"></div>
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+if (!token) { window.location.href = "/vhod/vhod.html"; }
+const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${token}` };
+
+async function api(url, opts = {}) {
+    const res = await fetch(url, { headers: { ...headers, ...opts.headers }, ...opts });
+    if (res.status === 401) { localStorage.removeItem("token"); window.location.href = "/vhod/vhod.html"; }
+    if (!res.ok) { const err = await res.json().catch(() => ({ detail: res.statusText })); throw new Error(err.detail || "╨Ю╤И╨╕╨▒╨║╨░"); }
+    return res.json();
+}
+
+// Admin check
+(async () => {
+    try {
+        await api("/admin/check");
+    } catch { window.location.href = "/vhod/vhod.html"; }
+})();
+
+// Tabs
+document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById("tab-" + tab.dataset.tab).classList.add("active");
+    });
+});
+
+// Dashboard
+async function loadDashboard() {
+    const data = await api("/admin/stats");
+    const el = document.getElementById("tab-dashboard");
+    el.innerHTML = `<div class="card-grid">
+        <div class="card"><span class="num">${data.total_users}</span><span class="label">╨Т╤Б╨╡╨│╨╛ ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╨╡╨╣</span></div>
+        <div class="card"><span class="num">${data.active_users}</span><span class="label">╨Р╨║╤В╨╕╨▓╨╜╤Л╤Е</span></div>
+        <div class="card"><span class="num">${data.banned_users}</span><span class="label">╨Ч╨░╨▒╨╗╨╛╨║╨╕╤А╨╛╨▓╨░╨╜╨╛</span></div>
+        <div class="card"><span class="num">${data.team_subs}</span><span class="label">╨Я╨╛╨┤╨┐╨╕╤Б╨║╨╕ ╨╜╨░ ╨║╨╛╨╝╨░╨╜╨┤╤Л</span></div>
+        <div class="card"><span class="num">${data.venue_subs}</span><span class="label">╨Я╨╛╨┤╨┐╨╕╤Б╨║╨╕ ╨╜╨░ ╤Б╤В╨░╨┤╨╕╨╛╨╜╤Л</span></div>
+        <div class="card"><span class="num">${data.matches}</span><span class="label">╨Ь╨░╤В╤З╨╡╨╣ ╨▓ ╨▒╨░╨╖╨╡</span></div>
+        <div class="card"><span class="num">${data.proxies}</span><span class="label">╨Я╤А╨╛╨║╤Б╨╕</span></div>
+    </div>`;
+}
+
+// Users
+async function loadUsers() {
+    const users = await api("/admin/users");
+    let html = `<table><thead><tr><th>ID</th><th>╨Ш╨╝╤П</th><th>Email</th><th>Telegram</th><th>╨б╤В╨░╤В╤Г╤Б</th><th>╨Я╨╛╨┤╨┐╨╕╤Б╨║╨╕</th><th>╨Ф╨╡╨╣╤Б╤В╨▓╨╕╤П</th></tr></thead><tbody>`;
+    for (const u of users) {
+        const status = u.is_active ? '<span class="badge badge-active">╨░╨║╤В╨╕╨▓╨╡╨╜</span>' : '<span class="badge badge-banned">╨╖╨░╨▒╨╗╨╛╨║╨╕╤А╨╛╨▓╨░╨╜</span>';
+        const subs = u.subscriptions.map(s => `${s.value} (${s.type})`).join(", ") || "тАФ";
+        html += `<tr><td>${u.chat_id}</td><td>${u.username || "тАФ"}</td><td>${u.email || "тАФ"}</td><td>${u.telegram || "тАФ"}</td><td>${status}</td><td class="subs-list">${subs}</td><td>
+            <button class="btn btn-sm btn-secondary" onclick="toggleBan(${u.chat_id})">${u.is_active ? "╨Ч╨░╨▒╨╗╨╛╨║╨╕╤А╨╛╨▓╨░╤В╤М" : "╨а╨░╨╖╨▒╨╗╨╛╨║╨╕╤А╨╛╨▓╨░╤В╤М"}</button>
+            <button class="btn btn-sm btn-primary" onclick="showAddSub(${u.chat_id})">+ ╨┐╨╛╨┤╨┐╨╕╤Б╨║╨░</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.chat_id})">╨г╨┤╨░╨╗╨╕╤В╤М</button>
+        </td></tr>`;
+    }
+    html += "</tbody></table>";
+    document.getElementById("tab-users").innerHTML = html;
+}
+
+async function toggleBan(chatId) {
+    await api(`/admin/users/${chatId}/ban`, { method: "PATCH" });
+    loadUsers();
+}
+
+async function deleteUser(chatId) {
+    if (!confirm("╨г╨┤╨░╨╗╨╕╤В╤М ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤П " + chatId + "?")) return;
+    await api(`/admin/users/${chatId}`, { method: "DELETE" });
+    loadUsers();
+}
+
+function showAddSub(chatId) {
+    const type = prompt("╨в╨╕╨┐ ╨┐╨╛╨┤╨┐╨╕╤Б╨║╨╕ (team / venue):");
+    if (!type || !["team", "venue"].includes(type)) return;
+    const value = prompt("╨Э╨░╨╖╨▓╨░╨╜╨╕╨╡ ╨║╨╛╨╝╨░╨╜╨┤╤Л ╨╕╨╗╨╕ ╤Б╤В╨░╨┤╨╕╨╛╨╜╨░:");
+    if (!value) return;
+    api(`/admin/users/${chatId}/subscriptions`, { method: "POST", body: JSON.stringify({ type, value }) })
+        .then(() => loadUsers()).catch(e => alert(e.message));
+}
+
+// Proxies
+async function loadProxies() {
+    const proxies = await api("/admin/proxies");
+    let html = `<div class="form-row"><input class="inp" id="proxyUrl" placeholder="http://user:pass@host:port"><input class="inp" id="proxyType" placeholder="╤В╨╕╨┐ (http/socks5)" style="width:100px"><input class="inp" id="proxyCountry" placeholder="╤Б╤В╤А╨░╨╜╨░" style="width:100px"><button class="btn btn-success" onclick="addProxy()">+ ╨Ф╨╛╨▒╨░╨▓╨╕╤В╤М</button></div>`;
+    if (proxies.length) {
+        html += `<table><thead><tr><th>ID</th><th>URL</th><th>╨в╨╕╨┐</th><th>╨б╤В╤А╨░╨╜╨░</th><th>╨Я╤А╨╕╨╝╨╡╤З╨░╨╜╨╕╨╡</th><th>╨б╤В╨░╤В╤Г╤Б</th><th>╨Ф╨╡╨╣╤Б╤В╨▓╨╕╤П</th></tr></thead><tbody>`;
+        for (const p of proxies) {
+            const status = p.enabled ? '<span class="badge badge-enabled">╨▓╨║╨╗</span>' : '<span class="badge badge-disabled">╨▓╤Л╨║╨╗</span>';
+            html += `<tr><td>${p.id}</td><td>${p.url}</td><td>${p.proxy_type}</td><td>${p.country}</td><td>${p.note || ""}</td><td>${status}</td><td>
+                <button class="btn btn-sm btn-secondary" onclick="toggleProxy(${p.id})">${p.enabled ? "╨Т╤Л╨║╨╗" : "╨Т╨║╨╗"}</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteProxy(${p.id})">╨г╨┤╨░╨╗╨╕╤В╤М</button>
+            </td></tr>`;
+        }
+        html += "</tbody></table>";
+    } else html += "<p style='color:#888'>╨Я╤А╨╛╨║╤Б╨╕ ╨╜╨╡ ╨┤╨╛╨▒╨░╨▓╨╗╨╡╨╜╤Л</p>";
+    document.getElementById("tab-proxies").innerHTML = html;
+}
+
+async function addProxy() {
+    const url = document.getElementById("proxyUrl").value.trim();
+    if (!url) return alert("╨г╨║╨░╨╢╨╕╤В╨╡ URL ╨┐╤А╨╛╨║╤Б╨╕");
+    const proxy_type = document.getElementById("proxyType").value.trim() || "http";
+    const country = document.getElementById("proxyCountry").value.trim() || "";
+    await api("/admin/proxies", { method: "POST", body: JSON.stringify({ url, proxy_type, country, note: "" }) });
+    loadProxies();
+}
+
+async function toggleProxy(id) {
+    await api(`/admin/proxies/${id}/toggle`, { method: "PATCH" });
+    loadProxies();
+}
+
+async function deleteProxy(id) {
+    if (!confirm("╨г╨┤╨░╨╗╨╕╤В╤М ╨┐╤А╨╛╨║╤Б╨╕ #" + id + "?")) return;
+    await api(`/admin/proxies/${id}`, { method: "DELETE" });
+    loadProxies();
+}
+
+// Settings
+async function loadSettings() {
+    document.getElementById("tab-settings").innerHTML = `
+        <div style="max-width:400px">
+            <div class="form-row"><label>╨Ш╨╜╤В╨╡╤А╨▓╨░╨╗ ╨┐╨░╤А╤Б╨╕╨╜╨│╨░ (╨╝╨╕╨╜╤Г╤В╤Л):</label>
+                <input class="inp" id="parseInterval" type="number" min="1" max="1440" value="30">
+                <button class="btn btn-primary" onclick="saveParseInterval()">╨б╨╛╤Е╤А╨░╨╜╨╕╤В╤М</button>
+            </div>
+            <div class="form-row"><label>╨Я╤А╨╛╨║╤Б╨╕ ╨┤╨╗╤П ╨▒╨╛╤В╨░ (BOT_PROXY):</label>
+                <input class="inp" id="botProxyUrl" style="width:100%" placeholder="http://proxy:8080">
+                <button class="btn btn-primary" onclick="saveBotProxy()">╨б╨╛╤Е╤А╨░╨╜╨╕╤В╤М</button>
+            </div>
+            <div class="form-row"><button class="btn btn-success" onclick="triggerParse()">╨Ч╨░╨┐╤Г╤Б╤В╨╕╤В╤М ╨┐╨░╤А╤Б╨╕╨╜╨│</button></div>
+            <div class="form-row"><button class="btn btn-success" onclick="notifyAll()">╨Ю╤В╨┐╤А╨░╨▓╨╕╤В╤М ╤Г╨▓╨╡╨┤╨╛╨╝╨╗╨╡╨╜╨╕╨╡ ╨▓╤Б╨╡╨╝</button></div>
+            <div class="form-row"><button class="btn btn-danger" onclick="clearMatches()">╨Ю╤З╨╕╤Б╤В╨╕╤В╤М ╨╝╨░╤В╤З╨╕</button></div>
+            <div id="settingsMsg"></div>
+        </div>`;
+    try {
+        const settings = await api("/admin/settings");
+        if (settings.parse_interval_minutes) document.getElementById("parseInterval").value = settings.parse_interval_minutes;
+        if (settings.bot_proxy_url) document.getElementById("botProxyUrl").value = settings.bot_proxy_url;
+    } catch {}
+}
+
+function msg(text, ok = true) {
+    document.getElementById("settingsMsg").innerHTML = `<div class="msg ${ok ? 'msg-ok' : 'msg-err'}">${text}</div>`;
+}
+
+async function saveParseInterval() {
+    const minutes = parseInt(document.getElementById("parseInterval").value);
+    if (isNaN(minutes) || minutes < 1 || minutes > 1440) return msg("╨Ю╤В 1 ╨┤╨╛ 1440", false);
+    await api("/admin/settings/parse-interval", { method: "PUT", body: JSON.stringify({ minutes }) });
+    msg("╨Ш╨╜╤В╨╡╤А╨▓╨░╨╗ ╤Б╨╛╤Е╤А╨░╨╜╤С╨╜");
+}
+
+async function saveBotProxy() {
+    const proxy_url = document.getElementById("botProxyUrl").value.trim();
+    await api("/admin/settings/bot-proxy", { method: "PUT", body: JSON.stringify({ proxy_url }) });
+    msg("╨Я╤А╨╛╨║╤Б╨╕ ╨┤╨╗╤П ╨▒╨╛╤В╨░ ╤Б╨╛╤Е╤А╨░╨╜╤С╨╜. ╨Ф╨╗╤П ╨┐╤А╨╕╨╝╨╡╨╜╨╡╨╜╨╕╤П ╨╜╤Г╨╢╨╡╨╜ ╨┐╨╡╤А╨╡╨╖╨░╨┐╤Г╤Б╨║ ╨▒╨╛╤В╨░.");
+}
+
+async function triggerParse() {
+    const res = await api("/admin/trigger-parse", { method: "POST" });
+    msg(res.message || "╨Ч╨░╨┐╤А╨╛╤Б ╨╛╤В╨┐╤А╨░╨▓╨╗╨╡╨╜");
+}
+
+async function notifyAll() {
+    if (!confirm("╨Ю╤В╨┐╤А╨░╨▓╨╕╤В╤М ╤В╨╡╤Б╤В╨╛╨▓╨╛╨╡ ╤Г╨▓╨╡╨┤╨╛╨╝╨╗╨╡╨╜╨╕╨╡ ╨▓╤Б╨╡╨╝ ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤П╨╝?")) return;
+    const res = await api("/admin/notify", { method: "POST" });
+    msg(`╨г╨▓╨╡╨┤╨╛╨╝╨╗╨╡╨╜╨╕╨╡ ╨╛╤В╨┐╤А╨░╨▓╨╗╨╡╨╜╨╛ ${res.sent} ╨┐╨╛╨╗╤М╨╖╨╛╨▓╨░╤В╨╡╨╗╤П╨╝`);
+}
+
+async function clearMatches() {
+    if (!confirm("╨г╨┤╨░╨╗╨╕╤В╤М ╨▓╤Б╨╡ ╨╝╨░╤В╤З╨╕? ╨н╤В╨╛ ╨┤╨╡╨╣╤Б╤В╨▓╨╕╨╡ ╨╜╨╡╨╛╨▒╤А╨░╤В╨╕╨╝╨╛.")) return;
+    const res = await api("/admin/matches", { method: "DELETE" });
+    msg(`╨г╨┤╨░╨╗╨╡╨╜╨╛ ${res.deleted} ╨╝╨░╤В╤З╨╡╨╣`);
+}
+
+// Sites
+async function loadSites() {
+    const sites = await api("/admin/sites");
+    let html = `<table><thead><tr><th>╨б╨░╨╣╤В</th><th>╨Я╨░╤А╤Б╨╡╤А</th><th>╨Ш╨╜╤В╨╡╤А╨▓╨░╨╗</th><th>╨б╤В╨░╤В╤Г╤Б</th><th>╨Ф╨╡╨╣╤Б╤В╨▓╨╕╤П</th></tr></thead><tbody>`;
+    for (const s of sites) {
+        html += `<tr><td>${s.name}</td><td>${s.parser}</td><td>${s.interval_minutes} ╨╝╨╕╨╜</td><td>${s.enabled ? '<span class="badge badge-enabled">╨▓╨║╨╗</span>' : '<span class="badge badge-disabled">╨▓╤Л╨║╨╗</span>'}</td><td>
+            <button class="btn btn-sm btn-secondary" onclick="toggleSite('${s.name}')">${s.enabled ? "╨Т╤Л╨║╨╗╤О╤З╨╕╤В╤М" : "╨Т╨║╨╗╤О╤З╨╕╤В╤М"}</button>
+        </td></tr>`;
+    }
+    html += "</tbody></table>";
+    document.getElementById("tab-sites").innerHTML = html;
+}
+
+async function toggleSite(name) {
+    await api(`/admin/sites/${encodeURIComponent(name)}/toggle`, { method: "PUT" });
+    loadSites();
+}
+
+// Logs
+async function loadLogs() {
+    const data = await api("/admin/logs");
+    const logs = data.logs || [];
+    let html = `<div style="max-height:500px;overflow-y:auto;font-family:monospace;font-size:12px;background:#0f0f1a;padding:12px;border-radius:8px">`;
+    for (const line of logs.slice().reverse()) {
+        let cls = "";
+        if (line.includes(" ERROR ")) cls = "level-ERROR";
+        else if (line.includes(" WARNING ")) cls = "level-WARNING";
+        html += `<div class="log-line"><span class="${cls}">${escapeHtml(line)}</span></div>`;
+    }
+    html += "</div>";
+    document.getElementById("tab-logs").innerHTML = html;
+}
+
+function escapeHtml(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+// Tab switching loaders
+document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+        const name = tab.dataset.tab;
+        if (name === "dashboard" && !document.querySelector("#tab-dashboard .card")) loadDashboard();
+        if (name === "users") loadUsers();
+        if (name === "proxies") loadProxies();
+        if (name === "settings") loadSettings();
+        if (name === "sites") loadSites();
+        if (name === "logs") loadLogs();
+    });
+});
+
+loadDashboard();
+</script>
+</body>
+</html>

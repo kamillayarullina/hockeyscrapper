@@ -1,4 +1,4 @@
-# Quality Requirement Tests (QRTs)
+﻿# Quality Requirement Tests (QRTs)
 
 ## What counts as an automated QRT
 
@@ -21,11 +21,11 @@ Each QRT entry must define:
 
 - **Stable ID** (`QRT-NNN`)
 - **Linked quality requirement** (`QR-NNN`)
-- **Verification method** — automated CI check, unit test, integration test, or static analysis
+- **Verification method** тАФ automated CI check, unit test, integration test, or static analysis
 - **Test data, setup, or environment**
 - **Automated command or CI check**
 - **Expected measurable result**
-- **Evidence location** — where the result is captured (test file path, CI job name, CI run URL)
+- **Evidence location** тАФ where the result is captured (test file path, CI job name, CI run URL)
 
 ---
 
@@ -43,9 +43,9 @@ Each QRT entry must define:
 - Each critical module (`Backend/security.py`, `Backend/jwt_auth.py`) has automated unit tests that achieve at least 20% line coverage.
 - The QRT test `test_qrt_coverage.py` validates that if `fail_under` is set in `.coveragerc`, it is at least 20.
 
-**Repository test location:** `tests/test_qrt_coverage.py` — validates `.coveragerc` exists, `fail_under` is set >= 80, and `Backend` + `services` are in the source list.
+**Repository test location:** `tests/test_qrt_coverage.py` тАФ validates `.coveragerc` exists, `fail_under` is set >= 80, and `Backend` + `services` are in the source list.
 
-**CI evidence location:** `.github/workflows/tests.yml` — step "Run unit and integration tests with coverage".
+**CI evidence location:** `.github/workflows/tests.yml` тАФ step "Run unit and integration tests with coverage".
 
 **Evidence link:** Latest protected default-branch CI run showing coverage summary and exit code.
 
@@ -65,9 +65,9 @@ Each QRT entry must define:
 - The bandit gate completes in 30 seconds or less.
 - The gate exits non-zero when security issues are detected, failing the build (no `|| true` suppression).
 
-**Repository test location:** `tests/test_qrt_bandit.py` — validates `[tool.bandit]` exists in `pyproject.toml` and bandit runs successfully within 30-second timeout.
+**Repository test location:** `tests/test_qrt_bandit.py` тАФ validates `[tool.bandit]` exists in `pyproject.toml` and bandit runs successfully within 30-second timeout.
 
-**CI evidence location:** `.github/workflows/tests.yml` — step "Additional QA check — Bandit (security lint)".
+**CI evidence location:** `.github/workflows/tests.yml` тАФ step "Additional QA check тАФ Bandit (security lint)".
 
 **Evidence link:** Latest protected default-branch CI run showing the job result and duration.
 
@@ -84,15 +84,60 @@ Each QRT entry must define:
 **Automated command or CI check:** `pytest tests/test_security.py -v`
 
 **Expected measurable result:** All tests in `tests/test_security.py` pass. Specifically:
-- `test_starts_with_bcrypt_prefix` — verifies hash starts with `$2b$`
-- `test_different_salts` — verifies each hash is uniquely salted
-- `test_correct_password` — verifies `verify_password` matches correct password
-- `test_incorrect_password` — verifies `verify_password` rejects wrong password
+- `test_starts_with_bcrypt_prefix` тАФ verifies hash starts with `$2b$`
+- `test_different_salts` тАФ verifies each hash is uniquely salted
+- `test_correct_password` тАФ verifies `verify_password` matches correct password
+- `test_incorrect_password` тАФ verifies `verify_password` rejects wrong password
 
 These tests confirm that passwords are stored only as bcrypt hashes and never in plaintext.
 
 **Repository test location:** `tests/test_security.py`
 
-**CI evidence location:** `.github/workflows/tests.yml` — step "Run unit and integration tests with coverage" (included in the full test suite).
+**CI evidence location:** `.github/workflows/tests.yml` тАФ step "Run unit and integration tests with coverage" (included in the full test suite).
+
+**Evidence link:** Latest protected default-branch CI run showing test results.
+
+---
+
+## QRT-004: Code lint compliance
+
+**Linked quality requirement:** QR-004
+
+**Verification method:** Automated CI check (ruff lint gate) + repository test.
+
+**Test data, setup, or environment:** Standard CI build environment for pull requests and protected default-branch updates.
+
+**Automated command or CI check:** `ruff check .`
+
+**Expected measurable result:**
+- `ruff check .` exits with code 0 (zero lint errors).
+- The QRT test `test_qrt_ruff.py` validates that `[tool.ruff]` is configured in `pyproject.toml` and that `ruff check .` completes successfully within 60 seconds.
+
+**Repository test location:** `tests/test_qrt_ruff.py` тАФ validates ruff config exists and lint check passes.
+
+**CI evidence location:** `.github/workflows/ci.yml` тАФ step "Lint with ruff" and `.github/workflows/tests.yml` тАФ step "Run quality requirement tests (QRT)" (includes `test_qrt_ruff.py`).
+
+**Evidence link:** Latest protected default-branch CI run showing ruff exit code 0.
+
+---
+
+## QRT-005: Startup import integrity
+
+**Linked quality requirement:** QR-005
+
+**Verification method:** Automated repository test (unit tests).
+
+**Test data, setup, or environment:** Standard test environment with pytest.
+
+**Automated command or CI check:** `python -m pytest tests/test_qrt_startup.py -v`
+
+**Expected measurable result:**
+- All top-level module imports (`main`, `Backend.main`, `bot.telegram_bot`, `services.database`, `parsers.base_parser`) succeed without `ImportError` or `SyntaxError`.
+- The CLI argument parser (`main.py --help`) responds with usage text within 10 seconds.
+- The `load_env()` function runs without error when no `.env` file exists (graceful degradation).
+
+**Repository test location:** `tests/test_qrt_startup.py`
+
+**CI evidence location:** `.github/workflows/tests.yml` тАФ step "Run quality requirement tests (QRT)".
 
 **Evidence link:** Latest protected default-branch CI run showing test results.
