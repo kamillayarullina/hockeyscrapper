@@ -40,5 +40,8 @@
   - [PBI] Interface improving - https://github.com/kamillayarullina/hockeyscrapper/issues/179
   - [PBI] Email notification - https://github.com/kamillayarullina/hockeyscrapper/issues/182
   - [Testing] Quality-requirements tests - https://github.com/kamillayarullina/hockeyscrapper/issues/186
+  - [PBI] Implement a backend for uploading avatars - https://github.com/kamillayarullina/hockeyscrapper/issues/191
+  - [PBI] Improve the design of register and login pages - https://github.com/kamillayarullina/hockeyscrapper/issues/199
+
 
 
