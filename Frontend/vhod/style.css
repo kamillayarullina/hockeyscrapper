@@ -48,19 +48,7 @@ a { text-decoration: none; }
         0 10px 30px rgba(0,0,0,0.04),
         inset 0 1px 0 rgba(255,255,255,0.8);
     position: relative;
-    overflow: hidden;
     animation: fadeUp 0.5s ease-out;
-}
-.wrapper::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 40px;
-    right: 40px;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--darkblue), #4a8fd4, var(--darkblue), transparent);
-    border-radius: 2px;
-    opacity: 0.6;
 }
 .wrapper h1 {
     color: var(--darkblue);
@@ -210,5 +198,4 @@ a { text-decoration: none; }
     .header__svg { width: 220px; }
     .wrapper { width: calc(100% - 20px); padding: 30px 20px 28px; }
     .wrapper h1 { font-size: 24px; }
-    .wrapper::before { left: 20px; right: 20px; }
 }
