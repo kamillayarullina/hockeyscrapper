@@ -1,8 +1,6 @@
-[tool.ruff]
-target-version = "py311"
-line-length = 120
-exclude = ["venv", ".venv", "migrations"]
-
 [tool.bandit]
 exclude = ["tests", "venv", ".venv"]
-skips = ["B101", "B104", "B105", "B311", "B608"]
+skips = ["B101", "B311"]
+
+[tool.ruff]
+line-length = 120

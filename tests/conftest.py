@@ -7,6 +7,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+os.environ["ADMIN_EMAILS"] = "admin@example.com"
+os.environ["JWT_SECRET_KEY"] = "test-secret-key"
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
