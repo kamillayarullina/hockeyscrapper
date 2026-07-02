@@ -8,7 +8,7 @@ SECRET_KEY = os.getenv("JWT_SECRET_KEY", "hockeyscrapper-secret-change-in-produc
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 30
 
-security = HTTPBearer(auto_error=False)
+security = HTTPBearer()
 
 
 def create_token(chat_id: int, email: str) -> str:
@@ -29,6 +29,10 @@ def verify_token(token: str) -> dict:
 
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+    # With auto_error=True (the default for HTTPBearer), this dependency will
+    # automatically raise a 401 HTTPException if the Authorization header is missing.
+    # However, for direct unit testing and to handle edge cases in integration tests,
+    # we add a manual check to ensure credentials are not None.
     if credentials is None:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
     return verify_token(credentials.credentials)

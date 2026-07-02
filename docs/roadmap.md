@@ -16,8 +16,8 @@
 
 ## Sprint 2 (MVP v2)
 - **Dates:** June 22, 2026 — June 28, 2026
-- **Sprint Goal:** Deliver admin panel for managing options such as parsing time, validate password for stronger safety and validate the input of telegram alias.
-- **Focus:** Validation of user input information in registration/password recovery, admin commands
+- **Sprint Goal:** Deliver admin panel for managing options such as parsing time, validate password for stronger safety, add option ti upload avalar to the users and validate the input of telegram alias.
+- **Focus:** Validation of user input information in registration/password recovery, admin commands, user's avatar
 - **Link to the Sprint Milestone:** - https://github.com/kamillayarullina/hockeyscrapper/milestone/2
 - **Planned Items:**
   - [PBI] Telegram validation - https://github.com/kamillayarullina/hockeyscrapper/issues/126
@@ -26,3 +26,8 @@
   - [PBI] Password validation Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/129
   - [PBI] Password validation Backend - https://github.com/kamillayarullina/hockeyscrapper/issues/130
   - [PBI] Admin Panel Backend - https://github.com/kamillayarullina/hockeyscrapper/issues/131
+  - [PBI] Creating tests - https://github.com/kamillayarullina/hockeyscrapper/issues/137
+  - [PBI] Avatar adding Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/152
+  - [PBI] Avatar Adding Backend - https://github.com/kamillayarullina/hockeyscrapper/issues/153
+
+

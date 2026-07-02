@@ -1,4 +1,4 @@
-import pytest
+﻿import pytest
 from Backend.security import get_password_hash, verify_password
 
 
@@ -26,7 +26,7 @@ class TestGetPasswordHash:
         assert isinstance(result, str)
 
     def test_handles_unicode(self):
-        result = get_password_hash("пароль")
+        result = get_password_hash("╨┐╨░╤А╨╛╨╗╤М")
         assert isinstance(result, str)
 
 
