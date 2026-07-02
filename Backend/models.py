@@ -14,6 +14,7 @@ class UserModel(Base):
     password_hash: Mapped[str] = mapped_column(nullable=True)
     link_code: Mapped[str] = mapped_column(nullable=True)
     is_active: Mapped[int] = mapped_column(default=1)
+    avatar_url: Mapped[str] = mapped_column(nullable=True)
     registered_at = Column(DateTime, server_default=func.now())
 
 

@@ -6,9 +6,12 @@ import random
 from datetime import datetime
 from collections import deque
 from pathlib import Path
+import shutil
+import uuid
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 from pydantic import BaseModel, EmailStr, field_validator
 from sqlalchemy.orm import Session
@@ -31,6 +34,9 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HockeyScrapper API")
 
+# Создаем папку для аватарок и делаем ее статической
+Path("static/avatars").mkdir(parents=True, exist_ok=True)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -49,29 +55,45 @@ conf_email = ConnectionConfig(
     MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True",
 ) 
 
+def _validate_password(v: str) -> str:
+    if len(v) < 8:
+        raise ValueError("Пароль должен быть минимум 8 символов")
+    if len(v) > 128:
+        raise ValueError("Пароль должен быть максимум 128 символов")
+    if not any(c.isalpha() for c in v):
+        raise ValueError("Пароль должен содержать хотя бы одну букву")
+    if not any(c.isdigit() for c in v):
+        raise ValueError("Пароль должен содержать хотя бы одну цифру")
+    return v
+
+def _validate_username(v: str) -> str:
+    if len(v) < 3:
+        raise ValueError("Имя пользователя должно быть минимум 3 символа")
+    if len(v) > 30:
+        raise ValueError("Имя пользователя должно быть максимум 30 символов")
+    if not all(c.isalnum() or c == "_" for c in v):
+        raise ValueError("Имя пользователя может содержать только буквы, цифры и подчёркивания")
+    return v
+
 class UserRegister(BaseModel):
     username: str
     email: EmailStr
     telegram: str
     password: str
 
+    @field_validator("telegram")
+    def telegram_valid(cls, v):
+        if not v.startswith("@"):
+            v = "@" + v
+        return v
+
     @field_validator("password")
     def password_valid(cls, v):
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters")
-        if not any(c.isalpha() for c in v):
-            raise ValueError("Password must contain at least one letter")
-        if not any(c.isdigit() for c in v):
-            raise ValueError("Password must contain at least one digit")
-        return v
+        return _validate_password(v)
 
     @field_validator("username")
     def username_valid(cls, v):
-        if len(v) < 3:
-            raise ValueError("Username must be at least 3 characters")
-        if not v.isalnum():
-            raise ValueError("Username must contain only letters and digits")
-        return v
+        return _validate_username(v)
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -88,11 +110,7 @@ class NewPasswordRequest(BaseModel):
 
     @field_validator("new_password")
     def password_valid(cls, v):
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters")
-        if not any(c.isalpha() for c in v):
-            raise ValueError("Password must contain at least one letter")
-        return v
+        return _validate_password(v)
 
 class LinkCodeRequest(BaseModel):
     chat_id: int
@@ -221,8 +239,38 @@ def get_me(payload: dict = Depends(get_current_user), db: Session = Depends(get_
         "chat_id": user.chat_id,
         "username": user.username,
         "email": user.email,
-        "telegram": user.telegram
+        "telegram": user.telegram,
+        "avatar_url": user.avatar_url
     }
+
+@app.put("/me/avatar")
+def upload_avatar(
+    payload: dict = Depends(get_current_user),
+    avatar: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    user = db.query(models.UserModel).filter(models.UserModel.chat_id == int(payload["sub"])).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Проверяем тип файла
+    if avatar.content_type not in ["image/jpeg", "image/png", "image/gif"]:
+        raise HTTPException(status_code=400, detail="Invalid file type. Only JPG, PNG, GIF are allowed.")
+
+    # Генерируем уникальное имя файла
+    file_extension = avatar.filename.split(".")[-1]
+    unique_filename = f"{uuid.uuid4()}.{file_extension}"
+    file_path = f"static/avatars/{unique_filename}"
+
+    # Сохраняем файл на диск
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(avatar.file, buffer)
+
+    # Обновляем путь в базе данных
+    user.avatar_url = f"/{file_path}"
+    db.commit()
+
+    return {"status": "success", "avatar_url": user.avatar_url}
 
 @app.post("/link-code")
 def generate_link_code(req: LinkCodeRequest, db: Session = Depends(get_db)):
