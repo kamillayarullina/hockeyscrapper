@@ -15,6 +15,10 @@ Track KHL hockey tickets. Web dashboard + Telegram bot in one project.
 - [Week 2 report](reports/week2/README.md) — user stories, prototype, MVP v0, customer meeting
 - [MVP v0 report](reports/week2/mvp-v0-report.md) — foundation details, smoke-check scenario
 
+## Documentation
+
+- [Development Process](docs/development-process.md)
+
 ## Local Setup
 
 ### Requirements
