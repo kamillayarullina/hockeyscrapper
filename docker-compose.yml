@@ -5,6 +5,7 @@ services:
       - "8000:8000"
     volumes:
       - ./data:/app/data
+      - ./static:/app/static
     environment:
       - DATABASE_URL=sqlite:///app/data/tickets.db
       - BOT_TOKEN=${BOT_TOKEN:-}

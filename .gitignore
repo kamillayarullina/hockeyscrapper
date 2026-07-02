@@ -32,3 +32,7 @@ Thumbs.db
 # Data (local SQLite)
 data/
 hockey.db
+
+# Uploaded avatars
+static/avatars/
+uploads/

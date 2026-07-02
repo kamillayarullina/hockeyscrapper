@@ -235,15 +235,12 @@ def get_me(payload: dict = Depends(get_current_user), db: Session = Depends(get_
     user = db.query(models.UserModel).filter(models.UserModel.chat_id == int(payload["sub"])).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    avatar_url = None
-    if user.avatar_path:
-        avatar_url = f"/{user.avatar_path}"
     return {
         "chat_id": user.chat_id,
         "username": user.username,
         "email": user.email,
         "telegram": user.telegram,
-        "avatar_url": avatar_url,
+        "avatar_url": user.avatar_url,
     }
 
 @app.put("/me/avatar")
@@ -259,6 +256,12 @@ def upload_avatar(
     # Проверяем тип файла
     if avatar.content_type not in ["image/jpeg", "image/png", "image/gif"]:
         raise HTTPException(status_code=400, detail="Invalid file type. Only JPG, PNG, GIF are allowed.")
+
+    # Удаляем старый файл, если он есть
+    if user.avatar_url:
+        old_path = user.avatar_url.lstrip("/")
+        if os.path.exists(old_path):
+            os.remove(old_path)
 
     # Генерируем уникальное имя файла
     file_extension = avatar.filename.split(".")[-1]
@@ -655,46 +658,7 @@ def admin_clear_matches(db: Session = Depends(get_db), admin=Depends(_require_ad
     db.commit()
     return {"status": "cleared", "deleted": count}
 
-uploads_path = Path(__file__).resolve().parent.parent / "uploads" / "avatars"
-uploads_path.mkdir(parents=True, exist_ok=True)
-
-class AvatarUpload(BaseModel):
-    avatar: str
-
-@app.post("/upload-avatar")
-def upload_avatar_base64(body: AvatarUpload, payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    import base64
-    user = db.query(models.UserModel).filter(models.UserModel.chat_id == int(payload["sub"])).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    data = body.avatar
-    if data.startswith("data:image"):
-        data = data.split(",")[1]
-    chat_id = str(user.chat_id)
-    file_path = uploads_path / f"{chat_id}.jpg"
-    try:
-        image_data = base64.b64decode(data)
-        with open(file_path, "wb") as f:
-            f.write(image_data)
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid image data")
-    user.avatar_path = f"uploads/avatars/{chat_id}.jpg"
-    db.commit()
-    return {"status": "ok", "avatar_url": f"/uploads/avatars/{chat_id}.jpg"}
-
 frontend_path = Path(__file__).resolve().parent.parent / "Frontend"
-
-@app.get("/uploads/{file_path:path}")
-async def serve_uploads(file_path: str):
-    from fastapi.responses import FileResponse
-    resolved = (uploads_path.parent / file_path).resolve()
-    if not str(resolved).startswith(str(uploads_path.parent.resolve())):
-        raise HTTPException(status_code=404, detail="Not found")
-    if not resolved.exists() or not resolved.is_file():
-        raise HTTPException(status_code=404, detail="Not found")
-    import mimetypes
-    media_type, _ = mimetypes.guess_type(str(resolved))
-    return FileResponse(str(resolved), media_type=media_type or "application/octet-stream")
 
 @app.get("/{full_path:path}")
 async def serve_frontend(full_path: str):
