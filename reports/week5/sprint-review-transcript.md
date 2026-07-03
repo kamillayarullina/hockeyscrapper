@@ -1,4 +1,4 @@
-#Sprint Review
+## Sprint Review
 **Team**
 (00:05)
 Can we record the meeting so that the instructor has access to it and the transcript is in the repository?
