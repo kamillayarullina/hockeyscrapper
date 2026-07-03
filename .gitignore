@@ -7,11 +7,9 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-*.pyc
 
-# Node
-node_modules/
-.npm/
+# Data
+data/
 
 # IDE
 .vscode/
@@ -22,10 +20,3 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
-
-# Generated
-*.log
-
-# Data (local SQLite)
-data/
-hockey.db

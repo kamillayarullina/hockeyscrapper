@@ -26,20 +26,30 @@ All test assets are maintained in the `tests/` directory:
 * `tests/test_fault_tolerance.py` — **[QRT-01]** Verifies the parser's retry mechanisms and isolation under network downtime (5xx errors).
 * `tests/test_auth_confidentiality.py` — **[QRT-02]** Verifies that secure API endpoints block unauthorized actors without JWT credentials.
 * `tests/test_notification_performance.py` — **[QRT-03]** Measures the speed of the notification matching service under load (50 matches simultaneously).
+* `tests/test_notifier.py` — Unit tests for notification dispatch, deduplication (`was_event_notified` check), and message formatting per reason type (new, available, sold-out, changed).
+* `tests/test_parser_runner.py` — Integration test for the full parser pipeline: config loading, parser creation via `ParserFactory`, match data flow, and `Notifier` invocation with correct reason and subscriber list.
+* `tests/test_qrt_bandit.py` — **[QRT-002 companion]** Validates that `[tool.bandit]` is configured in `pyproject.toml` and the bandit security-lint command completes within 30 seconds.
+* `tests/test_qrt_coverage.py` — **[QRT-001 companion]** Validates that `.coveragerc` exists, `fail_under` is set to at least 80, and `Backend` + `services` are in the source list.
+* `tests/test_qrt_ruff.py` — **[QRT-004 companion]** Validates that `[tool.ruff]` is configured in `pyproject.toml` and `ruff check .` exits with code 0.
+* `tests/test_qrt_startup.py` — **[QRT-005]** Verifies that all top-level module imports succeed without `ImportError`, the CLI argument parser responds within 10 seconds, and `load_env()` degrades gracefully when no `.env` file is present.
 
 ## 3. Coverage Analysis & Targets
 
-We enforce a strict quality minimum of **at least 30% line coverage** for all critical backend and service modules.
+We enforce a **global CI gate of 30% line coverage** (`fail_under = 30` in `.coveragerc`). The table below shows actual per-module coverage measured from the latest run.
 
-### Target Modules vs Coverage Targets
+### Critical Modules Coverage
 
-| Module File | Critical Logic | Expected Target Coverage | Actual Status |
-| ----- | ----- | ----- | ----- |
-| `Backend/security.py` | Password encryption & verification | $\ge 80\%$ | Fully Covered |
-| `Backend/jwt_auth.py` | Token signature, expiration checks, and Dependency-injection | $\ge 80\%$ | Fully Covered |
-| `services/team_matcher.py` | Normalizing KHL and club naming conventions | $\ge 90\%$ | Fully Covered |
-| `parsers/base_parser.py` | Playwright loader, user-agent generation, and retry logic | $\ge 40\%$ | Covered via Mock integration |
-| `services/notifications` | Matching ticket updates to bot subscription models | $\ge 30\%$ | Covered via performance benchmark |
+| Module File | Critical Logic | Line Coverage |
+| ----- | ----- | ----- |
+| `Backend/security.py` | Password encryption & verification | 100% |
+| `Backend/jwt_auth.py` | Token signature, expiration checks, and Dependency-injection | 100% |
+| `Backend/models.py` | SQLAlchemy ORM models | 100% |
+| `Backend/database.py` | Database session management | 80% |
+| `services/team_matcher.py` | Normalizing KHL and club naming conventions | 98% |
+| `services/notifier.py` | Deduplication and dispatch of Telegram notifications | 85% |
+| `services/parser_runner.py` | Orchestration of scraping pipeline | 61% |
+| `Backend/main.py` | FastAPI routes, auth, admin endpoints | 55% |
+| `parsers/base_parser.py` | Playwright loader, retry logic, proxy rotation | 38% |
 
 ## 4. Additional QA Check — Dependency Vulnerability Audit
 

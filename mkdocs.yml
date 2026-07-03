@@ -1,0 +1,33 @@
+site_name: HockeyScrapper Documentation
+site_url: https://kamillayarullina.github.io/hockeyscrapper/
+repo_url: https://github.com/kamillayarullina/hockeyscrapper
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Home: index.md
+  - Process:
+    - Development Process: development-process.md
+    - Definition of Done: definition-of-done.md
+  - Architecture:
+    - Overview: architecture/README.md
+  - Product:
+    - User Stories: user-stories.md
+    - Roadmap: roadmap.md
+  - Testing:
+    - Testing Strategy: testing.md
+    - Quality Requirements: quality-requirements.md
+    - Quality Requirement Tests: quality-requirement-tests.md
+    - User Acceptance Tests: user-acceptance-tests.md

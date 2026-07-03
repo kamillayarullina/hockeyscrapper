@@ -1,5 +1,8 @@
 # Lychee link checker configuration
 
+# Skip mock data files (test fixtures with non-routable URLs)
+exclude_path = ["tests/mock_data/"]
+
 # Cache
 cache = true
 max_cache_age = "1d"
@@ -17,8 +20,37 @@ exclude = [
     'https://my-mvp-v0.example.com',
     # Example domain in docs
     'https://ticket-hockey.ru/.*',
+    # KHL team ticket sites — dynamic third-party endpoints, may 403/404 from CI
+    'https://khl.ru/.*',
+    'https://tickets\.cska-hockey\.ru/.*',
+    'https://tickets\.ska\.ru/.*',
+    'https://tickets\.spartak\.ru/.*',
+    'https://dynamo\.ru/.*',
+    'https://tickets\.hawk\.ru/.*',
+    'https://www\.ak-bars\.ru/.*',
+    'https://tickets\.hcsalavat\.ru/.*',
+    'https://tickets\.metallurg\.ru/.*',
+    'https://my\.hctraktor\.org/.*',
+    'https://tickets\.hclokomotiv\.ru/.*',
+    'https://tickets\.hcsibir\.ru/.*',
+    'https://hctorpedo\.ru/.*',
+    'https://hclada\.ru/.*',
+    'https://tickets\.hcvityaz\.ru/.*',
+    'https://severstalclub\.ru/.*',
+    'https://tickets\.hcnh\.ru/.*',
+    'https://hk-amur\.ru/.*',
+    'https://tickets\.hcadmiral\.pro/.*',
+    'https://arena-mo\.ru/.*',
+    'https://ru\.hcbarys\.kz/.*',
+    'https://hcdinamo\.by/.*',
+    'https://tickets\.hcsochi\.ru/.*',
+    'https://ticket\.hc-avto\.ru/.*',
+    # httpbin may be rate-limited from CI
+    'https://httpbin\.org/.*',
     # VPS deployment (not accessible from CI)
     'http://139.100.225.113:8000/',
+    # Telegram bot template links
+    'https://t\.me/.*',
 ]
 
 # Only check these schemes
