@@ -1,0 +1,334 @@
+settings:
+  default_interval_minutes: 30
+  retry_attempts: 3
+  retry_backoff_base: 2
+  min_delay_seconds: 1.0
+  max_delay_seconds: 3.0
+  output_dir: "data"
+  headless: true
+
+  proxy:
+    enabled: false
+
+  # Настройки Telegram-бота (токен из .env)
+  telegram:
+    admin_chat_id: 8061310741
+
+  # Email-уведомления админу (опционально)
+  email:
+    enabled: true
+    smtp_server: "smtp.gmail.com"
+    smtp_port: 587
+    login: "sakirovsamir401@gmail.com"
+    password: "hqbo bhdk cxfg gabq"
+    to_email: "sakirovsamir401@gmail.com"
+
+sites:
+  # ───── АГРЕГАТОРЫ (проверенные источники) ─────
+  - name: ticket_hockey
+    url: https://ticket-hockey.ru/afisha/
+    parser: club
+    enabled: true
+    interval_minutes: 30
+    params:
+      keywords:
+        - "хоккей"
+        - "кхл"
+        - "цска"
+        - "спартак"
+        - "динамо"
+        - "ска"
+        - "авангард"
+        - "ак барс"
+        - "металлург"
+        - "трактор"
+        - "локомотив"
+        - "сибирь"
+        - "торпедо"
+        - "лада"
+        - "салават юлаев"
+        - "витязь"
+        - "северсталь"
+        - "нефтехимик"
+        - "амур"
+        - "адмирал"
+        - "куньлунь"
+        - "барыс"
+        - "сочи"
+        - "автомобилист"
+      timeout_ms: 30000
+
+  - name: khl_ru
+    url: https://khl.ru/tickets/
+    parser: khl
+    enabled: true
+    interval_minutes: 30
+    params:
+      timeout_ms: 30000
+
+  - name: yandex_afisha
+    url: https://afisha.yandex.ru/moscow/sport/khokkej
+    parser: yandex
+    enabled: true
+    interval_minutes: 30
+    params:
+      keywords:
+        - "кхл"
+        - "континентальная"
+        - "цска"
+        - "спартак"
+        - "динамо"
+        - "ска"
+        - "авангард"
+        - "ак барс"
+        - "металлург"
+        - "трактор"
+        - "локомотив"
+        - "сибирь"
+        - "торпедо"
+        - "лада"
+        - "салават"
+        - "витязь"
+        - "северсталь"
+        - "нефтехимик"
+        - "амур"
+        - "адмирал"
+        - "куньлунь"
+        - "барыс"
+        - "сочи"
+        - "автомобилист"
+      timeout_ms: 30000
+
+  # ───── ОФИЦИАЛЬНЫЕ САЙТЫ КЛУБОВ КХЛ ─────
+  # Все включены. Если сайт использует личный кабинет / SPA / Яндекс Афишу,
+  # ClubParser не сможет его спарсить — нужны доработки или wait_selector.
+  #
+  - name: cska
+    url: https://tickets.cska-hockey.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["цска", "армейцы"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: ska
+    url: https://tickets.ska.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["ска", "санкт-петербург"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: spartak
+    url: https://tickets.spartak.ru/tickets/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["спартак"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: dynamo_moscow
+    url: https://dynamo.ru/tickets/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["динамо москва", "динамо"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: avangard
+    url: https://tickets.hawk.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["авангард"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: ak_bars
+    url: https://www.ak-bars.ru/tickets
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["ак барс", "казань"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: salavat_yulaev
+    url: https://tickets.hcsalavat.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["салават юлаев", "салават", "уфа"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: metallurg
+    url: https://tickets.metallurg.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["металлург"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: traktor
+    url: https://my.hctraktor.org/tickets/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["трактор"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: lokomotiv
+    url: https://tickets.hclokomotiv.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["локомотив"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: sibir
+    url: https://tickets.hcsibir.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["сибирь"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: torpedo
+    url: https://hctorpedo.ru/tickets/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["торпедо"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: lada
+    url: https://hclada.ru/tickets/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["лада"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: vityaz
+    url: https://tickets.hcvityaz.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["витязь"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: severstal
+    url: https://severstalclub.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["северсталь"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: neftekhimik
+    url: https://tickets.hcnh.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["нефтехимик"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: amur
+    url: https://hk-amur.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["амур", "хабаровск"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: admiral
+    url: https://tickets.hcadmiral.pro/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["адмирал"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: kunlun
+    url: https://arena-mo.ru/afisha/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["куньлунь", "шанхай", "shanghai dragons", "drago"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: barys
+    url: https://ru.hcbarys.kz/tickets/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["барыс"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: dynamo_minsk
+    url: https://hcdinamo.by/tickets/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["динамо минск", "минск"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: sochi
+    url: https://tickets.hcsochi.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["сочи"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
+
+  - name: avtomobilist
+    url: https://ticket.hc-avto.ru/
+    parser: club_site
+    enabled: true
+    interval_minutes: 60
+    params:
+      keywords: ["автомобилист"]
+      wait_selector: ".event-card, .match-item, .ticket-item, .schedule-item, [class*=match], [class*=event], [class*=ticket]"
+      timeout_ms: 30000
