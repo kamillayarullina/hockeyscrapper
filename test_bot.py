@@ -1,6 +1,7 @@
 """Тест полной интеграции: бот + парсер."""
 
-import asyncio, os
+import asyncio
+import os
 import yaml
 from pathlib import Path
 from bot import TelegramBot
@@ -27,7 +28,7 @@ async def test_full():
     # 2. Инициализируем БД
     db = get_db()
     await db.init()
-    print(f"3. База данных: ✅")
+    print("3. База данных: ✅")
 
     # 3. Проверяем подписчиков
     subs = await db.get_user_subscriptions(chat_id)
@@ -43,7 +44,7 @@ async def test_full():
     try:
         bot = TelegramBot(token)
         await bot.start()
-        print(f"5. Telegram-бот: ✅ запущен")
+        print("5. Telegram-бот: ✅ запущен")
     except Exception as e:
         print(f"5. Telegram-бот: ❌ {e}")
         return

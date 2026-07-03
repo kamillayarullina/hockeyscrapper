@@ -1,6 +1,9 @@
 """Симуляция с реальным Telegram-ботом: отправляем уведомления на телефон."""
 
-import sys, os, asyncio, logging
+import sys
+import os
+import asyncio
+import logging
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -110,7 +113,7 @@ async def simulate():
             )
             print(f"  Отправлено: {sent}")
         else:
-            print(f"  Уведомление не нужно (статус не изменился)")
+            print("  Уведомление не нужно (статус не изменился)")
 
     # ════════════════════════
     print("\n" + "=" * 60)

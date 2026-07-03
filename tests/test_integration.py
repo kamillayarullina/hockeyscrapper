@@ -1,7 +1,6 @@
 """Интеграционные тесты полного пайплайна: парсер -> БД -> уведомления."""
 
 import asyncio
-import json
 import os
 import tempfile
 import sys
@@ -210,7 +209,7 @@ async def test_yandex_parser_full_pipeline():
 # ─────────────────────────────────────────────
 async def test_team_matcher_all_teams():
     """Team Matcher: проверка всех 23 команд в разных форматах."""
-    from services.team_matcher import extract_teams_from_title, KHL_TEAMS, get_all_team_names
+    from services.team_matcher import extract_teams_from_title, get_all_team_names
 
     teams = get_all_team_names()
     assert len(teams) == 23, f"Ожидалось 23 команды, получено {len(teams)}"
@@ -252,7 +251,8 @@ async def test_team_matcher_all_teams():
 async def test_cross_source_dedup_and_notifications():
     """Два источника сохраняют один матч -> sources накапливаются, link не затирается."""
     from services.database import Database
-    import tempfile, os
+    import tempfile
+    import os
 
     tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
     tmp.close()
@@ -297,8 +297,6 @@ async def test_cross_source_dedup_and_notifications():
 async def test_notification_reasons():
     """Notifier: проверка формирования причин уведомлений."""
     from services.notifier import Notifier
-    from services.database import Database
-    import tempfile, os
 
     notifier = Notifier(None, admin_chat_id=0)
 
@@ -337,7 +335,8 @@ async def test_process_site_notification_logic():
     """_process_site: правильная логика old_availability vs new_availability."""
     from services.parser_runner import ParserRunner
     from services.database import Database
-    import tempfile, os
+    import tempfile
+    import os
     from services.team_matcher import extract_teams_from_title
 
     tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
@@ -359,9 +358,9 @@ async def test_process_site_notification_logic():
     for i, tc in enumerate(test_cases):
         match_id = f"Test Team A - Test Team B|2026-10-{i+1:02d}"
         event = {
-            "title": f"Test Team A - Test Team B",
+            "title": "Test Team A - Test Team B",
             "date": f"2026-10-{i+1:02d}",
-            "place": f"Test City, Test Arena",
+            "place": "Test City, Test Arena",
             "price_min": "1000 руб",
             "price_max": "3000 руб",
             "availability": tc["new"],

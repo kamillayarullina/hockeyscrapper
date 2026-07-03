@@ -1,7 +1,6 @@
 """Тесты парсеров на мок-данных (без Playwright, без live-сайтов)."""
 
 import sys
-import json
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -74,7 +73,7 @@ async def test_club_parser_no_keywords():
     html = (MOCK_DIR / "club_parser_hockey.html").read_text(encoding="utf-8")
     events = await parser.parse(html)
 
-    assert len(events) == 0, f"Хоккейные события не должны пройти с ключевым словом 'футбол'"
+    assert len(events) == 0, "Хоккейные события не должны пройти с ключевым словом 'футбол'"
 
 
 async def test_club_parser_extract_place():
@@ -224,7 +223,8 @@ async def test_team_matcher():
 
 async def test_database():
     """Базовые операции с БД (временный файл)."""
-    import tempfile, os
+    import tempfile
+    import os
     from services.database import Database
 
     tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
@@ -281,7 +281,7 @@ async def test_database():
     assert stats["users"] == 2
     assert stats["matches"] == 1
 
-    print(f"  ✅ Все операции с БД прошли успешно")
+    print("  ✅ Все операции с БД прошли успешно")
     print(f"  - Пользователей: {stats['users']}")
     print(f"  - Подписок на команды: {stats['team_subs']}")
     print(f"  - Подписок на стадионы: {stats['venue_subs']}")
@@ -316,7 +316,7 @@ async def test_notifier_format():
     msg_avail = notifier._format_message(event, "ЦСКА", "available")
     assert "БИЛЕТЫ ПОЯВИЛИСЬ" in msg_avail
 
-    print(f"  ✅ Форматирование сообщений работает")
+    print("  ✅ Форматирование сообщений работает")
 
 
 async def test_protection_detector():
@@ -338,7 +338,7 @@ async def test_protection_detector():
     assert ProtectionDetector.get_protection_level(protected_2, "") == "cloudflare"
     assert ProtectionDetector.get_protection_level("", "") == "unknown"
 
-    print(f"  ✅ ProtectionDetector работает")
+    print("  ✅ ProtectionDetector работает")
 
 
 async def test_khl_parser():
@@ -375,7 +375,8 @@ async def test_khl_parser():
 
 async def test_match_dedup_cross_source():
     """Проверка кросс- source дедупликации матчей в БД."""
-    import tempfile, os
+    import tempfile
+    import os
     from services.database import Database
 
     tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
@@ -409,7 +410,7 @@ async def test_match_dedup_cross_source():
     assert "site_a" in updated["sources"]
 
     os.unlink(tmp.name)
-    print(f"  ✅ Кросс- source дедупликация работает")
+    print("  ✅ Кросс- source дедупликация работает")
 
 
 if __name__ == "__main__":
