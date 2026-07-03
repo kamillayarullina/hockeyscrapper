@@ -124,9 +124,12 @@
                 }
 
                 function loadSavedAvatar() {
-                    const saved = localStorage.getItem("avatar");
-                    if (saved) {
-                        setAvatar(saved);
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                        const saved = localStorage.getItem("avatar");
+                        if (saved) {
+                            setAvatar(saved);
+                        }
                     }
                 }
                 loadSavedAvatar();
