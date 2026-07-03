@@ -1,9 +1,10 @@
-"""Parser runner with subscriber notification integration."""
+"""Раннер парсера с интеграцией уведомлений подписчикам."""
 
 import asyncio
 import csv
 import logging
 import os
+import re
 import signal
 from datetime import datetime
 from pathlib import Path
@@ -11,16 +12,34 @@ from typing import Any, Optional, Type
 
 import yaml
 
-from Backend.database import SessionLocal
 from parsers.base_parser import BaseParser
 from parsers.club_parser import ClubParser
+from parsers.club_sites import ClubSiteParser
 from parsers.yandex_parser import YandexParser
 from parsers.khl_parser import KHLParser
 from services.database import get_db
 from services.notifier import Notifier
+from services.email_sender import EmailSender
+from services.proxy_rotator import ProxyRotator
 from services.team_matcher import extract_teams_from_title
 
 logger = logging.getLogger(__name__)
+
+_ENV_VAR_RE = re.compile(r"\$\{([^}]+)\}")
+
+
+def _resolve_env_vars(value: Any) -> Any:
+    """Заменяет ${VAR} на значение из os.environ."""
+    if isinstance(value, str):
+        def replacer(m: re.Match) -> str:
+            var_name = m.group(1)
+            return os.environ.get(var_name, m.group(0))
+        return _ENV_VAR_RE.sub(replacer, value)
+    if isinstance(value, dict):
+        return {k: _resolve_env_vars(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_resolve_env_vars(v) for v in value]
+    return value
 
 
 class ParserFactory:
@@ -31,11 +50,11 @@ class ParserFactory:
         cls._registry[name.lower()] = parser_class
 
     @classmethod
-    def create(cls, name: str, config: dict[str, Any]) -> BaseParser:
+    def create(cls, name: str, config: dict[str, Any], proxy_rotator=None) -> BaseParser:
         key = name.lower()
         if key not in cls._registry:
             raise KeyError(f"Парсер '{name}' не зарегистрирован. Доступные: {list(cls._registry.keys())}")
-        return cls._registry[key](config)
+        return cls._registry[key](config, proxy_rotator=proxy_rotator)
 
     @classmethod
     def available(cls) -> list[str]:
@@ -44,6 +63,7 @@ class ParserFactory:
 
 ParserFactory.register("yandex", YandexParser)
 ParserFactory.register("club", ClubParser)
+ParserFactory.register("club_site", ClubSiteParser)
 ParserFactory.register("khl", KHLParser)
 
 
@@ -56,7 +76,8 @@ class ConfigLoader:
         if not path.exists():
             raise FileNotFoundError(f"Конфиг не найден: {self.config_path}")
         with open(path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
+            config = yaml.safe_load(f)
+        return _resolve_env_vars(config)
 
 
 class ParserRunner:
@@ -76,6 +97,8 @@ class ParserRunner:
         self._settings: dict[str, Any] = {}
         self._sites: list[dict[str, Any]] = []
         self.notifier: Optional[Notifier] = None
+        self.email_sender: Optional[EmailSender] = None
+        self.proxy_rotator: Optional[ProxyRotator] = None
         self.db = get_db()
 
     async def load_config(self) -> None:
@@ -89,29 +112,52 @@ class ParserRunner:
         self._sites = [s for s in self._sites if s.get("enabled", True)]
 
         if self.telegram_bot:
-            self.notifier = Notifier(self.telegram_bot.get_bot())
+            admin_id = self._settings.get("telegram", {}).get("admin_chat_id", 0)
+            self.notifier = Notifier(self.telegram_bot.get_bot(), admin_id)
         else:
-            self.notifier = Notifier(None)
+            self.notifier = Notifier(None, 0)
+
+        email_cfg = self._settings.get("email", {})
+        self.email_sender = EmailSender(email_cfg)
+        if email_cfg.get("enabled"):
+            logger.info(f"Email-уведомления включены: {email_cfg.get('to_email')}")
 
         logger.info(f"Загружено {len(self._sites)} активных сайтов")
 
-    async def load_proxies_from_db(self) -> list[dict]:
-        """Load proxies from DB and return as config list."""
+    async def load_proxies_from_db(self) -> None:
+        """Загружает прокси из БД и создаёт ProxyRotator."""
         try:
-            proxies = await self.db.get_all_proxies()
-            config_list = []
-            for p in proxies:
+            db_proxies = await self.db.get_all_proxies()
+            servers = []
+            for p in db_proxies:
                 if p.get("enabled"):
-                    config_list.append({
-                        "url": p["url"],
+                    full_url = f"{p.get('proxy_type', 'http')}://{p['url']}"
+                    servers.append({
+                        "url": full_url,
                         "type": p.get("proxy_type", "http"),
                         "country": p.get("country", ""),
                         "note": p.get("note", ""),
                     })
-            return config_list
+            if servers:
+                proxy_cfg = self._settings.get("proxy", {})
+                config = {
+                    "enabled": True,
+                    "servers": servers,
+                    "rotation_strategy": proxy_cfg.get("strategy", "round_robin"),
+                    "health_check_interval_seconds": proxy_cfg.get("health_check_interval", 300),
+                    "health_check_timeout_seconds": proxy_cfg.get("health_check_timeout", 10),
+                    "max_failures_before_disable": proxy_cfg.get("max_failures", 3),
+                    "reanimate_after_seconds": proxy_cfg.get("reanimate_after", 600),
+                    "use_direct_as_fallback": proxy_cfg.get("direct_fallback", True),
+                }
+                self.proxy_rotator = ProxyRotator(config)
+                logger.info(f"Загружено {len(servers)} прокси из БД")
+            else:
+                self.proxy_rotator = None
+                logger.debug("Нет активных прокси в БД")
         except Exception as e:
             logger.warning(f"Не удалось загрузить прокси из БД: {e}")
-            return []
+            self.proxy_rotator = None
 
     def _apply_global_settings(self, site_config: dict) -> dict:
         site_config["_retry_attempts"] = self._settings.get("retry_attempts", 3)
@@ -127,21 +173,18 @@ class ParserRunner:
 
         try:
             enriched_config = self._apply_global_settings(site_config.copy())
-            parser = ParserFactory.create(site_config["parser"], enriched_config)
-            db_sync = SessionLocal()
-            try:
-                events = await parser.run(db=db_sync)
-            finally:
-                db_sync.close()
+            parser = ParserFactory.create(site_config["parser"], enriched_config, self.proxy_rotator)
+            events = await parser.run()
 
             if not events:
                 logger.info(f"[{name}] Событий не найдено")
                 return
 
             total_notified = 0
+
             for event in events:
-                teams_list = sorted(list(extract_teams_from_title(event.get("title", ""))))
-                teams_str = ", ".join(teams_list) if teams_list else "Не определены"
+                teams = extract_teams_from_title(event.get("title", ""))
+                teams_str = ", ".join(teams) if teams else "Не определены"
 
                 place = event.get("place", "")
                 venue = ""
@@ -201,8 +244,8 @@ class ParserRunner:
                     logger.debug(f"Без изменений: {event.get('title')}")
 
                 if should_notify:
-                    subscriber_ids = await self.db.get_subscribers_for_teams(teams_list)
-                    logger.debug(f"Подписчиков на команды {teams_list}: {len(subscriber_ids)}")
+                    subscriber_ids = await self.db.get_subscribers_for_teams(teams)
+                    logger.debug(f"Подписчиков на команды {teams}: {len(subscriber_ids)}")
 
                     if venue and city:
                         venue_key = f"{city}, {venue}".lower()
@@ -228,11 +271,17 @@ class ParserRunner:
                         )
                         total_notified += sent
 
+                    # Email-уведомление админу
+                    await self.email_sender.notify_admin_about_event(
+                        event=event, teams_str=teams_str, reason=notify_reason,
+                    )
+
             logger.info(f"[{name}] Обработано {len(events)} событий, отправлено {total_notified} уведомлений")
             self._save_results_csv(name, events)
 
         except Exception as e:
             logger.error(f"[{name}] Ошибка: {e}", exc_info=True)
+            await self.email_sender.notify_admin_about_error(name, str(e))
 
     def _clean_city_name(self, city: str) -> str:
         city = city.strip().lower()

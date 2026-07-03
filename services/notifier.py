@@ -1,5 +1,6 @@
-"""Personal notifications for subscribers."""
+"""Персональные уведомления для подписчиков."""
 
+import asyncio
 import logging
 from typing import Optional
 
@@ -10,10 +11,11 @@ logger = logging.getLogger(__name__)
 
 
 class Notifier:
-    """Sends personal notifications to subscribers via Telegram bot."""
+    """Отправляет персональные уведомления подписчикам через Telegram-бот."""
 
-    def __init__(self, bot: Optional[Bot]):
+    def __init__(self, bot: Optional[Bot], admin_chat_id: int = 0):
         self.bot = bot
+        self.admin_chat_id = admin_chat_id
 
     async def notify_subscribers(
         self,
@@ -23,8 +25,8 @@ class Notifier:
         reason: str = "new",
     ) -> int:
         """
-        Sends personal notifications to all subscribers.
-        Returns the number of successfully sent.
+        Отправляет персональные уведомления всем подписчикам.
+        Возвращает количество успешно отправленных.
         """
         if not self.bot or not subscriber_chat_ids:
             return 0
@@ -32,13 +34,13 @@ class Notifier:
         event_id = f"{event.get('title')}|{event.get('date')}|{reason}"
         sent_count = 0
 
-
+        # Определяем команды матча для персонализации
         from services.team_matcher import extract_teams_from_title
         teams = extract_teams_from_title(event.get("title", ""))
         teams_str = ", ".join(teams) if teams else "матч"
 
         for chat_id in subscriber_chat_ids:
-
+            # Проверяем, не отправляли ли уже
             if await db.was_event_notified(event_id, chat_id):
                 continue
 
@@ -54,7 +56,7 @@ class Notifier:
             except TelegramAPIError as e:
                 if "bot was blocked" in str(e).lower() or "chat not found" in str(e).lower():
                     logger.warning(f"Пользователь {chat_id} заблокировал бота")
-
+                    # Можно пометить пользователя как неактивного
                 else:
                     logger.error(f"Ошибка отправки {chat_id}: {e}")
             except Exception as e:
@@ -63,7 +65,7 @@ class Notifier:
         return sent_count
 
     def _format_message(self, event: dict, teams_str: str, reason: str) -> str:
-        """Format notification message."""
+        """Формирует красивое сообщение."""
         if reason == "available":
             header = "🎟 <b>БИЛЕТЫ ПОЯВИЛИСЬ В ПРОДАЖЕ!</b>"
         elif reason == "sold_out":
@@ -92,3 +94,12 @@ class Notifier:
             f"<i>Вы получили это сообщение, т.к. подписаны на одну из команд.</i>\n"
             f"<i>Управление подписками: /list</i>"
         )
+
+    async def notify_admin(self, text: str) -> None:
+        """Отправляет уведомление админу."""
+        if not self.bot or not self.admin_chat_id:
+            return
+        try:
+            await self.bot.send_message(self.admin_chat_id, text)
+        except Exception as e:
+            logger.error(f"Ошибка уведомления админа: {e}")

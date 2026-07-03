@@ -1,4 +1,9 @@
-"""Base abstract parser class with Playwright loading, retries, delays, UA/proxy rotation."""
+"""
+Базовый абстрактный класс парсера.
+Содержит общую логику загрузки страниц через Playwright,
+повторных попыток, случайных задержек, ротации User-Agent
+и ротации прокси.
+"""
 
 import abc
 import asyncio
@@ -14,26 +19,30 @@ from playwright.async_api import (
 )
 
 if TYPE_CHECKING:
-    from sqlalchemy.orm import Session
     from services.proxy_rotator import ProxyRotator, ProxyServer
 
+
+# Кастомные исключения
 class ParseError(Exception):
-    """Parsing error (failed to extract data)."""
+    """Ошибка парсинга (не удалось извлечь данные)."""
     pass
 
 
 class NetworkError(Exception):
-    """Network error (timeout, 5xx, etc.)."""
+    """Ошибка сети (таймаут, 5xx и т.п.)."""
     pass
 
 
 class ProtectionError(Exception):
-    """Page is protected by anti-bot system."""
+    """Страница защищена антибот-системой."""
     pass
 
 
 class BaseParser(abc.ABC):
-    """Abstract base class for all parsers. Subclasses must implement `parse(html) -> list[dict]`."""
+    """
+    Абстрактный базовый класс для всех парсеров.
+    Наследники обязаны реализовать метод `parse(html) -> list[dict]`.
+    """
 
     _FALLBACK_USER_AGENTS = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -52,8 +61,8 @@ class BaseParser(abc.ABC):
         proxy_rotator: Optional["ProxyRotator"] = None,
     ):
         """
-        :param config: Site configuration dict from sites.yaml.
-        :param proxy_rotator: Optional proxy rotator.
+        :param config: Словарь с конфигурацией сайта из sites.yaml.
+        :param proxy_rotator: Опциональный ротатор прокси.
         """
         self.config = config
         self.name: str = config["name"]
@@ -62,19 +71,19 @@ class BaseParser(abc.ABC):
 
         self.logger = logging.getLogger(self.__class__.__name__)
 
-
+        # Глобальные настройки (подставляются раннером)
         self.retry_attempts: int = config.get("_retry_attempts", 3)
         self.retry_backoff_base: int = config.get("_retry_backoff_base", 2)
         self.min_delay: float = config.get("_min_delay", 1.0)
         self.max_delay: float = config.get("_max_delay", 3.0)
         self.headless: bool = config.get("_headless", True)
 
-
+        # Настройки прокси для этого сайта
         self.proxy_rotator = proxy_rotator
         self.proxy_country: Optional[str] = config.get("proxy_country")
         self.proxy_disabled: bool = bool(config.get("proxy_disabled", False))
 
-
+        # Ротатор User-Agent
         self._ua_fallback_index = 0
         try:
             self._ua = UserAgent(fallback=self._FALLBACK_USER_AGENTS[0])
@@ -84,7 +93,7 @@ class BaseParser(abc.ABC):
         self._fixed_ua: Optional[str] = config.get("user_agent")
 
     def _get_user_agent(self) -> str:
-        """Return User-Agent: fixed or random."""
+        """Возвращает User-Agent: фиксированный или случайный."""
         if self._fixed_ua:
             return self._fixed_ua
         if self._ua is not None:
@@ -99,13 +108,17 @@ class BaseParser(abc.ABC):
         return ua
 
     async def _random_delay(self) -> None:
-        """Wait a random delay between requests."""
+        """Выдерживает случайную паузу между запросами."""
         delay = random.uniform(self.min_delay, self.max_delay)
         self.logger.debug(f"Задержка {delay:.2f} с перед запросом")
         await asyncio.sleep(delay)
 
     async def _get_proxy(self) -> Optional["ProxyServer"]:
-        """Get the next proxy from the rotator, or None if disabled/unavailable."""
+        """
+        Получает следующий прокси из ротатора.
+        Возвращает None, если прокси отключены для этого сайта
+        или ротатор недоступен.
+        """
         if self.proxy_disabled or self.proxy_rotator is None:
             return None
         if not self.proxy_rotator.enabled:
@@ -113,7 +126,11 @@ class BaseParser(abc.ABC):
         return await self.proxy_rotator.get_next(country=self.proxy_country)
 
     async def fetch(self) -> str:
-        """Load page HTML via Playwright with retries, exponential backoff, and proxy rotation."""
+        """
+        Загружает HTML страницы через Playwright.
+        Реализует повторные попытки с экспоненциальной задержкой.
+        При ошибке — меняет прокси и повторяет.
+        """
         last_error: Optional[Exception] = None
         used_proxies: list["ProxyServer"] = []
         direct_attempt_done = False
@@ -249,7 +266,7 @@ class BaseParser(abc.ABC):
         wait_selector: Optional[str],
         proxy: Optional["ProxyServer"] = None,
     ) -> str:
-        """Internal method: run Playwright with the given proxy."""
+        """Внутренний метод: запуск Playwright с указанным прокси."""
         browser: Optional[Browser] = None
         pw = None
         try:
@@ -326,11 +343,14 @@ class BaseParser(abc.ABC):
 
     @abc.abstractmethod
     async def parse(self, html: str) -> list[dict]:
-        """Abstract HTML parsing method. Subclasses must implement data extraction."""
+        """
+        Абстрактный метод парсинга HTML.
+        Наследники должны реализовать извлечение данных.
+        """
         ...
 
-    async def run(self, db: Optional["Session"] = None) -> list[dict]:
-        """Main method: load page and parse it."""
+    async def run(self) -> list[dict]:
+        """Основной метод: загружает страницу и парсит её."""
         self.logger.info(f"[{self.name}] Запуск парсинга {self.url}")
         try:
             html = await self.fetch()
@@ -338,20 +358,6 @@ class BaseParser(abc.ABC):
             self.logger.info(
                 f"[{self.name}] Успешно получено {len(events)} событий"
             )
-            if db is not None:
-                from Backend import models
-
-                new_events = []
-                for event in events:
-                    existing = db.query(models.MatchModel).filter(
-                        models.MatchModel.title == event.get('title'),
-                        models.MatchModel.date == event.get('date')
-                    ).first()
-                    if not existing:
-                        new_events.append(event)
-                for event in new_events:
-                    self.logger.info(f"Новый матч: {event.get('title')}")
-                    await self._send_email_notifications(event, db)
             return events
         except ProtectionError as e:
             self.logger.error(f"[{self.name}] Антибот-защита: {e}")
@@ -373,118 +379,3 @@ class BaseParser(abc.ABC):
             f"<{self.__class__.__name__} name={self.name!r} "
             f"url={self.url!r}>"
         )
-    
-    async def _send_email_notifications(self, match_data: dict, db: "Session") -> None:
-        from Backend import models
-
-        try:
-            team_names = self._extract_team_names(match_data)
-            if not team_names:
-                self.logger.warning(f"Не удалось извлечь названия команд из матча: {match_data.get('title')}")
-                return
-            
-            self.logger.info(f"Поиск подписчиков для команд: {team_names}")
-            
-            subscribers = db.query(models.SubscriptionModel).filter(
-                models.SubscriptionModel.type == "team",
-                models.SubscriptionModel.value.in_([name.lower() for name in team_names])
-            ).all()
-            
-            if not subscribers:
-                self.logger.info(f"Нет подписчиков для команд {team_names}")
-                return
-            
-            user_ids = list(set([sub.chat_id for sub in subscribers]))
-            
-            users = db.query(models.UserModel).filter(
-                models.UserModel.chat_id.in_(user_ids),
-                models.UserModel.is_active == 1
-            ).all()
-            
-            self.logger.info(f"Найдено {len(users)} активных подписчиков")
-            
-            email_sent = 0
-            for user in users:
-                try:
-                    await self._send_match_notification_email(user, match_data)
-                    email_sent += 1
-                except Exception as e:
-                    self.logger.error(f"Ошибка отправки письма пользователю {user.email}: {e}")
-                    continue
-            
-            self.logger.info(f"Успешно отправлено {email_sent} уведомлений")
-            
-        except Exception as e:
-            self.logger.error(f"Ошибка при отправке уведомлений: {e}")
-    
-    def _extract_team_names(self, match_data: dict) -> list[str]:
-        from services.team_matcher import extract_teams_from_title
-        return extract_teams_from_title(match_data.get('title', ''))
-    
-    async def _send_match_notification_email(self, user, match_data: dict) -> None:
-        import os
-        from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
-
-        conf_email = ConnectionConfig(
-            MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "hqbo bhdk cxfg gabq"),
-            MAIL_USERNAME = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
-            MAIL_FROM = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
-            MAIL_PORT = int(os.getenv("MAIL_PORT", "587")),
-            MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com"),
-            MAIL_STARTTLS = os.getenv("MAIL_STARTTLS", "True") == "True",
-            MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True",
-        )
-
-        try:
-            html_body = f"""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body {{ font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; }}
-                    .match {{ background: white; padding: 15px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
-                    .price {{ color: #28a745; font-weight: bold; }}
-                    .button {{ display: inline-block; background: #667eea; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }}
-                    .footer {{ margin-top: 20px; color: #6c757d; font-size: 12px; }}
-                </style>
-            </head>
-            <body>
-                <div class="header">
-                    <h2>🏒 Новый матч по хоккею!</h2>
-                </div>
-                <div class="content">
-                    <div class="match">
-                        <h3>📋 {match_data.get('title', 'Матч')}</h3>
-                        <p>📅 <strong>Дата:</strong> {match_data.get('date', 'Дата не указана')}</p>
-                        <p>📍 <strong>Место:</strong> {match_data.get('place', 'Место не указано')}</p>
-                        <p>💰 <strong>Цена:</strong> <span class="price">{match_data.get('price_min', 'Не указана')}</span>
-                        {f" - <span class='price'>{match_data.get('price_max', '')}</span>" if match_data.get('price_max') and match_data.get('price_max') != match_data.get('price_min') else ''}</p>
-                        <p>🎟️ <strong>Доступность:</strong> {match_data.get('availability', 'Уточняется')}</p>
-                        <p>🔗 <strong>Источник:</strong> {self.name}</p>
-                    </div>
-                    <div class="footer">
-                        <p>Вы получили это письмо, потому что подписаны на обновления о матчах.</p>
-                        <p>Для отписки перейдите в настройки профиля.</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-            """
-            
-            message = MessageSchema(
-                subject=f"🏒 Новый матч: {match_data.get('title', 'Хоккей')}",
-                recipients=[user.email],
-                body=html_body,
-                subtype=MessageType.html
-            )
-            
-            fm = FastMail(conf_email)
-            await fm.send_message(message)
-            
-            self.logger.debug(f"Письмо отправлено на {user.email}")
-            
-        except Exception as e:
-            self.logger.error(f"Ошибка отправки письма на {user.email}: {e}")
-            raise
