@@ -169,7 +169,7 @@ The architecture supports the current product by:
 
 | Artifact | Link |
 |---|---|
-| SemVer release (MVP v2) | [v1.4.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v1.4.0) |
+| SemVer release (MVP v2) | [v1.3.1](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v1.3.1) |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
 
 ---
@@ -195,7 +195,7 @@ Public sanitized demo video — walkthrough of MVP v2 features including admin p
 
 ## Hosted Documentation Site
 
-- **Documentation site:** [`https://kamillayarullina.github.io/hockeyscrapper`](https://kamillayarullina.github.io/hockeyscrapper)
+- **Documentation site:** `https://kamillayarullina.github.io/hockeyscrapper`
 
 ---
 
