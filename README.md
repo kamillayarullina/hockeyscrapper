@@ -18,6 +18,7 @@ Track KHL hockey tickets. Web dashboard + Telegram bot in one project.
 ## Documentation
 
 - [Development Process](docs/development-process.md)
+- [Hosted Documentation Site](https://kamillayarullina.github.io/hockeyscrapper/) — browsable docs (architecture, testing, ADRs, UATs, roadmap)
 
 ## Local Setup
 
