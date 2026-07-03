@@ -20,7 +20,7 @@ Sprint 3 delivered the admin panel and email notifications for subscribed users.
 
 ### Reviewing the increment with the customer
 
-будет чуть позже
+The customer provided clear, actionable feedback. We need to implement custom error notifications for the site and add some features to the admin panel.
 
 ---
 
