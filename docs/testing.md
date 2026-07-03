@@ -35,17 +35,21 @@ All test assets are maintained in the `tests/` directory:
 
 ## 3. Coverage Analysis & Targets
 
-We enforce a **global minimum of 30% line coverage** (`fail_under = 30` in `.coveragerc`) across `Backend/` and `services/` modules. The same threshold applies to every critical module listed below.
+We enforce a **global CI gate of 30% line coverage** (`fail_under = 30` in `.coveragerc`). The table below shows actual per-module coverage measured from the latest run.
 
-### Critical Modules
+### Critical Modules Coverage
 
-| Module File | Critical Logic | Target Coverage | Enforced Via |
-| ----- | ----- | ----- | ----- |
-| `Backend/security.py` | Password encryption & verification | ≥ 30% | `.coveragerc` (global `fail_under`) |
-| `Backend/jwt_auth.py` | Token signature, expiration checks, and Dependency-injection | ≥ 30% | `.coveragerc` (global `fail_under`) |
-| `services/team_matcher.py` | Normalizing KHL and club naming conventions | ≥ 30% | `.coveragerc` (global `fail_under`) |
-| `parsers/base_parser.py` | Playwright loader, user-agent generation, and retry logic | ≥ 30% | `.coveragerc` (global `fail_under`) |
-| `services/notifier.py` | Deduplication and dispatch of Telegram notifications | ≥ 30% | `.coveragerc` (global `fail_under`) |
+| Module File | Critical Logic | Line Coverage |
+| ----- | ----- | ----- |
+| `Backend/security.py` | Password encryption & verification | 100% |
+| `Backend/jwt_auth.py` | Token signature, expiration checks, and Dependency-injection | 100% |
+| `Backend/models.py` | SQLAlchemy ORM models | 100% |
+| `Backend/database.py` | Database session management | 80% |
+| `services/team_matcher.py` | Normalizing KHL and club naming conventions | 98% |
+| `services/notifier.py` | Deduplication and dispatch of Telegram notifications | 85% |
+| `services/parser_runner.py` | Orchestration of scraping pipeline | 61% |
+| `Backend/main.py` | FastAPI routes, auth, admin endpoints | 55% |
+| `parsers/base_parser.py` | Playwright loader, retry logic, proxy rotation | 38% |
 
 ## 4. Additional QA Check — Dependency Vulnerability Audit
 
