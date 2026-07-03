@@ -1,4 +1,4 @@
-"""REST API for the future website."""
+"""REST API для будущего сайта."""
 
 from aiohttp import web
 from services.database import get_db
@@ -6,14 +6,14 @@ from services.team_matcher import get_all_team_names, get_team_info
 
 
 async def handle_get_matches(request):
-    """GET /api/matches - list all matches."""
+    """GET /api/matches - список всех матчей."""
     db = get_db()
     matches = await db.get_all_matches()
     return web.json_response({"matches": matches, "count": len(matches)})
 
 
 async def handle_get_match(request):
-    """GET /api/matches/{match_id} - match details."""
+    """GET /api/matches/{match_id} - детали матча."""
     match_id = request.match_info['match_id']
     db = get_db()
     match = await db.get_match_by_id(match_id)
@@ -23,13 +23,13 @@ async def handle_get_match(request):
 
 
 async def handle_get_teams(request):
-    """GET /api/teams - list all teams."""
+    """GET /api/teams - список всех команд."""
     teams = get_all_team_names()
     return web.json_response({"teams": teams, "count": len(teams)})
 
 
 async def handle_get_team_info(request):
-    """GET /api/teams/{team} - team info."""
+    """GET /api/teams/{team} - информация о команде."""
     team = request.match_info['team']
     info = get_team_info(team)
     if info:
@@ -38,10 +38,10 @@ async def handle_get_team_info(request):
 
 
 async def handle_subscribe(request):
-    """POST /api/subscribe - subscribe via site."""
+    """POST /api/subscribe - подписка через сайт."""
     data = await request.json()
     chat_id = data.get("chat_id")
-    sub_type = data.get("type")
+    sub_type = data.get("type")  # "team" или "venue"
     value = data.get("value")
 
     if not chat_id or not sub_type or not value:
@@ -56,7 +56,7 @@ async def handle_subscribe(request):
 
 
 def create_api_app():
-    """Create API application."""
+    """Создает приложение API."""
     app = web.Application()
     app.router.add_get('/api/matches', handle_get_matches)
     app.router.add_get('/api/matches/{match_id}', handle_get_match)
@@ -67,8 +67,5 @@ def create_api_app():
 
 
 if __name__ == "__main__":
-    import os
     app = create_api_app()
-    host = os.environ.get("HOST", "127.0.0.1")
-    port = int(os.environ.get("PORT", 8080))
-    web.run_app(app, host=host, port=port)
+    web.run_app(app, host="0.0.0.0", port=8080)  # nosec B104

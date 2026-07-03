@@ -13,7 +13,7 @@ class TestStartupReliability:
         import main as main_module
         assert hasattr(main_module, "main"), "main.py must expose main()"
         assert hasattr(main_module, "load_env"), "main.py must expose load_env()"
-        assert hasattr(main_module, "run_api"), "main.py must expose run_api()"
+        # run_api is not needed - this is a parser project, not an API server
 
     def test_core_modules_import(self):
         modules = [

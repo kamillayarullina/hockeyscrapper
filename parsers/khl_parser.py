@@ -1,4 +1,4 @@
-"""Parser for the official KHL website (khl.ru/tickets)."""
+"""Парсер официального сайта КХЛ (khl.ru/tickets)."""
 
 import re
 from typing import Optional
@@ -8,7 +8,7 @@ from .base_parser import BaseParser
 
 
 class KHLParser(BaseParser):
-    """Parses KHL ticket page with matches, prices, and availability."""
+    """Парсит страницу билетов КХЛ с матчами, ценами и доступностью."""
 
     MATCH_CARD_SELECTORS = [
         'div.match-card',

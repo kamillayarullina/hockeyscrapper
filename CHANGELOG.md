@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.5.0]
+
+### Added
+- Added email notification
+
+## [1.4.3]
+
+### Added
+- Interface improving
+
+## [1.4.2]
+
+### Added
+- Profile avatar adding
+
+## [1.4.1]
+
+### Added
+- Added validation of password
+
 ## [1.4.0]
 
 ### Added

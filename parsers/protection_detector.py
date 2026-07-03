@@ -1,4 +1,7 @@
-"""Anti-bot protection detection module (CAPTCHA, Cloudflare, etc.). All methods are static."""
+"""
+Модуль обнаружения антибот-защиты (CAPTCHA, Cloudflare и т.п.).
+Все методы — статические, чтобы их можно было вызывать без создания экземпляра.
+"""
 
 import logging
 from typing import Optional
@@ -8,6 +11,7 @@ import aiohttp
 
 logger = logging.getLogger(__name__)
 
+# Ключевые слова, характерные для различных видов защиты
 _CAPTCHA_KEYWORDS = [
     "captcha", "recaptcha", "hcaptcha", "geetest",
     "подтвердите, что вы не робот", "я не робот",
@@ -25,11 +29,14 @@ _CLOUDFLARE_KEYWORDS = [
 
 
 class ProtectionDetector:
-    """Static class for analyzing HTML for anti-bot protection."""
+    """Статический класс для анализа HTML на наличие антибот-защиты."""
 
     @staticmethod
     def detect_captcha(html: str) -> bool:
-        """Check for CAPTCHA markers in HTML."""
+        """
+        Проверяет наличие признаков CAPTCHA в HTML.
+        Возвращает True, если обнаружены маркеры CAPTCHA.
+        """
         if not html:
             return False
         html_lower = html.lower()
@@ -41,7 +48,10 @@ class ProtectionDetector:
 
     @staticmethod
     def detect_cloudflare(html: str) -> bool:
-        """Check for Cloudflare protection markers in HTML."""
+        """
+        Проверяет наличие признаков защиты Cloudflare.
+        Возвращает True, если обнаружены маркеры Cloudflare.
+        """
         if not html:
             return False
         html_lower = html.lower()
@@ -53,7 +63,11 @@ class ProtectionDetector:
 
     @staticmethod
     async def check_robots_txt(base_url: str, user_agent: str = "*") -> bool:
-        """Check robots.txt to see if scraping is allowed."""
+        """
+        Асинхронно скачивает robots.txt и проверяет, разрешён ли парсинг.
+        Возвращает True, если парсинг разрешён (или robots.txt недоступен).
+        Возвращает False, если путь явно запрещён.
+        """
         parsed = urlparse(base_url)
         robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
         logger.debug(f"Проверка robots.txt: {robots_url}")
@@ -84,7 +98,11 @@ class ProtectionDetector:
     def _is_path_allowed(
         robots_content: str, path: str, user_agent: str
     ) -> bool:
-        """Simplified robots.txt parser — checks if Disallow covers the path."""
+        """
+        Упрощённый парсер robots.txt.
+        Проверяет, есть ли для данного User-Agent директива Disallow,
+        покрывающая указанный путь.
+        """
         if not path:
             path = "/"
         if not path.startswith("/"):
@@ -160,7 +178,10 @@ class ProtectionDetector:
 
     @staticmethod
     def get_protection_level(html: str, url: str) -> str:
-        """Determine overall protection level: "none" | "captcha" | "cloudflare" | "mixed" | "unknown"."""
+        """
+        Определяет общий уровень защиты страницы.
+        Возвращает: "none" | "captcha" | "cloudflare" | "mixed" | "unknown".
+        """
         if not html or len(html.strip()) < 50:
             return "unknown"
 

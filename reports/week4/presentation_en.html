@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HockeyScrapper — Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: #0a0e1a;
+  color: #fff;
+  overflow-x: hidden;
+}
+.slide {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.slide::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(0,157,213,.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 70% 50%, rgba(0,200,117,.05) 0%, transparent 60%);
+  z-index: 0;
+  pointer-events: none;
+}
+.slide::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(90deg, transparent, transparent 120px, rgba(255,255,255,.015) 120px, rgba(255,255,255,.015) 121px),
+                    repeating-linear-gradient(0deg, transparent, transparent 120px, rgba(255,255,255,.015) 120px, rgba(255,255,255,.015) 121px);
+  z-index: 0; pointer-events: none;
+}
+.slide > * { position: relative; z-index: 1; }
+
+.title-slide {
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a1128 40%, #0d2137 100%);
+  text-align: center;
+}
+.title-slide::before {
+  background: radial-gradient(ellipse at 50% 80%, rgba(0,157,213,.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 20% 20%, rgba(0,200,117,.08) 0%, transparent 40%);
+}
+.title-slide .logo { font-size: 80px; margin-bottom: 16px; display: block; }
+.title-slide h1 {
+  font-size: clamp(48px, 8vw, 96px); font-weight: 900;
+  background: linear-gradient(135deg, #00c875, #009dd5, #6c5ce7);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; letter-spacing: -2px; margin-bottom: 8px;
+}
+.title-slide .subtitle {
+  font-size: clamp(18px, 2.5vw, 32px); font-weight: 300;
+  color: rgba(255,255,255,.7); margin-bottom: 24px; letter-spacing: 3px;
+}
+.title-slide .team { font-size: 15px; color: rgba(255,255,255,.5); max-width: 520px; line-height: 1.8; }
+.title-slide .date { margin-top: 16px; font-size: 13px; color: rgba(255,255,255,.3); }
+
+.section-slide {
+  text-align: center; background: linear-gradient(135deg, #0d1b2a 0%, #1a1128 100%);
+  min-height: 50vh;
+}
+.section-slide h2 { font-size: clamp(32px, 5vw, 64px); font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+.section-slide .accent-line {
+  width: 70px; height: 4px;
+  background: linear-gradient(90deg, #009dd5, #00c875);
+  border-radius: 2px; margin: 0 auto;
+}
+.content-slide { padding: 60px 50px; }
+.content-slide > .inner { width: 100%; max-width: 1000px; margin: 0 auto; }
+.content-slide h2 {
+  font-size: clamp(24px, 3.5vw, 42px); font-weight: 800;
+  margin-bottom: 32px; color: #009dd5; letter-spacing: -1px;
+}
+.content-slide h2 .hl { background: linear-gradient(135deg, #009dd5, #6c5ce7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.problem-list { list-style: none; max-width: 820px; width: 100%; }
+.problem-list li {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; margin-bottom: 10px;
+  background: rgba(255,255,255,.03); border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.05);
+  font-size: clamp(15px, 1.8vw, 20px); color: rgba(255,255,255,.88);
+}
+.problem-list .icon {
+  width: 40px; height: 40px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,157,213,.1); border-radius: 10px; font-size: 20px;
+}
+.solution-card {
+  background: linear-gradient(135deg, rgba(0,157,213,.1), rgba(0,200,117,.05));
+  border: 1px solid rgba(0,157,213,.2); border-radius: 20px;
+  padding: 36px 44px; max-width: 780px; width: 100%; text-align: center;
+}
+.solution-card h3 {
+  font-size: clamp(28px, 4vw, 48px); font-weight: 800;
+  background: linear-gradient(135deg, #00c875, #009dd5);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.solution-card .desc { font-size: 18px; color: rgba(255,255,255,.6); margin: 14px 0 24px; }
+.solution-card .tags { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.solution-card .tag { padding: 7px 20px; border-radius: 100px; font-size: 14px; font-weight: 600; }
+.tag-blue { background: rgba(0,157,213,.18); color: #009dd5; }
+.tag-green { background: rgba(0,200,117,.18); color: #00c875; }
+.tag-purple { background: rgba(108,92,231,.18); color: #6c5ce7; }
+.tag-cyan { background: rgba(0,200,200,.18); color: #00c8c8; }
+
+.grid-3 {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px; max-width: 820px; width: 100%;
+}
+.card {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px; padding: 20px; text-align: center;
+}
+.card .icon-lg { font-size: 36px; margin-bottom: 8px; }
+.card h4 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.card p { font-size: 13px; color: rgba(255,255,255,.5); }
+
+.grid-team {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 14px; max-width: 920px; width: 100%;
+}
+.t-card {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px; padding: 18px 14px; text-align: center;
+}
+.t-card .av {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, #009dd5, #6c5ce7);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 8px; font-size: 18px; font-weight: 700;
+}
+.t-card .nm { font-weight: 700; font-size: 14px; }
+.t-card .rl { font-size: 12px; color: rgba(255,255,255,.5); margin-bottom: 4px; }
+.t-card .ct { font-size: 11px; color: rgba(255,255,255,.35); }
+
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px; width: 100%; align-items: start;
+}
+@media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+.col-c {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px; padding: 24px;
+}
+.col-c h3 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+.col-c h3 .e { margin-right: 6px; }
+.col-c ul { list-style: none; }
+.col-c ul li {
+  padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.04);
+  font-size: 15px; color: rgba(255,255,255,.78); display: flex; align-items: center; gap: 8px;
+}
+.col-c ul li:last-child { border-bottom: none; }
+.col-c ul li::before { content: '✓'; color: #00c875; font-weight: 700; }
+
+.r-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.r-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 16px; background: rgba(255,255,255,.03);
+  border-radius: 10px; border: 1px solid rgba(255,255,255,.05);
+  font-size: 14px; color: rgba(255,255,255,.82);
+}
+.r-item .s {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 12px;
+}
+.s-done { background: rgba(0,200,117,.2); color: #00c875; }
+.s-next { background: rgba(0,157,213,.2); color: #009dd5; }
+
+.q-box {
+  max-width: 700px; padding: 24px 32px;
+  background: rgba(255,255,255,.03); border-left: 3px solid #009dd5;
+  border-radius: 0 14px 14px 0; font-style: italic;
+  font-size: 16px; color: rgba(255,255,255,.65); line-height: 1.6;
+}
+
+.end-slide {
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a1128 40%, #0d2137 100%);
+  text-align: center;
+}
+.end-slide h2 {
+  font-size: clamp(36px, 5vw, 64px); font-weight: 900;
+  background: linear-gradient(135deg, #00c875, #009dd5, #6c5ce7);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 12px;
+}
+.end-slide p { font-size: 18px; color: rgba(255,255,255,.5); letter-spacing: 5px; text-transform: uppercase; }
+.end-slide .q { margin-top: 32px; font-size: 26px; font-weight: 300; color: rgba(255,255,255,.35); }
+
+.nav {
+  position: fixed; bottom: 24px; right: 24px; z-index: 100; display: flex; gap: 8px;
+}
+.nav button {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(10,14,26,.8); backdrop-filter: blur(8px);
+  color: #fff; font-size: 16px; cursor: pointer;
+}
+.nav button:hover { background: rgba(0,157,213,.2); border-color: #009dd5; }
+.progress {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, #009dd5, #00c875); z-index: 100;
+}
+.fade-in { opacity: 0; transform: translateY(16px); transition: all .5s ease; }
+.fade-in.vis { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 600px) { .slide { padding: 32px 16px; } }
+@media print {
+  body { background: #0a0e1a !important; }
+  .nav, .progress { display: none !important; }
+  .slide {
+    display: flex !important; min-height: 100vh !important;
+    page-break-after: always; break-after: page;
+  }
+  .slide::before, .slide::after { display: none !important; }
+  .fade-in { opacity: 1 !important; transform: none !important; }
+  @page { margin: 0; size: 1024px 768px; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<!-- 1: TITLE -->
+<section class="slide title-slide">
+  <span class="logo">🏒</span>
+  <h1>HockeyScrapper</h1>
+  <p class="subtitle">Smart KHL Ticket Monitoring System</p>
+  <p class="team">
+    <strong>Team 25</strong><br>
+    Kamilla Iarullina • Bulat Bulatov • Khamza Valikhanov<br>
+    Gleb Shamiev • Samir Shakirov
+  </p>
+  <p class="date">📅 June 28, 2026</p>
+</section>
+
+<!-- 2: PROBLEM -->
+<section class="slide content-slide">
+  <div class="inner fade-in">
+    <h2>🔥 <span class="hl">Problem</span></h2>
+    <ul class="problem-list">
+      <li><span class="icon">🏟️</span> Ticket announcements are spread across different club websites</li>
+      <li><span class="icon">⚡</span> Sales may open unexpectedly</li>
+      <li><span class="icon">🔄</span> Fans have to manually check multiple sources</li>
+      <li><span class="icon">⏳</span> Ticket sales are sometimes announced after they have already started</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3: SOLUTION -->
+<section class="slide content-slide">
+  <div class="inner fade-in">
+    <h2>💡 <span class="hl">Solution</span></h2>
+    <div class="solution-card">
+      <h3>HockeyScrapper</h3>
+      <p class="desc">Automatically monitors ticket sales information and notifies users when tickets become available for their favourite teams.</p>
+      <div class="tags">
+        <span class="tag tag-blue">🤖 Auto Parsing</span>
+        <span class="tag tag-green">📨 Instant Notifications</span>
+        <span class="tag tag-purple">🎯 Team Subscriptions</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4: STAKEHOLDERS -->
+<section class="slide content-slide">
+  <div class="inner fade-in">
+    <h2>👥 <span class="hl">Stakeholders</span></h2>
+    <div class="grid-3">
+      <div class="card">
+        <div class="icon-lg">🏒</div>
+        <h4>Hockey Fans</h4>
+        <p>End-users of the product</p>
+      </div>
+      <div class="card">
+        <div class="icon-lg">🏢</div>
+        <h4>Project Customer</h4>
+        <p>Client &amp; stakeholder</p>
+      </div>
+      <div class="card">
+        <div class="icon-lg">👨‍💻</div>
+        <h4>Development Team</h4>
+        <p>Team 25</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5: TEAM -->
+<section class="slide content-slide">
+  <div class="inner fade-in">
+    <h2>👨‍💻 <span class="hl">Team &amp; Roles</span></h2>
+    <div class="grid-team">
+      <div class="t-card">
+        <div class="av">B</div>
+        <div class="nm">Bulat Bulatov</div>
+        <div class="rl">Team Lead, Backend Dev</div>
+        <div class="ct">Parser, Telegram bot</div>
+      </div>
+      <div class="t-card">
+        <div class="av">K</div>
+        <div class="nm">Khamza Valikhanov</div>
+        <div class="rl">Backend Developer</div>
+        <div class="ct">Website backend</div>
+      </div>
+      <div class="t-card">
+        <div class="av">K</div>
+        <div class="nm">Kamilla Iarullina</div>
+        <div class="rl">Frontend, UI/UX Designer</div>
+        <div class="ct">Frontend, design</div>
+      </div>
+      <div class="t-card">
+        <div class="av">G</div>
+        <div class="nm">Gleb Shamiev</div>
+        <div class="rl">DB Developer, QA</div>
+        <div class="ct">Testing, Telegram validation</div>
+      </div>
+      <div class="t-card">
+        <div class="av">S</div>
+        <div class="nm">Samir Shakirov</div>
+        <div class="rl">QA, Notifications Eng.</div>
+        <div class="ct">Password recovery, email notifications</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6: DEMO -->
+<section class="slide section-slide">
+  <div class="fade-in">
+    <h2>🎥 Video Demonstration</h2>
+    <div class="accent-line"></div>
+  </div>
+</section>
+
+<!-- 7: REQUIREMENTS -->
+<section class="slide content-slide">
+  <div class="inner fade-in">
+    <h2>📋 <span class="hl">Functional Requirements</span></h2>
+    <div class="two-col">
+      <div class="col-c">
+        <h3><span class="e">🔴</span> High Priority</h3>
+        <ul>
+          <li>User registration and login</li>
+          <li>Team subscription management</li>
+          <li>Ticket monitoring</li>
+          <li>Sending notifications</li>
+        </ul>
+      </div>
+      <div class="col-c">
+        <h3><span class="e">🟡</span> Medium Priority</h3>
+        <ul>
+          <li>User profile management</li>
+          <li>Monetization</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8: QUALITY -->
+<section class="slide content-slide">
+  <div class="inner fade-in">
+    <h2>✅ <span class="hl">Quality Requirements</span></h2>
+    <div class="grid-3">
+      <div class="card"><div class="icon-lg">⚡</div><h4>Fast Response</h4><p>Quick ticket status updates</p></div>
+      <div class="card"><div class="icon-lg">🔒</div><h4>Secure Auth</h4><p>User data protection</p></div>
+      <div class="card"><div class="icon-lg">📱</div><h4>Responsive UI</h4><p>Usable on all devices</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9: ROADMAP -->
+<section class="slide content-slide">
+  <div class="inner fade-in">
+    <h2>🗺️ <span class="hl">Roadmap</span></h2>
+    <div class="two-col">
+      <div class="col-c">
+        <h3><span class="e">✅</span> Current State</h3>
+        <div class="r-list">
+          <div class="r-item"><span class="s s-done">✓</span> User registration &amp; authentication</div>
+          <div class="r-item"><span class="s s-done">✓</span> Team subscriptions</div>
+          <div class="r-item"><span class="s s-done">✓</span> Database integration</div>
+          <div class="r-item"><span class="s s-done">✓</span> Ticket monitoring</div>
+          <div class="r-item"><span class="s s-done">✓</span> Password recovery</div>
+          <div class="r-item"><span class="s s-done">✓</span> Input validation</div>
+          <div class="r-item"><span class="s s-done">✓</span> User avatar adding</div>
+        </div>
+      </div>
+      <div class="col-c">
+        <h3><span class="e">🚀</span> Next Steps</h3>
+        <div class="r-list">
+          <div class="r-item"><span class="s s-next">→</span> Monetization</div>
+          <div class="r-item"><span class="s s-next">→</span> Testing &amp; bug fixing</div>
+          <div class="r-item"><span class="s s-next">→</span> Admin Panel</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10: CLIENT -->
+<section class="slide content-slide">
+  <div class="inner fade-in" style="text-align:center">
+    <h2>🤝 <span class="hl">Client Collaboration</span></h2>
+    <div style="max-width:700px;margin:0 auto">
+      <div class="q-box" style="text-align:left">
+        This product is aimed at monitoring tickets for KHL team matches. As the season has not started yet, there is no active usage at the moment.
+      </div>
+    </div>
+    <div class="two-col" style="margin-top:20px;max-width:700px">
+      <div class="col-c">
+        <h3><span class="e">💬</span> Feedback</h3>
+        <p style="color:rgba(255,255,255,.4);font-size:13px;">—</p>
+      </div>
+      <div class="col-c">
+        <h3><span class="e">⚠️</span> Challenges</h3>
+        <p style="color:rgba(255,255,255,.4);font-size:13px;">Admin Panel improvements</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10: QR -->
+<section class="slide content-slide" style="padding:40px 40px">
+  <div class="inner fade-in">
+    <h2>📱 <span class="hl">Links</span></h2>
+    <div class="grid-team" style="max-width:700px;grid-template-columns:repeat(3,1fr)">
+      <div class="t-card" style="padding:22px">
+        <div style="width:130px;height:130px;margin:0 auto 10px;border-radius:10px;overflow:hidden;font-size:0">
+          <img src="сайт.jpg" alt="Site" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div class="nm">🌐 Website</div>
+        <div class="ct">hockeyscrapper</div>
+      </div>
+      <div class="t-card" style="padding:22px">
+        <div style="width:130px;height:130px;margin:0 auto 10px;border-radius:10px;overflow:hidden;font-size:0">
+          <img src="github.jpg" alt="GitHub" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div class="nm">💻 GitHub</div>
+        <div class="ct">Repository</div>
+      </div>
+      <div class="t-card" style="padding:22px">
+        <div style="width:130px;height:130px;margin:0 auto 10px;border-radius:10px;overflow:hidden;font-size:0">
+          <img src="demovideo.jpg" alt="Demo" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div class="nm">🎥 Demo</div>
+        <div class="ct">Video</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11: END -->
+<section class="slide end-slide">
+  <h2>🏒 HockeyScrapper</h2>
+  <p>Thank you for your attention!</p>
+  <p class="q">Any questions?</p>
+</section>
+
+<div class="nav">
+  <button onclick="changeSlide(-1)">◀</button>
+  <button onclick="changeSlide(1)">▶</button>
+</div>
+
+<script>
+let cur = 0;
+const slides = document.querySelectorAll('.slide');
+function upd() {
+  slides.forEach((s, i) => { s.style.display = i === cur ? 'flex' : 'none'; });
+  document.getElementById('progress').style.width = (((cur + 1) / slides.length) * 100) + '%';
+  window.scrollTo(0, 0);
+  slides[cur].querySelectorAll('.fade-in').forEach(el => { el.classList.remove('vis'); requestAnimationFrame(() => el.classList.add('vis')); });
+}
+function changeSlide(d) { cur = Math.max(0, Math.min(slides.length - 1, cur + d)); upd(); }
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); changeSlide(-1); }
+  if (e.key === 'Home') { cur = 0; upd(); }
+  if (e.key === 'End') { cur = slides.length - 1; upd(); }
+});
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', e => { const d = tx - e.changedTouches[0].screenX; if (Math.abs(d) > 50) changeSlide(d > 0 ? 1 : -1); });
+upd();
+</script>
+</body>
+</html>
