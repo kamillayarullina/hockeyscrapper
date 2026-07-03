@@ -23,6 +23,10 @@ After all steps:
 - On step 4: the bitton changes to "Unsubscribe"
 - On profile page: user see updated list of teams he subscribed.
 
+**Result:** Pass
+**Executed by:** Daniil
+**Date:** 3.07.2026
+**Notes:** Change button "Back" to button "Save changes"
 
 ## UAT-002: Unsubscribe team
 **Linked to:** User Story US-01
@@ -47,6 +51,11 @@ As a user, I want to unsubscribe specific hockey team, so that I will not get no
 After all steps:
 - On step 4: the bitton changes to "Subscribe"
 - On profile page: user see updated list of teams he subscribed without the team he unsubscribed.
+
+**Result:** Pass
+**Executed by:** Daniil
+**Date:** 3.07.2026
+**Notes:** Change button "Back" to button "Save changes"
 
 ## UAT-003: Password Recovery
 **Linked to:** User Story US-10
@@ -76,6 +85,11 @@ After all steps:
 - On step 7: password changes in database
 - User can Log in with new password
 
+**Result:** Pass
+**Executed by:** Daniil
+**Date:** 3.07.2026
+**Notes:** All good, no need changes
+
 ## UAT-004: Managing parsing time
 **Linked to:** [PBI] Admin Panel
 **Type:** new (mvp v2)
@@ -98,6 +112,11 @@ As an admin, I want to manage the parsing time, so that I make parsing time fast
 **Expected outcome:**
 After all steps:
 - On step 4: the parsing time is changed
+
+**Result:** Pass
+**Executed by:** Daniil
+**Date:** 3.07.2026
+**Notes:** Add validation to parsing time (1-999)
 
 ## UAT-005: Add proxy
 **Linked to:** [PBI] Admin Panel
@@ -122,6 +141,11 @@ As an admin, I want to add proxy, so that I can by pass CAPTCHA to parse informa
 After all steps:
 - On step 4: new proxy added
 
+**Result:** Pass
+**Executed by:** Daniil
+**Date:** 3.07.2026
+**Notes:** All good, no changes
+
 ## UAT-006: Upload avatar
 **Linked to:** [PBI] Implement a backend for uploading avatars, [PBI] Avatar adding Frontend
 **Type:** new (mvp v2)
@@ -145,3 +169,7 @@ After all steps:
 - User's photo in database
 - User can view the photo he uploaded on his profile page
 
+**Result:** Pass
+**Executed by:** Daniil
+**Date:** 3.07.2026
+**Notes:** All good, no chages
