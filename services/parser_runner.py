@@ -272,16 +272,18 @@ class ParserRunner:
                         total_notified += sent
 
                     # Email-уведомление админу
-                    await self.email_sender.notify_admin_about_event(
-                        event=event, teams_str=teams_str, reason=notify_reason,
-                    )
+                    if self.email_sender:
+                        await self.email_sender.notify_admin_about_event(
+                            event=event, teams_str=teams_str, reason=notify_reason,
+                        )
 
             logger.info(f"[{name}] Обработано {len(events)} событий, отправлено {total_notified} уведомлений")
             self._save_results_csv(name, events)
 
         except Exception as e:
             logger.error(f"[{name}] Ошибка: {e}", exc_info=True)
-            await self.email_sender.notify_admin_about_error(name, str(e))
+            if self.email_sender:
+                await self.email_sender.notify_admin_about_error(name, str(e))
 
     def _clean_city_name(self, city: str) -> str:
         city = city.strip().lower()
