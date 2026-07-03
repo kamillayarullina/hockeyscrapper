@@ -17,11 +17,11 @@ settings:
   # Email-уведомления админу (опционально)
   email:
     enabled: true
-    smtp_server: "smtp.gmail.com"
+    smtp_server: "${EMAIL_SMTP_SERVER}"
     smtp_port: 587
-    login: "sakirovsamir401@gmail.com"
-    password: "hqbo bhdk cxfg gabq"
-    to_email: "sakirovsamir401@gmail.com"
+    login: "${EMAIL_LOGIN}"
+    password: "${EMAIL_PASSWORD}"
+    to_email: "${EMAIL_TO}"
 
 sites:
   # ───── АГРЕГАТОРЫ (проверенные источники) ─────

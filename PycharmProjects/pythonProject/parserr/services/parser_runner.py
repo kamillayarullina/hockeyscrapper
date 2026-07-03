@@ -4,6 +4,7 @@ import asyncio
 import csv
 import logging
 import os
+import re
 import signal
 from datetime import datetime
 from pathlib import Path
@@ -23,6 +24,22 @@ from services.proxy_rotator import ProxyRotator
 from services.team_matcher import extract_teams_from_title
 
 logger = logging.getLogger(__name__)
+
+_ENV_VAR_RE = re.compile(r"\$\{([^}]+)\}")
+
+
+def _resolve_env_vars(value: Any) -> Any:
+    """Заменяет ${VAR} на значение из os.environ."""
+    if isinstance(value, str):
+        def replacer(m: re.Match) -> str:
+            var_name = m.group(1)
+            return os.environ.get(var_name, m.group(0))
+        return _ENV_VAR_RE.sub(replacer, value)
+    if isinstance(value, dict):
+        return {k: _resolve_env_vars(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_resolve_env_vars(v) for v in value]
+    return value
 
 
 class ParserFactory:
@@ -59,7 +76,8 @@ class ConfigLoader:
         if not path.exists():
             raise FileNotFoundError(f"Конфиг не найден: {self.config_path}")
         with open(path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
+            config = yaml.safe_load(f)
+        return _resolve_env_vars(config)
 
 
 class ParserRunner:
