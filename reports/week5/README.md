@@ -272,7 +272,7 @@ All artifacts follow the expected default patterns. No deviations from the expec
 
 ### SemVer Release
 
-![SemVer Release](images/screenshot-release.png)
+![SemVer Release](images/SemVer.png)
 
 ### Example Reviewed Issue-Linked PR
 
