@@ -1,5 +1,6 @@
 ## UAT-001: Subscribe to a team
-
+**Linked to:** User Story US-01
+**Type:** old (mvp v1)
 **Status:** Active
 
 **User goal:** 
@@ -24,7 +25,8 @@ After all steps:
 
 
 ## UAT-002: Unsubscribe team
-
+**Linked to:** User Story US-01
+**Type:** old (mvp v1)
 **Status:** Active
 
 **User goal:** 
@@ -47,7 +49,8 @@ After all steps:
 - On profile page: user see updated list of teams he subscribed without the team he unsubscribed.
 
 ## UAT-003: Password Recovery
-
+**Linked to:** User Story US-10
+**Type:** old (mvp v1)
 **Status:** Active
 
 **User goal:** 
@@ -74,7 +77,8 @@ After all steps:
 - User can Log in with new password
 
 ## UAT-004: Managing parsing time
-
+**Linked to:** [PBI] Admin Panel
+**Type:** new (mvp v2)
 **Status:** Active
 
 **User goal:** 
@@ -96,7 +100,8 @@ After all steps:
 - On step 4: the parsing time is changed
 
 ## UAT-005: Add proxy
-
+**Linked to:** [PBI] Admin Panel
+**Type:** new (mvp v2)
 **Status:** Active
 
 **User goal:** 
@@ -116,3 +121,27 @@ As an admin, I want to add proxy, so that I can by pass CAPTCHA to parse informa
 **Expected outcome:**
 After all steps:
 - On step 4: new proxy added
+
+## UAT-006: Upload avatar
+**Linked to:** [PBI] Implement a backend for uploading avatars, [PBI] Avatar adding Frontend
+**Type:** new (mvp v2)
+**Status:** Active
+
+**User goal:** 
+As an user, I want to upload avatar, so that I can have my photo on my profile page.
+
+**Preconditions:**
+- User logged in
+- User in his profile page
+- User wants to upload photo as avatar
+
+**Step-by-step instructions:**
+1. User push button "Upload photo"
+2. User chooses the part of photo which will be visible on it profile page
+3. User push button "Save"
+
+**Expected outcome:**
+After all steps:
+- User's photo in database
+- User can view the photo he uploaded on his profile page
+
