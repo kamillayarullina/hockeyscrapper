@@ -1,5 +1,8 @@
 # Lychee link checker configuration
 
+# Skip mock data files (test fixtures with non-routable URLs)
+exclude_path = ["tests/mock_data/"]
+
 # Cache
 cache = true
 max_cache_age = "1d"
