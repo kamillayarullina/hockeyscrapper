@@ -50,7 +50,7 @@ def extract_teams_from_title(title: str) -> list[str]:
     sorted_variants = sorted(_VARIANT_TO_TEAM.keys(), key=len, reverse=True)
 
     consumed = set()
-    found_teams = set()
+    found_teams = {}  # dict preserves insertion order, team -> first_position
 
     for variant in sorted_variants:
         for match in re.finditer(re.escape(variant), title_lower):
@@ -71,10 +71,11 @@ def extract_teams_from_title(title: str) -> list[str]:
 
             consumed.update(pos_range)
             team = _VARIANT_TO_TEAM[variant]
-            found_teams.add(team)
+            if team not in found_teams:
+                found_teams[team] = start
             break
 
-    return list(found_teams)
+    return sorted(found_teams.keys(), key=lambda t: found_teams[t])
 
 
 def get_team_info(team: str) -> Optional[dict]:

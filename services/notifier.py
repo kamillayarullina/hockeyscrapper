@@ -1,6 +1,5 @@
 """Персональные уведомления для подписчиков."""
 
-import asyncio
 import logging
 from typing import Optional
 

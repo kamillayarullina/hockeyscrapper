@@ -168,7 +168,7 @@ class Database:
                 FROM users u
                 JOIN subscriptions s ON u.chat_id = s.chat_id
                 WHERE s.type = 'team' AND s.value IN ({placeholders}) AND u.is_active = 1
-                """,
+                """,  # nosec B608
                     teams_lower,
             ) as cursor:
                 rows = await cursor.fetchall()
@@ -188,7 +188,7 @@ class Database:
                 FROM users u
                 JOIN subscriptions s ON u.chat_id = s.chat_id
                 WHERE s.type = 'venue' AND s.value IN ({placeholders}) AND u.is_active = 1
-                """,
+                """,  # nosec B608
                     venues_lower,
             ) as cursor:
                 rows = await cursor.fetchall()

@@ -37,7 +37,7 @@ async def test_club_parser():
     html = (MOCK_DIR / "club_parser_hockey.html").read_text(encoding="utf-8")
     events = await parser.parse(html)
 
-    assert len(events) == 9, f"Ожидалось 9 событий, получено {len(events)}"
+    assert len(events) == 10, f"Ожидалось 10 событий, получено {len(events)}"
 
     event = events[0]
     assert "цска" in event["title"].lower()

@@ -76,7 +76,7 @@ class KHLParser(BaseParser):
 
         link = self._extract_link(card)
         if not link:
-            link = f"https://www.khl.ru/tickets/"
+            link = "https://www.khl.ru/tickets/"
 
         date = self._extract_date(card, html_text)
         place = self._extract_place(card, html_text)

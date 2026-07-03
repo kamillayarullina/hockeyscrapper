@@ -83,7 +83,7 @@ async def run_all(args: argparse.Namespace) -> int:
         return 1
 
     with open(config_path, "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
+        yaml.safe_load(f)
 
     # Токен бота из .env (приоритет) или из config/sites.yaml
     bot_token = os.environ.get("BOT_TOKEN", "")
