@@ -90,10 +90,10 @@ As an admin, I want to manage the parsing time, so that I make parsing time fast
 - Admin wants to change parsing time
 
 **Step-by-step instructions:**
-1. Admin push the button "Manage parsing time"
+1. Admin push the button "Settings"
 2. After pushing he see the input box "Parsing time"
 3. Admin input the parsing time
-4. Admin push button "Apply"
+4. Admin push button "Save"
 
 **Expected outcome:**
 After all steps:
@@ -113,10 +113,10 @@ As an admin, I want to add proxy, so that I can by pass CAPTCHA to parse informa
 - Admin wants to add proxy
 
 **Step-by-step instructions:**
-1. Admin push the button "Add proxy"
+1. Admin push the button "Proxy"
 2. After pushing he see the input box "Add proxy"
 3. Admin input the proxy
-4. Admin push button "Apply"
+4. Admin push button "Save"
 
 **Expected outcome:**
 After all steps:
