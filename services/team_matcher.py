@@ -1,4 +1,4 @@
-"""Match team/venue extraction from title."""
+"""Определяет команды и стадионы из названия матча."""
 
 import logging
 import re
@@ -26,11 +26,12 @@ KHL_TEAMS = {
     "Нефтехимик": {"variants": ["нефтехимик", "нижнекамск", "химик"], "venue": "Нефтехим Арена", "city": "Нижнекамск"},
     "Амур": {"variants": ["амур", "хабаровск"], "venue": "Платинум Арена", "city": "Хабаровск"},
     "Адмирал": {"variants": ["адмирал", "владивосток"], "venue": "Фетисов Арена", "city": "Владивосток"},
-    "Куньлунь": {"variants": ["куньлунь", "ред стар", "red star", "пекин"], "venue": "Мытищинская Арена",
-                 "city": "Мытищи"},
+    "Куньлунь": {"variants": ["куньлунь", "ред стар", "red star", "шанхай", "shanghai dragons", "drago"],
+                  "venue": "СКА Арена", "city": "Санкт-Петербург"},
     "Барыс": {"variants": ["барыс", "астана"], "venue": "Барыс Арена", "city": "Астана"},
     "Динамо Минск": {"variants": ["динамо минск", "минск"], "venue": "Минск-Арена", "city": "Минск"},
     "Сочи": {"variants": ["сочи", "леопарды"], "venue": "Большой Ледовый Дворец", "city": "Сочи"},
+    "Автомобилист": {"variants": ["автомобилист", "екатеринбург"], "venue": "УГМК-Арена", "city": "Екатеринбург"},
 }
 
 _VARIANT_TO_TEAM = {}
@@ -41,7 +42,7 @@ for team, info in KHL_TEAMS.items():
 
 
 def extract_teams_from_title(title: str) -> list[str]:
-    """Extract team names from match title (whole words only)."""
+    """Извлекает команды из названия матча (только целые слова)."""
     if not title:
         return []
 
@@ -49,22 +50,20 @@ def extract_teams_from_title(title: str) -> list[str]:
     sorted_variants = sorted(_VARIANT_TO_TEAM.keys(), key=len, reverse=True)
 
     consumed = set()
-    found_teams = set()
+    found_teams = {}  # dict preserves insertion order, team -> first_position
 
     for variant in sorted_variants:
         for match in re.finditer(re.escape(variant), title_lower):
             start, end = match.start(), match.end()
 
+            is_whole_word = True
             if start > 0 and title_lower[start - 1].isalpha():
-                continue
-
+                is_whole_word = False
             if end < len(title_lower) and title_lower[end].isalpha():
-                remaining = end + 1
-                while remaining < len(title_lower) and title_lower[remaining].isalpha():
-                    remaining += 1
-                if remaining - end > 2:
-                    continue
-                end = remaining
+                is_whole_word = False
+
+            if not is_whole_word:
+                continue
 
             pos_range = set(range(start, end))
             if pos_range & consumed:
@@ -72,14 +71,15 @@ def extract_teams_from_title(title: str) -> list[str]:
 
             consumed.update(pos_range)
             team = _VARIANT_TO_TEAM[variant]
-            found_teams.add(team)
+            if team not in found_teams:
+                found_teams[team] = start
             break
 
-    return list(found_teams)
+    return sorted(found_teams.keys(), key=lambda t: found_teams[t])
 
 
 def get_team_info(team: str) -> Optional[dict]:
-    """Return team info (venue, city)."""
+    """Возвращает информацию о команде (стадион, город)."""
     if not team:
         return None
     return KHL_TEAMS.get(team)

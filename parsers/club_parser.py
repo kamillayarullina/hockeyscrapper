@@ -1,7 +1,10 @@
-"""Universal parser for ticket-hockey.ru and similar sites with smart CSS selectors."""
+"""
+Универсальный парсер для сайтов типа ticket-hockey.ru.
+Использует расширенные CSS-селекторы с умной фильтрацией.
+"""
 
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from urllib.parse import urlparse
 
@@ -10,12 +13,14 @@ from .base_parser import BaseParser
 
 
 class ClubParser(BaseParser):
-    """Parser for ticket-hockey.ru and similar sites."""
+    """Парсер для ticket-hockey.ru и подобных сайтов."""
 
     PRICE_REGEX = re.compile(r'(\d[\d\s]{2,})\s*(?:₽|р\.|руб)', re.IGNORECASE)
     DATE_REGEX = re.compile(r'(\d{1,2})\s+([а-яё]+)(?:\s+(\d{2,4}))?', re.IGNORECASE)
 
+    # Расширенные селекторы для поиска карточек событий
     EVENT_CARD_SELECTORS = [
+        # Основные карточки событий
         'div.event-card',
         'div.event-item',
         'div.event-block',
@@ -25,13 +30,17 @@ class ClubParser(BaseParser):
         'div[class*="event-block"]',
         'article.event',
         'article[class*="event"]',
+
+        # Карточки с кнопкой "Купить билет"
         'div[class*="card"]:has(button)',
         'div[class*="card"]:has(a[href*="buy"])',
 
+        # Универсальные контейнеры с событиями
         '.col-md-4:has(a[href*="/event/"])',
         '.col-lg-4:has(a[href*="/afisha/"])',
     ]
 
+    # Селекторы для ссылок на события
     LINK_SELECTORS = [
         'a[href*="/event/"]',
         'a[href*="/afisha/"]',
@@ -54,9 +63,11 @@ class ClubParser(BaseParser):
         events = []
         seen_links = set()
 
+        # ШАГ 1: Ищем карточки событий
         event_cards = self._find_event_cards(soup)
         self.logger.debug(f"[{self.name}] Найдено {len(event_cards)} карточек")
 
+        # ШАГ 2: Извлекаем данные из каждой карточки
         for card in event_cards:
             try:
                 event = self._extract_event_from_card(card, soup)
@@ -73,7 +84,7 @@ class ClubParser(BaseParser):
         return events
 
     def _find_event_cards(self, soup: BeautifulSoup) -> list:
-        """Find event cards using multiple CSS selectors."""
+        """Ищет карточки событий по множеству селекторов."""
         cards = []
         seen_cards = set()
 
@@ -81,6 +92,7 @@ class ClubParser(BaseParser):
             try:
                 found = soup.select(selector)
                 for card in found:
+                    # Уникализируем по id или содержимому
                     card_id = id(card)
                     if card_id not in seen_cards:
                         cards.append(card)
@@ -88,10 +100,12 @@ class ClubParser(BaseParser):
             except Exception:
                 continue
 
+        # Если ничего не нашли — пробуем найти все div с картинками и ссылками
         if not cards:
             self.logger.debug("Основные селекторы не сработали, пробую универсальный поиск")
             all_divs = soup.find_all('div')
             for div in all_divs:
+                # Проверяем, есть ли внутри ссылка и картинка или текст с ценой
                 has_link = div.find('a', href=True)
                 has_price_text = bool(self.PRICE_REGEX.search(div.get_text()))
                 has_date_text = bool(self.DATE_REGEX.search(div.get_text()))
@@ -105,22 +119,28 @@ class ClubParser(BaseParser):
         return cards
 
     def _extract_event_from_card(self, card: Tag, soup: BeautifulSoup) -> Optional[dict]:
-        """Extract event data from a card."""
+        """Извлекает данные о событии из карточки."""
 
+        # Ищем ссылку
         link = self._extract_link(card)
         if not link:
             return None
 
+        # Ищем заголовок
         title = self._extract_title(card)
         if not title or len(title) < 5:
             return None
 
+        # Ищем дату
         date = self._extract_date(card)
 
+        # Ищем место
         place = self._extract_place(card)
 
+        # Ищем цену
         price_min, price_max = self._extract_prices(card)
 
+        # Определяем наличие
         availability = "Да"
         card_text = card.get_text().lower()
         if "распродано" in card_text or "нет билетов" in card_text:
@@ -137,17 +157,20 @@ class ClubParser(BaseParser):
             "price_max": price_max,
             "availability": availability,
             "link": link,
-            "parsed_at": datetime.utcnow().isoformat(),
+            "parsed_at": datetime.now(timezone.utc).isoformat(),
         }
 
     def _extract_link(self, card: Tag) -> Optional[str]:
-        """Extract event link."""
+        """Извлекает ссылку на событие."""
+        # Ищем кнопку "Купить билет"
         buy_button = card.find('button', string=re.compile(r'купит', re.IGNORECASE))
         if buy_button and buy_button.get('onclick'):
+            # Извлекаем URL из onclick
             match = re.search(r"window\.location\s*=\s*['\"]([^'\"]+)['\"]", buy_button['onclick'])
             if match:
                 return match.group(1)
 
+        # Ищем ссылку в карточке
         link = card.find('a', href=True)
         if link:
             href = link['href']
@@ -159,7 +182,8 @@ class ClubParser(BaseParser):
         return None
 
     def _extract_title(self, card: Tag) -> Optional[str]:
-        """Extract event title."""
+        """Извлекает заголовок события."""
+        # Ищем заголовки
         for tag in ['h3', 'h2', 'h4', 'h1']:
             header = card.find(tag)
             if header:
@@ -167,6 +191,7 @@ class ClubParser(BaseParser):
                 if text and len(text) >= 5:
                     return text
 
+        # Ищем по классам
         title_classes = ['title', 'name', 'event-title', 'card-title']
         for cls in title_classes:
             el = card.find(class_=lambda x: x and cls in x.lower())
@@ -175,22 +200,26 @@ class ClubParser(BaseParser):
                 if text and len(text) >= 5:
                     return text
 
+        # Берем первый большой текст
         all_text = card.get_text(separator='|', strip=True)
         parts = all_text.split('|')
         for part in parts:
             part = part.strip()
             if len(part) >= 10 and len(part) <= 200:
+                # Проверяем, что это не цена и не дата
                 if not self.PRICE_REGEX.search(part) and not self.DATE_REGEX.search(part):
                     return part
 
         return None
 
     def _extract_date(self, card: Tag) -> Optional[str]:
-        """Extract event date."""
+        """Извлекает дату события."""
+        # Ищем тег time
         time_tag = card.find('time')
         if time_tag:
             return time_tag.get('datetime') or time_tag.get_text(strip=True)
 
+        # Ищем по классам
         date_classes = ['date', 'time', 'datetime', 'event-date']
         for cls in date_classes:
             el = card.find(class_=lambda x: x and cls in x.lower())
@@ -199,6 +228,7 @@ class ClubParser(BaseParser):
                 if text:
                     return text
 
+        # Ищем паттерн даты в тексте
         text = card.get_text()
         match = self.DATE_REGEX.search(text)
         if match:
@@ -208,11 +238,13 @@ class ClubParser(BaseParser):
         return None
 
     def _extract_place(self, card: Tag) -> Optional[str]:
-        """Extract event location."""
+        """Извлекает место проведения."""
+        # Ищем address
         address = card.find('address')
         if address:
             return address.get_text(strip=True)
 
+        # Ищем по классам
         place_classes = ['place', 'location', 'venue', 'arena', 'address']
         for cls in place_classes:
             el = card.find(class_=lambda x: x and cls in x.lower())
@@ -221,6 +253,7 @@ class ClubParser(BaseParser):
                 if text and len(text) > 3:
                     return text
 
+        # Ищем текст начинающийся с "г." или "город"
         text = card.get_text()
         match = re.search(r'(г\.\s*[^,\n]+,\s*[^,\n]+)', text)
         if match:
@@ -229,7 +262,7 @@ class ClubParser(BaseParser):
         return None
 
     def _extract_prices(self, card: Tag) -> tuple[str, str]:
-        """Extract min and max price."""
+        """Извлекает минимальную и максимальную цену."""
         text = card.get_text()
         matches = self.PRICE_REGEX.findall(text)
 
@@ -241,7 +274,7 @@ class ClubParser(BaseParser):
             price_str = match.replace(" ", "")
             try:
                 price = int(price_str)
-                if 100 < price < 1000000:
+                if 100 < price < 1000000:  # Разумный диапазон
                     prices.append(price)
             except ValueError:
                 continue
@@ -252,10 +285,11 @@ class ClubParser(BaseParser):
         return f"{min(prices)} ₽", f"{max(prices)} ₽"
 
     def _is_valid_event(self, event: dict, keywords: list[str]) -> bool:
-        """Check that the event is relevant (not spam)."""
+        """Проверяет, что событие релевантно (не мусор)."""
         title = event.get('title', '').lower()
         place = event.get('place', '').lower()
 
+        # Черный список слов
         blacklist = [
             'скачать', 'download', 'app store', 'google play',
             'подписка', 'subscribe', 'регистрация', 'register',
@@ -268,11 +302,13 @@ class ClubParser(BaseParser):
                 self.logger.debug(f"❌ Отфильтровано по blacklist '{word}': {title}")
                 return False
 
+        # Проверяем наличие ключевых слов
         combined = f"{title} {place}"
         if not any(kw in combined for kw in keywords):
             self.logger.debug(f"❌ Нет ключевых слов: {title}")
             return False
 
+        # Проверяем, что ссылка не внешняя
         link = event.get('link', '')
         if 'apple.com' in link or 'google.com' in link or 'yandex.ru/radar' in link:
             self.logger.debug(f"❌ Внешняя ссылка: {link}")
@@ -281,9 +317,11 @@ class ClubParser(BaseParser):
         return True
 
     def _clean_title(self, title: str) -> str:
-        """Clean title from clutter."""
+        """Очищает заголовок от мусора."""
+        # Убираем прилипшие цены
         title = re.sub(r'от\s*\d+[\d\s]*\s*₽', '', title, flags=re.IGNORECASE)
 
+        # Убираем множественные пробелы
         title = re.sub(r'\s+', ' ', title).strip()
 
         return title
