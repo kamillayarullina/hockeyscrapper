@@ -2,7 +2,7 @@
 
 1. **Parser improvements delivered per customer priority.** All KHL club websites were added to the universal parser configuration..
 
-2. **Customer satisfaction.** The customer confirmed that the product meets their needs. Parser reliability, admin panel functionality, and notification delivery (Telegram + email) were all accepted.
+2. **Customer satisfaction.** The customer confirmed that the product meets their needs. Parser reliability, admin panel functionality, and notification delivery were all accepted.
 
 ---
 
@@ -14,10 +14,10 @@
 
 ## What we changed compared to the previous Sprint
 
--Nothing
+- Nothing
 
 ---
 
 ## Concrete improvements for the next Sprint
 
--Add mobile version of our website.
+- Add a mobile version of our website.
