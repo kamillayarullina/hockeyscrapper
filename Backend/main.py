@@ -548,7 +548,7 @@ def admin_settings(db: Session = Depends(get_db), admin=Depends(_require_admin))
 @app.put("/admin/settings/parse-interval")
 def admin_set_parse_interval(body: ParseIntervalSchema,
                               db: Session = Depends(get_db), admin=Depends(_require_admin)):
-    m = max(1, min(body.minutes, 1440))
+    m = max(1, min(body.minutes, 999))
     setting = db.query(models.SettingModel).filter(models.SettingModel.key == "parse_interval_minutes").first()
     if setting:
         setting.value = str(m)
