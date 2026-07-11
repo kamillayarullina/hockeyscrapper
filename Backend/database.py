@@ -1,7 +1,7 @@
 import os
 import logging
 from pathlib import Path
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 logger = logging.getLogger(__name__)
@@ -34,6 +34,23 @@ else:
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+
+def ensure_schema() -> None:
+    """Apply the two additive user fields for installations created before billing."""
+    inspector = inspect(engine)
+    if "users" not in inspector.get_table_names():
+        return
+
+    existing_columns = {column["name"] for column in inspector.get_columns("users")}
+    additions = {
+        "premium_plan": "VARCHAR DEFAULT 'free'",
+        "premium_until": "TIMESTAMP",
+    }
+    with engine.begin() as connection:
+        for column, definition in additions.items():
+            if column not in existing_columns:
+                connection.execute(text(f"ALTER TABLE users ADD COLUMN {column} {definition}"))
 
 
 def get_db():

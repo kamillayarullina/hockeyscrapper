@@ -40,9 +40,18 @@
                     <strong id="profileTelegram">—</strong>
                 </div>
 
+                <div class="info-card membership-card">
+                    <span>Тариф</span>
+                    <strong id="membershipStatus">Базовый</strong>
+                    <small id="membershipDetails">До 3 подписок на команды</small>
+                </div>
+
                 <button class="btn"
                         onclick="window.location.href='sub.html'">
                     Управление подписками
+                </button>
+                <button class="btn btn-premium" onclick="window.location.href='billing.html'">
+                    Управлять Premium
                 </button>
                 <button class="btn" id="telegramBtn">
                     Привязать Telegram
@@ -133,6 +142,19 @@
                     }
                 }
                 loadSavedAvatar();
+
+                function renderMembership(membership) {
+                    const status = document.getElementById("membershipStatus");
+                    const details = document.getElementById("membershipDetails");
+                    if (!membership || !membership.is_premium) {
+                        status.textContent = "Базовый";
+                        details.textContent = "До 3 подписок на команды";
+                        return;
+                    }
+                    status.textContent = "Premium";
+                    const until = new Date(membership.premium_until).toLocaleDateString("ru-RU");
+                    details.textContent = `Активен до ${until}`;
+                }
 
                 avatarInput.addEventListener("change", (e) => {
                     const file = e.target.files[0];
@@ -317,6 +339,7 @@
                         document.getElementById("profileUsername").textContent = userFromApi.username || "—";
                         document.getElementById("profileEmail").textContent = userFromApi.email || "—";
                         document.getElementById("profileTelegram").textContent = userFromApi.telegram || "—";
+                        renderMembership(userFromApi.membership);
                         if (userFromApi.avatar_url) {
                             localStorage.setItem("avatar", userFromApi.avatar_url);
                             profileAvatar.innerHTML = "";
@@ -415,7 +438,10 @@
                         return;
                     }
                     try {
-                        const r = await fetch(`${API}/subscriptions/${chatId}`);
+                        const token = localStorage.getItem("token");
+                        const r = await fetch(`${API}/subscriptions/${chatId}`, {
+                            headers: { "Authorization": `Bearer ${token}` }
+                        });
                         if (!r.ok) { throw new Error("not ok"); }
                         const data = await r.json();
                         const subs = data.subscriptions || [];

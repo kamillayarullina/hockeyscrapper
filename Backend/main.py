@@ -3,11 +3,12 @@ import os
 import time
 import logging
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import deque
 from pathlib import Path
 import shutil
 import uuid
+from typing import Literal
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,9 +21,10 @@ from sqlalchemy.exc import IntegrityError
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Backend import models
-from Backend.database import engine, get_db
+from Backend.database import engine, ensure_schema, get_db
 from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
+from Backend import payments
 from services.team_matcher import get_team_info
 
 test_code = {}
@@ -31,6 +33,7 @@ _last_forgot_request = {}
 CODE_TTL_SECONDS = 300
 
 models.Base.metadata.create_all(bind=engine)
+ensure_schema()
 
 app = FastAPI(title="HockeyScrapper API")
 
@@ -46,11 +49,11 @@ app.add_middleware(
 )
 
 conf_email = ConnectionConfig(
-    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "hqbo bhdk cxfg gabq"),
-    MAIL_USERNAME = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
-    MAIL_FROM = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", os.getenv("EMAIL_PASSWORD", "")),
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME", os.getenv("EMAIL_LOGIN", "")),
+    MAIL_FROM = os.getenv("MAIL_FROM", os.getenv("EMAIL_LOGIN", "noreply@example.com")),
     MAIL_PORT = int(os.getenv("MAIL_PORT", "587")),
-    MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com"),
+    MAIL_SERVER = os.getenv("MAIL_SERVER", os.getenv("EMAIL_SMTP_SERVER", "smtp.gmail.com")),
     MAIL_STARTTLS = os.getenv("MAIL_STARTTLS", "True") == "True",
     MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True",
 ) 
@@ -114,6 +117,53 @@ class NewPasswordRequest(BaseModel):
 
 class LinkCodeRequest(BaseModel):
     chat_id: int
+
+
+class CheckoutRequest(BaseModel):
+    plan_code: Literal["monthly", "annual"]
+
+
+FREE_TEAM_LIMIT = 3
+PREMIUM_PLANS = {
+    "monthly": {
+        "name": "Premium на месяц",
+        "amount_kopeks": 29900,
+        "duration_days": 30,
+    },
+    "annual": {
+        "name": "Premium на год",
+        "amount_kopeks": 299000,
+        "duration_days": 365,
+    },
+}
+
+
+def _get_authenticated_user(payload: dict, db: Session) -> models.UserModel:
+    user = db.query(models.UserModel).filter(models.UserModel.chat_id == int(payload["sub"])).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if not user.is_active:
+        raise HTTPException(status_code=403, detail="Account is inactive")
+    return user
+
+
+def _membership(user: models.UserModel) -> dict:
+    now = datetime.utcnow()
+    is_premium = bool(user.premium_until and user.premium_until > now)
+    return {
+        "plan": user.premium_plan if is_premium else "free",
+        "is_premium": is_premium,
+        "premium_until": user.premium_until.isoformat() if is_premium else None,
+        "team_subscription_limit": None if is_premium else FREE_TEAM_LIMIT,
+    }
+
+
+def _activate_premium(user: models.UserModel, plan_code: str) -> None:
+    plan = PREMIUM_PLANS[plan_code]
+    now = datetime.utcnow()
+    starts_at = user.premium_until if user.premium_until and user.premium_until > now else now
+    user.premium_plan = plan_code
+    user.premium_until = starts_at + timedelta(days=plan["duration_days"])
 
 @app.post("/register")
 def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
@@ -232,15 +282,14 @@ async def new_password(request: NewPasswordRequest, db: Session = Depends(get_db
 
 @app.get("/me")
 def get_me(payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    user = db.query(models.UserModel).filter(models.UserModel.chat_id == int(payload["sub"])).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    user = _get_authenticated_user(payload, db)
     return {
         "chat_id": user.chat_id,
         "username": user.username,
         "email": user.email,
         "telegram": user.telegram,
         "avatar_url": user.avatar_url,
+        "membership": _membership(user),
     }
 
 @app.put("/me/avatar")
@@ -293,9 +342,17 @@ def generate_link_code(req: LinkCodeRequest, db: Session = Depends(get_db)):
     return {"code": code, "link": f"https://t.me/{bot_username}?start={code}"}
 
 @app.post("/subscription/toggle")
-def toggle_subscription(sub_data: SubscriptionToggle, db: Session = Depends(get_db)):
+def toggle_subscription(
+    sub_data: SubscriptionToggle,
+    payload: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = _get_authenticated_user(payload, db)
+    if sub_data.chat_id != user.chat_id:
+        raise HTTPException(status_code=403, detail="You can only manage your own subscriptions")
+
     existing = db.query(models.SubscriptionModel).filter(
-        models.SubscriptionModel.chat_id == sub_data.chat_id,
+        models.SubscriptionModel.chat_id == user.chat_id,
         models.SubscriptionModel.type == "team",
         models.SubscriptionModel.value == sub_data.team_name.lower()
     ).first()
@@ -306,15 +363,29 @@ def toggle_subscription(sub_data: SubscriptionToggle, db: Session = Depends(get_
         if team_info:
             venue_value = f"{team_info['city']}, {team_info['venue']}".lower()
             db.query(models.SubscriptionModel).filter(
-                models.SubscriptionModel.chat_id == sub_data.chat_id,
+                models.SubscriptionModel.chat_id == user.chat_id,
                 models.SubscriptionModel.type == "venue",
                 models.SubscriptionModel.value == venue_value
             ).delete()
         db.commit()
         return {"status": "removed", "message": f"Unsubscribed from {sub_data.team_name}"}
     else:
+        membership = _membership(user)
+        team_count = db.query(models.SubscriptionModel).filter(
+            models.SubscriptionModel.chat_id == user.chat_id,
+            models.SubscriptionModel.type == "team",
+        ).count()
+        if not membership["is_premium"] and team_count >= FREE_TEAM_LIMIT:
+            raise HTTPException(
+                status_code=403,
+                detail={
+                    "code": "premium_required",
+                    "message": f"The free plan allows up to {FREE_TEAM_LIMIT} teams.",
+                    "membership": membership,
+                },
+            )
         new_sub = models.SubscriptionModel(
-            chat_id=sub_data.chat_id,
+            chat_id=user.chat_id,
             type="team",
             value=sub_data.team_name.lower()
         )
@@ -324,13 +395,13 @@ def toggle_subscription(sub_data: SubscriptionToggle, db: Session = Depends(get_
         if team_info:
             venue_value = f"{team_info['city']}, {team_info['venue']}".lower()
             existing_venue = db.query(models.SubscriptionModel).filter(
-                models.SubscriptionModel.chat_id == sub_data.chat_id,
+                models.SubscriptionModel.chat_id == user.chat_id,
                 models.SubscriptionModel.type == "venue",
                 models.SubscriptionModel.value == venue_value
             ).first()
             if not existing_venue:
                 venue_sub = models.SubscriptionModel(
-                    chat_id=sub_data.chat_id,
+                    chat_id=user.chat_id,
                     type="venue",
                     value=venue_value
                 )
@@ -339,12 +410,152 @@ def toggle_subscription(sub_data: SubscriptionToggle, db: Session = Depends(get_
         return {"status": "added", "message": f"Subscribed to {sub_data.team_name}"}
 
 @app.get("/subscriptions/{chat_id}")
-def get_user_subscriptions(chat_id: int, db: Session = Depends(get_db)):
+def get_user_subscriptions(
+    chat_id: int,
+    payload: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = _get_authenticated_user(payload, db)
+    if chat_id != user.chat_id:
+        raise HTTPException(status_code=403, detail="You can only view your own subscriptions")
     subs = db.query(models.SubscriptionModel).filter(
-        models.SubscriptionModel.chat_id == chat_id
+        models.SubscriptionModel.chat_id == user.chat_id
     ).all()
     teams = [s.value for s in subs if s.type == "team"]
-    return {"chat_id": chat_id, "subscriptions": teams}
+    return {"chat_id": user.chat_id, "subscriptions": teams, "membership": _membership(user)}
+
+
+@app.get("/billing/plans")
+def get_billing_plans():
+    return {
+        "plans": [
+            {
+                "code": code,
+                "name": plan["name"],
+                "amount_rub": plan["amount_kopeks"] // 100,
+                "duration_days": plan["duration_days"],
+            }
+            for code, plan in PREMIUM_PLANS.items()
+        ],
+        "free_team_limit": FREE_TEAM_LIMIT,
+    }
+
+
+@app.get("/billing/me")
+def get_billing_membership(payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    return _membership(_get_authenticated_user(payload, db))
+
+
+@app.post("/billing/checkout")
+def create_checkout(
+    request: CheckoutRequest,
+    payload: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = _get_authenticated_user(payload, db)
+    plan = PREMIUM_PLANS[request.plan_code]
+    payment = models.PaymentModel(
+        id=str(uuid.uuid4()),
+        chat_id=user.chat_id,
+        plan_code=request.plan_code,
+        provider="yookassa",
+        amount_kopeks=plan["amount_kopeks"],
+        currency="RUB",
+        status="pending",
+        idempotency_key=str(uuid.uuid4()),
+    )
+    db.add(payment)
+    db.commit()
+
+    app_base_url = os.getenv("APP_BASE_URL", "").rstrip("/")
+    if not app_base_url:
+        payment.status = "failed"
+        db.commit()
+        raise HTTPException(status_code=503, detail="Billing is not configured")
+
+    try:
+        provider_payment = payments.create_payment(
+            amount=f"{plan['amount_kopeks'] / 100:.2f}",
+            description=f"HockeyScrapper: {plan['name']}",
+            return_url=f"{app_base_url}/billing.html?payment=success",
+            order_id=payment.id,
+            idempotency_key=payment.idempotency_key,
+        )
+        checkout_url = provider_payment.get("confirmation", {}).get("confirmation_url")
+        provider_payment_id = provider_payment.get("id")
+        if not checkout_url or not provider_payment_id:
+            raise payments.PaymentProviderError("YooKassa returned an incomplete payment")
+    except payments.PaymentProviderError as error:
+        payment.status = "failed"
+        db.commit()
+        raise HTTPException(status_code=503, detail=str(error)) from error
+
+    payment.provider_payment_id = provider_payment_id
+    payment.status = provider_payment.get("status", "pending")
+    db.commit()
+    return {"payment_id": payment.id, "checkout_url": checkout_url}
+
+
+@app.get("/billing/payments/{payment_id}")
+def get_payment_status(
+    payment_id: str,
+    payload: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = _get_authenticated_user(payload, db)
+    payment = db.query(models.PaymentModel).filter(models.PaymentModel.id == payment_id).first()
+    if not payment or payment.chat_id != user.chat_id:
+        raise HTTPException(status_code=404, detail="Payment not found")
+    return {
+        "id": payment.id,
+        "plan_code": payment.plan_code,
+        "status": payment.status,
+        "amount_rub": payment.amount_kopeks / 100,
+        "paid_at": payment.paid_at.isoformat() if payment.paid_at else None,
+    }
+
+
+@app.post("/payments/yookassa/webhook")
+def yookassa_webhook(notification: dict, db: Session = Depends(get_db)):
+    provider_payment_id = notification.get("object", {}).get("id")
+    if not provider_payment_id:
+        raise HTTPException(status_code=400, detail="Payment id is required")
+
+    payment = db.query(models.PaymentModel).filter(
+        models.PaymentModel.provider_payment_id == provider_payment_id
+    ).first()
+    if not payment:
+        return {"status": "ignored"}
+
+    try:
+        verified_payment = payments.get_payment(provider_payment_id)
+    except payments.PaymentProviderError as error:
+        raise HTTPException(status_code=503, detail="Payment verification is unavailable") from error
+
+    expected_amount = f"{payment.amount_kopeks / 100:.2f}"
+    verified_amount = verified_payment.get("amount", {})
+    if (
+        verified_payment.get("metadata", {}).get("order_id") != payment.id
+        or verified_amount.get("currency") != payment.currency
+        or verified_amount.get("value") != expected_amount
+    ):
+        raise HTTPException(status_code=400, detail="Payment verification failed")
+
+    provider_status = verified_payment.get("status", "pending")
+    if provider_status == "succeeded" and payment.status != "succeeded":
+        user = db.query(models.UserModel).filter(models.UserModel.chat_id == payment.chat_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        _activate_premium(user, payment.plan_code)
+        payment.status = "succeeded"
+        payment.paid_at = datetime.utcnow()
+        db.commit()
+    elif provider_status == "canceled" and payment.status == "pending":
+        payment.status = "canceled"
+        db.commit()
+
+    return {"status": "ok"}
+
 
 @app.get("/matches")
 def get_all_matches(db: Session = Depends(get_db)):

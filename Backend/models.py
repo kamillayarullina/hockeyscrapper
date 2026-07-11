@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import Column, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 from Backend.database import Base
@@ -15,6 +17,8 @@ class UserModel(Base):
     link_code: Mapped[str] = mapped_column(nullable=True)
     is_active: Mapped[int] = mapped_column(default=1)
     avatar_url: Mapped[str] = mapped_column(nullable=True)
+    premium_plan: Mapped[str] = mapped_column(default="free")
+    premium_until: Mapped[datetime] = mapped_column(nullable=True)
     registered_at = Column(DateTime, server_default=func.now())
 
 
@@ -71,3 +75,19 @@ class ProxyModel(Base):
     country: Mapped[str] = mapped_column(default="")
     enabled: Mapped[int] = mapped_column(default=1)
     note: Mapped[str] = mapped_column(default="")
+
+
+class PaymentModel(Base):
+    __tablename__ = "payments"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    chat_id: Mapped[int] = mapped_column(index=True)
+    plan_code: Mapped[str] = mapped_column(nullable=False)
+    provider: Mapped[str] = mapped_column(nullable=False)
+    provider_payment_id: Mapped[str] = mapped_column(nullable=True, unique=True)
+    amount_kopeks: Mapped[int] = mapped_column(nullable=False)
+    currency: Mapped[str] = mapped_column(default="RUB")
+    status: Mapped[str] = mapped_column(default="pending", index=True)
+    idempotency_key: Mapped[str] = mapped_column(nullable=False, unique=True)
+    created_at = Column(DateTime, server_default=func.now())
+    paid_at = Column(DateTime, nullable=True)
