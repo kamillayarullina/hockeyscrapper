@@ -40,12 +40,6 @@
                     <strong id="profileTelegram">—</strong>
                 </div>
 
-                <div class="info-card membership-card">
-                    <span>Тариф</span>
-                    <strong id="membershipStatus">Базовый</strong>
-                    <small id="membershipDetails">До 3 подписок на команды</small>
-                </div>
-
                 <button class="btn"
                         onclick="window.location.href='sub.html'">
                     Управление подписками
@@ -139,18 +133,6 @@
                     }
                 }
                 loadSavedAvatar();
-
-                function renderMembership(membership) {
-                    const status = document.getElementById("membershipStatus");
-                    const details = document.getElementById("membershipDetails");
-                    if (!membership) {
-                        status.textContent = "Подписки";
-                        details.textContent = "Первые 3 команды бесплатно";
-                        return;
-                    }
-                    status.textContent = "Подписки на команды";
-                    details.textContent = `Первые 3 бесплатно, затем ${membership.paid_team_price_rub} ₽ за команду`;
-                }
 
                 avatarInput.addEventListener("change", (e) => {
                     const file = e.target.files[0];
@@ -335,7 +317,6 @@
                         document.getElementById("profileUsername").textContent = userFromApi.username || "—";
                         document.getElementById("profileEmail").textContent = userFromApi.email || "—";
                         document.getElementById("profileTelegram").textContent = userFromApi.telegram || "—";
-                        renderMembership(userFromApi.membership);
                         if (userFromApi.avatar_url) {
                             localStorage.setItem("avatar", userFromApi.avatar_url);
                             profileAvatar.innerHTML = "";

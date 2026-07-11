@@ -297,13 +297,6 @@ body {
 .crop-save:hover {
     background: var(--lidark) !important;
 }
-.membership-card small {
-    display: block;
-    margin-top: 5px;
-    color: #64748b;
-    font-size: 13px;
-    font-weight: 600;
-}
 .billing-container {
     max-width: 960px;
 }
