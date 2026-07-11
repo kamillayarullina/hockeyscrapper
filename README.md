@@ -50,7 +50,7 @@ cp .env.example .env
 
 ```bash
 # Everything (API + frontend + bot + parser)
-python -m main --all
+python main.py --verbose
 
 # Open in browser
 start http://localhost:8000
