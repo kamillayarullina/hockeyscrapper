@@ -8,6 +8,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
           rel="stylesheet">
+    <style>
+        .profile-error {
+            color: #c62828;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 4px;
+            display: none;
+        }
+        .profile-error.visible { display: block; }
+    </style>
 </head>
 <body>
     <div class="profile-container">
@@ -47,6 +57,7 @@
                 <button class="btn" id="telegramBtn">
                     Привязать Telegram
                 </button>
+                <div class="profile-error" id="tgError"></div>
             </div>
 
         </div>
@@ -352,12 +363,14 @@
                                     setTimeout(() => { tgBtn.textContent = "Привязать Telegram"; tgBtn.disabled = false; }, 5000);
                                 } else {
                                     const err = await r.json();
-                                    alert(err.detail || "Ошибка");
+                                    document.getElementById('tgError').textContent = err.detail || "Ошибка";
+                                    document.getElementById('tgError').classList.add('visible');
                                     tgBtn.textContent = "Привязать Telegram";
                                     tgBtn.disabled = false;
                                 }
                             } catch(e) {
-                                alert("Ошибка сети");
+                                document.getElementById('tgError').textContent = "Ошибка сети";
+                                document.getElementById('tgError').classList.add('visible');
                                 tgBtn.textContent = "Привязать Telegram";
                                 tgBtn.disabled = false;
                             }
