@@ -380,7 +380,7 @@ def toggle_subscription(
                 status_code=403,
                 detail={
                     "code": "premium_required",
-                    "message": f"The free plan allows up to {FREE_TEAM_LIMIT} teams.",
+                    "message": f"На бесплатном тарифе доступно не более {FREE_TEAM_LIMIT} команд.",
                     "membership": membership,
                 },
             )
