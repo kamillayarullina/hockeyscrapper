@@ -50,8 +50,8 @@
                         onclick="window.location.href='sub.html'">
                     Управление подписками
                 </button>
-                <button class="btn btn-premium" onclick="window.location.href='billing.html'">
-                    Управлять Premium
+                <button class="btn btn-premium" onclick="window.location.href='sub.html'">
+                    Подключить команду
                 </button>
                 <button class="btn" id="telegramBtn">
                     Привязать Telegram
@@ -146,14 +146,13 @@
                 function renderMembership(membership) {
                     const status = document.getElementById("membershipStatus");
                     const details = document.getElementById("membershipDetails");
-                    if (!membership || !membership.is_premium) {
-                        status.textContent = "Базовый";
-                        details.textContent = "До 3 подписок на команды";
+                    if (!membership) {
+                        status.textContent = "Подписки";
+                        details.textContent = "Первые 3 команды бесплатно";
                         return;
                     }
-                    status.textContent = "Premium";
-                    const until = new Date(membership.premium_until).toLocaleDateString("ru-RU");
-                    details.textContent = `Активен до ${until}`;
+                    status.textContent = "Подписки на команды";
+                    details.textContent = `Первые 3 бесплатно, затем ${membership.paid_team_price_rub} ₽ за команду`;
                 }
 
                 avatarInput.addEventListener("change", (e) => {

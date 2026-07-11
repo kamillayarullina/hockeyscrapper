@@ -3,12 +3,12 @@ import os
 import time
 import logging
 import random
-from datetime import datetime, timedelta
+from datetime import datetime
 from collections import deque
 from pathlib import Path
 import shutil
 import uuid
-from typing import Literal
+from urllib.parse import urlencode
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -120,22 +120,13 @@ class LinkCodeRequest(BaseModel):
 
 
 class CheckoutRequest(BaseModel):
-    plan_code: Literal["monthly", "annual"]
+    team_name: str
 
 
 FREE_TEAM_LIMIT = 3
-PREMIUM_PLANS = {
-    "monthly": {
-        "name": "Premium на месяц",
-        "amount_kopeks": 29900,
-        "duration_days": 30,
-    },
-    "annual": {
-        "name": "Premium на год",
-        "amount_kopeks": 299000,
-        "duration_days": 365,
-    },
-}
+PAID_TEAM_PRICE_KOPEKS = 3900
+PAID_TEAM_PRICE_RUB = PAID_TEAM_PRICE_KOPEKS // 100
+TEAM_SUBSCRIPTION_PAYMENT = "team_subscription"
 
 
 def _get_authenticated_user(payload: dict, db: Session) -> models.UserModel:
@@ -147,23 +138,36 @@ def _get_authenticated_user(payload: dict, db: Session) -> models.UserModel:
     return user
 
 
-def _membership(user: models.UserModel) -> dict:
-    now = datetime.utcnow()
-    is_premium = bool(user.premium_until and user.premium_until > now)
+def _membership(user: models.UserModel, db: Session) -> dict:
+    team_count = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == user.chat_id,
+        models.SubscriptionModel.type == "team",
+    ).count()
     return {
-        "plan": user.premium_plan if is_premium else "free",
-        "is_premium": is_premium,
-        "premium_until": user.premium_until.isoformat() if is_premium else None,
-        "team_subscription_limit": None if is_premium else FREE_TEAM_LIMIT,
+        "pricing_model": "per_team",
+        "free_team_limit": FREE_TEAM_LIMIT,
+        "free_team_slots_remaining": max(FREE_TEAM_LIMIT - team_count, 0),
+        "paid_team_price_rub": PAID_TEAM_PRICE_RUB,
+        "team_subscription_count": team_count,
     }
 
 
-def _activate_premium(user: models.UserModel, plan_code: str) -> None:
-    plan = PREMIUM_PLANS[plan_code]
-    now = datetime.utcnow()
-    starts_at = user.premium_until if user.premium_until and user.premium_until > now else now
-    user.premium_plan = plan_code
-    user.premium_until = starts_at + timedelta(days=plan["duration_days"])
+def _add_team_subscription(db: Session, chat_id: int, team_name: str) -> None:
+    """Add the paid or free team and its venue subscription without committing."""
+    team_value = team_name.strip().lower()
+    db.add(models.SubscriptionModel(chat_id=chat_id, type="team", value=team_value))
+    team_info = get_team_info(team_name)
+    if not team_info:
+        return
+
+    venue_value = f"{team_info['city']}, {team_info['venue']}".lower()
+    existing_venue = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == chat_id,
+        models.SubscriptionModel.type == "venue",
+        models.SubscriptionModel.value == venue_value,
+    ).first()
+    if not existing_venue:
+        db.add(models.SubscriptionModel(chat_id=chat_id, type="venue", value=venue_value))
 
 @app.post("/register")
 def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
@@ -289,7 +293,7 @@ def get_me(payload: dict = Depends(get_current_user), db: Session = Depends(get_
         "email": user.email,
         "telegram": user.telegram,
         "avatar_url": user.avatar_url,
-        "membership": _membership(user),
+        "membership": _membership(user, db),
     }
 
 @app.put("/me/avatar")
@@ -351,10 +355,12 @@ def toggle_subscription(
     if sub_data.chat_id != user.chat_id:
         raise HTTPException(status_code=403, detail="You can only manage your own subscriptions")
 
+    team_name = sub_data.team_name.strip()
+    team_value = team_name.lower()
     existing = db.query(models.SubscriptionModel).filter(
         models.SubscriptionModel.chat_id == user.chat_id,
         models.SubscriptionModel.type == "team",
-        models.SubscriptionModel.value == sub_data.team_name.lower()
+        models.SubscriptionModel.value == team_value,
     ).first()
 
     if existing:
@@ -370,44 +376,23 @@ def toggle_subscription(
         db.commit()
         return {"status": "removed", "message": f"Unsubscribed from {sub_data.team_name}"}
     else:
-        membership = _membership(user)
         team_count = db.query(models.SubscriptionModel).filter(
             models.SubscriptionModel.chat_id == user.chat_id,
             models.SubscriptionModel.type == "team",
         ).count()
-        if not membership["is_premium"] and team_count >= FREE_TEAM_LIMIT:
+        if team_count >= FREE_TEAM_LIMIT:
             raise HTTPException(
-                status_code=403,
+                status_code=402,
                 detail={
-                    "code": "premium_required",
-                    "message": f"На бесплатном тарифе доступно не более {FREE_TEAM_LIMIT} команд.",
-                    "membership": membership,
+                    "code": "payment_required",
+                    "message": f"Первые {FREE_TEAM_LIMIT} команды бесплатны. Подписка на следующую команду стоит {PAID_TEAM_PRICE_RUB} ₽.",
+                    "team_name": team_name,
+                    "price_rub": PAID_TEAM_PRICE_RUB,
                 },
             )
-        new_sub = models.SubscriptionModel(
-            chat_id=user.chat_id,
-            type="team",
-            value=sub_data.team_name.lower()
-        )
-        db.add(new_sub)
+        _add_team_subscription(db, user.chat_id, team_name)
         db.commit()
-        team_info = get_team_info(sub_data.team_name)
-        if team_info:
-            venue_value = f"{team_info['city']}, {team_info['venue']}".lower()
-            existing_venue = db.query(models.SubscriptionModel).filter(
-                models.SubscriptionModel.chat_id == user.chat_id,
-                models.SubscriptionModel.type == "venue",
-                models.SubscriptionModel.value == venue_value
-            ).first()
-            if not existing_venue:
-                venue_sub = models.SubscriptionModel(
-                    chat_id=user.chat_id,
-                    type="venue",
-                    value=venue_value
-                )
-                db.add(venue_sub)
-                db.commit()
-        return {"status": "added", "message": f"Subscribed to {sub_data.team_name}"}
+        return {"status": "added", "message": f"Subscribed to {team_name}"}
 
 @app.get("/subscriptions/{chat_id}")
 def get_user_subscriptions(
@@ -422,28 +407,25 @@ def get_user_subscriptions(
         models.SubscriptionModel.chat_id == user.chat_id
     ).all()
     teams = [s.value for s in subs if s.type == "team"]
-    return {"chat_id": user.chat_id, "subscriptions": teams, "membership": _membership(user)}
+    return {"chat_id": user.chat_id, "subscriptions": teams, "membership": _membership(user, db)}
 
 
 @app.get("/billing/plans")
 def get_billing_plans():
     return {
-        "plans": [
-            {
-                "code": code,
-                "name": plan["name"],
-                "amount_rub": plan["amount_kopeks"] // 100,
-                "duration_days": plan["duration_days"],
-            }
-            for code, plan in PREMIUM_PLANS.items()
-        ],
+        "plans": [{
+            "code": TEAM_SUBSCRIPTION_PAYMENT,
+            "name": "Подписка на команду",
+            "amount_rub": PAID_TEAM_PRICE_RUB,
+            "duration_days": None,
+        }],
         "free_team_limit": FREE_TEAM_LIMIT,
     }
 
 
 @app.get("/billing/me")
 def get_billing_membership(payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    return _membership(_get_authenticated_user(payload, db))
+    return _membership(_get_authenticated_user(payload, db), db)
 
 
 @app.post("/billing/checkout")
@@ -453,16 +435,44 @@ def create_checkout(
     db: Session = Depends(get_db),
 ):
     user = _get_authenticated_user(payload, db)
-    plan = PREMIUM_PLANS[request.plan_code]
+    team_name = request.team_name.strip()
+    if not team_name:
+        raise HTTPException(status_code=400, detail="Team name is required")
+
+    team_value = team_name.lower()
+    existing = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == user.chat_id,
+        models.SubscriptionModel.type == "team",
+        models.SubscriptionModel.value == team_value,
+    ).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="You are already subscribed to this team")
+
+    team_count = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == user.chat_id,
+        models.SubscriptionModel.type == "team",
+    ).count()
+    if team_count < FREE_TEAM_LIMIT:
+        raise HTTPException(status_code=400, detail="The first three team subscriptions are free")
+
+    pending = db.query(models.PaymentModel).filter(
+        models.PaymentModel.chat_id == user.chat_id,
+        models.PaymentModel.team_name == team_value,
+        models.PaymentModel.status == "pending",
+    ).first()
+    if pending:
+        raise HTTPException(status_code=409, detail="Payment for this team is already pending")
+
     payment = models.PaymentModel(
         id=str(uuid.uuid4()),
         chat_id=user.chat_id,
-        plan_code=request.plan_code,
+        plan_code=TEAM_SUBSCRIPTION_PAYMENT,
         provider="yookassa",
-        amount_kopeks=plan["amount_kopeks"],
+        amount_kopeks=PAID_TEAM_PRICE_KOPEKS,
         currency="RUB",
         status="pending",
         idempotency_key=str(uuid.uuid4()),
+        team_name=team_value,
     )
     db.add(payment)
     db.commit()
@@ -475,9 +485,9 @@ def create_checkout(
 
     try:
         provider_payment = payments.create_payment(
-            amount=f"{plan['amount_kopeks'] / 100:.2f}",
-            description=f"HockeyScrapper: {plan['name']}",
-            return_url=f"{app_base_url}/billing.html?payment=success",
+            amount=f"{PAID_TEAM_PRICE_KOPEKS / 100:.2f}",
+            description=f"HockeyScrapper: подписка на {team_name}",
+            return_url=f"{app_base_url}/billing.html?{urlencode({'payment': 'success', 'team': team_name})}",
             order_id=payment.id,
             idempotency_key=payment.idempotency_key,
         )
@@ -508,7 +518,7 @@ def get_payment_status(
         raise HTTPException(status_code=404, detail="Payment not found")
     return {
         "id": payment.id,
-        "plan_code": payment.plan_code,
+        "team_name": payment.team_name,
         "status": payment.status,
         "amount_rub": payment.amount_kopeks / 100,
         "paid_at": payment.paid_at.isoformat() if payment.paid_at else None,
@@ -546,7 +556,16 @@ def yookassa_webhook(notification: dict, db: Session = Depends(get_db)):
         user = db.query(models.UserModel).filter(models.UserModel.chat_id == payment.chat_id).first()
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
-        _activate_premium(user, payment.plan_code)
+        if payment.plan_code != TEAM_SUBSCRIPTION_PAYMENT or not payment.team_name:
+            raise HTTPException(status_code=400, detail="Unsupported payment type")
+
+        existing = db.query(models.SubscriptionModel).filter(
+            models.SubscriptionModel.chat_id == user.chat_id,
+            models.SubscriptionModel.type == "team",
+            models.SubscriptionModel.value == payment.team_name,
+        ).first()
+        if not existing:
+            _add_team_subscription(db, user.chat_id, payment.team_name)
         payment.status = "succeeded"
         payment.paid_at = datetime.utcnow()
         db.commit()

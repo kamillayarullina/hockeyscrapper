@@ -3,32 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium HockeyScrapper</title>
+    <title>Оплата подписки HockeyScrapper</title>
     <link rel="stylesheet" href="style_main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <main class="profile-container billing-container">
-        <a class="back-link" href="main.html">К профилю</a>
-        <p class="billing-eyebrow">HOCKEYSCRAPPER PREMIUM</p>
-        <h1>Больше хоккея. Без лимита.</h1>
-        <p class="billing-lead">Premium снимает ограничение на количество команд в уведомлениях.</p>
+        <a class="back-link" href="sub.html">К командам</a>
+        <p class="billing-eyebrow">ПОДПИСКА НА КОМАНДУ</p>
+        <h1>Первые 3 команды бесплатно</h1>
+        <p class="billing-lead">Каждая следующая подписка на команду стоит 39 ₽. Оплата разовая.</p>
 
         <section class="membership-summary" id="membershipSummary" aria-live="polite">
-            Загружаем ваш тариф...
+            Загружаем информацию о подписках...
         </section>
         <p class="payment-notice" id="paymentNotice" hidden></p>
-
-        <section class="pricing-grid" id="plans" aria-live="polite"></section>
-        <p class="billing-security">Оплата проходит на защищенной странице ЮKassa. Данные карты не попадают в HockeyScrapper.</p>
+        <section class="pricing-grid" id="checkout" aria-live="polite"></section>
+        <p class="billing-security">Оплата проходит на защищённой странице YooKassa. Данные карты не попадают в HockeyScrapper.</p>
     </main>
 
     <script>
-        const API = "";
         const token = localStorage.getItem("token");
-        const planFeatures = ["Безлимитные подписки на команды", "Уведомления о билетах", "Управление в личном кабинете"];
-        let plans = [];
+        const params = new URLSearchParams(window.location.search);
+        const selectedTeam = params.get("team");
+        let teamPrice = 39;
 
         function authHeaders() {
             return { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" };
@@ -43,69 +42,91 @@
 
         function renderMembership(membership) {
             const summary = document.getElementById("membershipSummary");
-            if (!membership.is_premium) {
-                summary.innerHTML = "<strong>Базовый тариф</strong><span>Доступно до 3 подписок на команды.</span>";
+            const freeLeft = membership.free_team_slots_remaining;
+            summary.innerHTML = "";
+            const title = document.createElement("strong");
+            const details = document.createElement("span");
+            title.textContent = `Подписок на команды: ${membership.team_subscription_count}`;
+            details.textContent = freeLeft > 0
+                ? `Бесплатно доступно ещё: ${freeLeft}`
+                : `Бесплатные подписки закончились. Новая команда: ${membership.paid_team_price_rub} ₽.`;
+            summary.append(title, details);
+        }
+
+        function renderCheckout() {
+            const checkout = document.getElementById("checkout");
+            checkout.innerHTML = "";
+            const card = document.createElement("article");
+            card.className = "plan-card recommended";
+
+            if (!selectedTeam) {
+                const title = document.createElement("h2");
+                title.textContent = "Сначала выберите команду";
+                const text = document.createElement("p");
+                text.textContent = "Вернитесь к списку команд и нажмите «Подписаться» у нужной команды.";
+                const link = document.createElement("a");
+                link.className = "btn plan-buy";
+                link.href = "sub.html";
+                link.textContent = "Выбрать команду";
+                card.append(title, text, link);
+                checkout.append(card);
                 return;
             }
-            const until = new Date(membership.premium_until).toLocaleDateString("ru-RU");
-            summary.innerHTML = `<strong>Premium активен</strong><span>Безлимитные команды до ${until}.</span>`;
+
+            const title = document.createElement("h2");
+            title.textContent = "Подписка на команду";
+            const team = document.createElement("p");
+            team.className = "plan-period";
+            team.textContent = selectedTeam;
+            const price = document.createElement("p");
+            price.className = "plan-price";
+            price.innerHTML = `<strong>${teamPrice}</strong> ₽`;
+            const explanation = document.createElement("p");
+            explanation.className = "plan-period";
+            explanation.textContent = "Разовая оплата. После подтверждения команда сразу добавится в ваши подписки.";
+            const button = document.createElement("button");
+            button.className = "btn plan-buy";
+            button.type = "button";
+            button.textContent = `Оплатить ${teamPrice} ₽`;
+            button.addEventListener("click", () => startCheckout(button));
+            card.append(title, team, price, explanation, button);
+            checkout.append(card);
         }
 
-        function renderPlans() {
-            const container = document.getElementById("plans");
-            container.innerHTML = "";
-            plans.forEach((plan) => {
-                const card = document.createElement("article");
-                card.className = `plan-card ${plan.code === "annual" ? "recommended" : ""}`;
-                const features = planFeatures.map((feature) => `<li>${feature}</li>`).join("");
-                card.innerHTML = `
-                    ${plan.code === "annual" ? '<span class="plan-badge">Выгоднее</span>' : ""}
-                    <h2>${plan.name}</h2>
-                    <p class="plan-price"><strong>${plan.amount_rub}</strong> ₽</p>
-                    <p class="plan-period">на ${plan.duration_days} дней</p>
-                    <ul>${features}</ul>
-                    <button class="btn plan-buy" data-plan="${plan.code}">Выбрать Premium</button>
-                `;
-                card.querySelector("button").addEventListener("click", () => startCheckout(plan.code));
-                container.appendChild(card);
-            });
-        }
-
-        async function startCheckout(planCode) {
-            const button = document.querySelector(`[data-plan="${planCode}"]`);
+        async function startCheckout(button) {
             button.disabled = true;
             button.textContent = "Переходим к оплате...";
             try {
-                const response = await fetch(`${API}/billing/checkout`, {
+                const response = await fetch("/billing/checkout", {
                     method: "POST",
                     headers: authHeaders(),
-                    body: JSON.stringify({ plan_code: planCode })
+                    body: JSON.stringify({ team_name: selectedTeam })
                 });
                 const data = await response.json();
-                if (!response.ok) throw new Error(data.detail || "Не удалось создать платеж");
+                if (!response.ok) throw new Error(data.detail || "Не удалось создать платёж");
                 localStorage.setItem("last_payment_id", data.payment_id);
                 window.location.assign(data.checkout_url);
             } catch (error) {
                 showNotice(error.message, "error");
                 button.disabled = false;
-                button.textContent = "Выбрать Premium";
+                button.textContent = `Оплатить ${teamPrice} ₽`;
             }
         }
 
         async function checkReturnedPayment() {
-            if (new URLSearchParams(window.location.search).get("payment") !== "success") return;
+            if (params.get("payment") !== "success") return;
             const paymentId = localStorage.getItem("last_payment_id");
             if (!paymentId) {
-                showNotice("Оплата принята. Premium активируется после подтверждения ЮKassa.");
+                showNotice("Оплата принята. Подписка появится после подтверждения YooKassa.");
                 return;
             }
-            const response = await fetch(`${API}/billing/payments/${paymentId}`, { headers: authHeaders() });
+            const response = await fetch(`/billing/payments/${paymentId}`, { headers: authHeaders() });
             if (!response.ok) return;
             const payment = await response.json();
             if (payment.status === "succeeded") {
-                showNotice("Оплата подтверждена. Premium уже активен.", "success");
+                showNotice("Оплата подтверждена. Команда добавлена в подписки.", "success");
             } else {
-                showNotice("Оплата получена. Premium активируется после подтверждения ЮKassa.");
+                showNotice("Оплата принята. Подписка появится после подтверждения YooKassa.");
             }
         }
 
@@ -116,17 +137,18 @@
             }
             try {
                 const [plansResponse, membershipResponse] = await Promise.all([
-                    fetch(`${API}/billing/plans`),
-                    fetch(`${API}/billing/me`, { headers: authHeaders() })
+                    fetch("/billing/plans"),
+                    fetch("/billing/me", { headers: authHeaders() })
                 ]);
                 if (membershipResponse.status === 401) {
                     window.location.href = "vhod/vhod.html";
                     return;
                 }
-                if (!plansResponse.ok || !membershipResponse.ok) throw new Error("Не удалось загрузить тарифы");
-                plans = (await plansResponse.json()).plans;
-                renderPlans();
+                if (!plansResponse.ok || !membershipResponse.ok) throw new Error("Не удалось загрузить данные оплаты");
+                const plans = await plansResponse.json();
+                teamPrice = plans.plans[0].amount_rub;
                 renderMembership(await membershipResponse.json());
+                renderCheckout();
                 checkReturnedPayment();
             } catch (error) {
                 document.getElementById("membershipSummary").textContent = error.message;

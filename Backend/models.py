@@ -89,5 +89,7 @@ class PaymentModel(Base):
     currency: Mapped[str] = mapped_column(default="RUB")
     status: Mapped[str] = mapped_column(default="pending", index=True)
     idempotency_key: Mapped[str] = mapped_column(nullable=False, unique=True)
+    # The team unlocked by this payment. Nullable for payment rows created before this feature.
+    team_name: Mapped[str] = mapped_column(nullable=True)
     created_at = Column(DateTime, server_default=func.now())
     paid_at = Column(DateTime, nullable=True)

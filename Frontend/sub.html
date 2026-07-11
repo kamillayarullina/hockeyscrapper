@@ -134,9 +134,9 @@
                     await loadSubscriptions();
                 } else {
                     const error = result.detail || result.message || "Ошибка";
-                    if (error.code === "premium_required") {
-                        alert(`${error.message} Откроем страницу Premium.`);
-                        window.location.href = "billing.html";
+                    if (error.code === "payment_required") {
+                        alert(error.message);
+                        window.location.href = `billing.html?team=${encodeURIComponent(error.team_name || team)}`;
                     } else {
                         alert(typeof error === "string" ? error : "Ошибка");
                     }

@@ -37,7 +37,7 @@ Base = declarative_base()
 
 
 def ensure_schema() -> None:
-    """Apply the two additive user fields for installations created before billing."""
+    """Apply additive billing fields to installations created before billing."""
     inspector = inspect(engine)
     if "users" not in inspector.get_table_names():
         return
@@ -51,6 +51,13 @@ def ensure_schema() -> None:
         for column, definition in additions.items():
             if column not in existing_columns:
                 connection.execute(text(f"ALTER TABLE users ADD COLUMN {column} {definition}"))
+
+    payment_columns = set()
+    if "payments" in inspector.get_table_names():
+        payment_columns = {column["name"] for column in inspector.get_columns("payments")}
+    if "payments" in inspector.get_table_names() and "team_name" not in payment_columns:
+        with engine.begin() as connection:
+            connection.execute(text("ALTER TABLE payments ADD COLUMN team_name VARCHAR"))
 
 
 def get_db():
