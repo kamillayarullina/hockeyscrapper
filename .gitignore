@@ -10,6 +10,7 @@ build/
 
 # Data
 data/
+/static/avatars/*
 
 # IDE
 .vscode/
