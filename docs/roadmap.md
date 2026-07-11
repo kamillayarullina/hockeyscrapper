@@ -49,12 +49,12 @@
 - **Focus:** Monetization, parsers.
 - **Link to the Sprint Milestone:** - https://github.com/kamillayarullina/hockeyscrapper/milestone/4
 - **Planned Items:**
-  - [PBI] Monetisation backend - https://github.com/kamillayarullina/hockeyscrapper/issues/228
-  - [PBI] Monetisation Frontend - https://github.com/kamillayarullina/hockeyscrapper/issues/229
+  - [PBI] US-06: Monetization - https://github.com/kamillayarullina/hockeyscrapper/issues/75
   - US-06: Monetization - https://github.com/kamillayarullina/hockeyscrapper/issues/63
   - [PBI] Parsing time validation - https://github.com/kamillayarullina/hockeyscrapper/issues/230
-  - [PBI] Parser improvements and parsing of KHL websites - https://github.com/kamillayarullina/hockeyscrapper/issues/231
+  - [PBI] Admin panel: validation to unreal teams - https://github.com/kamillayarullina/hockeyscrapper/issues/244
   - [PBI] Password improvement - https://github.com/kamillayarullina/hockeyscrapper/issues/232
+  - [PBI] Changing Error notification - https://github.com/kamillayarullina/hockeyscrapper/issues/245
 
 
 
