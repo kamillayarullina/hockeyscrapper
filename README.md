@@ -25,7 +25,11 @@ cp .env.example .env          # edit .env with your BOT_TOKEN
 Run everything (API + bot + parser):
 
 ```bash
-python -m main --all
+# Everything (API + frontend + bot + parser)
+python main.py --verbose
+
+# Open in browser
+start http://localhost:8000
 ```
 
 Open [http://localhost:8000](http://localhost:8000) in your browser. See [docs/development-process.md](docs/development-process.md) for component-specific flags and Docker deployment.
