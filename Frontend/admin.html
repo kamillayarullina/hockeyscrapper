@@ -705,7 +705,7 @@
 
         async function saveParseInterval() {
             const minutes = parseInt(document.getElementById("parseInterval").value);
-            if (isNaN(minutes) || minutes < 1 || minutes > 999) return msg("От 1 до 999", false);
+            if (isNaN(minutes) || minutes < 1 || minutes > 999) return msg("От 1 до 999 минут", false);
             await api("/admin/settings/parse-interval", { method: "PUT", body: JSON.stringify({ minutes }) });
             msg("Интервал сохранён");
         }
