@@ -13,7 +13,7 @@
         <a class="back-link" href="sub.html">К командам</a>
         <p class="billing-eyebrow">ПОДПИСКА НА КОМАНДУ</p>
         <h1>Первые 3 команды бесплатно</h1>
-        <p class="billing-lead">Каждая следующая подписка на команду стоит 39 ₽. Оплата разовая: купленную команду можно отключать и подключать снова без новой оплаты.</p>
+        <p class="billing-lead">Каждая следующая команда стоит 39 ₽ в месяц. Подписка действует 30 дней.</p>
 
         <section class="membership-summary" id="membershipSummary" aria-live="polite">
             Загружаем информацию о подписках...
@@ -83,13 +83,21 @@
             price.innerHTML = `<strong>${teamPrice}</strong> ₽`;
             const explanation = document.createElement("p");
             explanation.className = "plan-period";
-            explanation.textContent = "Разовая оплата. После подтверждения команда добавится в подписки, а позже её можно подключить снова без новой оплаты.";
+            explanation.textContent = "Подписка действует 30 дней. После подтверждения команда добавится в ваши уведомления.";
+            const autoRenew = document.createElement("label");
+            autoRenew.className = "auto-renew-consent";
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = "enableAutoRenew";
+            const consentText = document.createElement("span");
+            consentText.textContent = "Включить автопродление: 39 ₽ будут списываться раз в месяц, пока я не отключу эту настройку.";
+            autoRenew.append(checkbox, consentText);
             const button = document.createElement("button");
             button.className = "btn plan-buy";
             button.type = "button";
             button.textContent = `Оплатить ${teamPrice} ₽`;
             button.addEventListener("click", () => startCheckout(button));
-            card.append(title, team, price, explanation, button);
+            card.append(title, team, price, explanation, autoRenew, button);
             checkout.append(card);
         }
 
@@ -100,7 +108,10 @@
                 const response = await fetch("/billing/checkout", {
                     method: "POST",
                     headers: authHeaders(),
-                    body: JSON.stringify({ team_name: selectedTeam })
+                    body: JSON.stringify({
+                        team_name: selectedTeam,
+                        enable_auto_renew: document.getElementById("enableAutoRenew")?.checked || false
+                    })
                 });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.detail || "Не удалось создать платёж");
@@ -124,7 +135,7 @@
             if (!response.ok) return;
             const payment = await response.json();
             if (payment.status === "succeeded") {
-                showNotice("Оплата подтверждена. Команда добавлена в подписки.", "success");
+                showNotice("Оплата подтверждена. Подписка на команду активна 30 дней.", "success");
             } else {
                 showNotice("Оплата принята. Подписка появится после подтверждения YooKassa.");
             }

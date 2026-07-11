@@ -31,6 +31,21 @@ class SubscriptionModel(Base):
     created_at = Column(DateTime, server_default=func.now())
 
 
+class PaidTeamSubscriptionModel(Base):
+    """Monthly access and renewal settings for a paid team subscription."""
+
+    __tablename__ = "paid_team_subscriptions"
+
+    chat_id: Mapped[int] = mapped_column(primary_key=True)
+    team_name: Mapped[str] = mapped_column(primary_key=True)
+    expires_at: Mapped[datetime] = mapped_column(nullable=False, index=True)
+    auto_renew: Mapped[bool] = mapped_column(default=False)
+    payment_method_id: Mapped[str] = mapped_column(nullable=True)
+    auto_renew_consented_at: Mapped[datetime] = mapped_column(nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
 class MatchModel(Base):
     __tablename__ = "matches"
 
@@ -91,5 +106,6 @@ class PaymentModel(Base):
     idempotency_key: Mapped[str] = mapped_column(nullable=False, unique=True)
     # The team unlocked by this payment. Nullable for payment rows created before this feature.
     team_name: Mapped[str] = mapped_column(nullable=True)
+    auto_renew_requested: Mapped[bool] = mapped_column(default=False)
     created_at = Column(DateTime, server_default=func.now())
     paid_at = Column(DateTime, nullable=True)

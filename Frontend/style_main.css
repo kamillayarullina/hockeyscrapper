@@ -378,6 +378,31 @@ body {
 .plan-card ul { color: #334155; line-height: 1.8; margin: 0 0 24px 18px; }
 .plan-buy:disabled { cursor: wait; opacity: 0.7; transform: none; }
 .billing-security { color: #64748b; font-size: 13px; line-height: 1.5; margin-top: 22px; text-align: center; }
+.auto-renew-consent, .renew-switch {
+    align-items: flex-start;
+    color: #334155;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    font-weight: 700;
+    gap: 10px;
+    line-height: 1.45;
+    margin: 0 0 20px;
+}
+.auto-renew-consent input, .renew-switch input { accent-color: #bd6a0c; margin-top: 3px; }
+.paid-teams-list { display: grid; gap: 16px; margin-top: 24px; }
+.paid-team-card {
+    background: rgba(255, 255, 255, 0.93);
+    border: 1px solid #dce7f4;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgba(49, 87, 128, 0.09);
+    padding: 24px;
+}
+.paid-team-card .team-name { margin: 0 0 8px; text-transform: uppercase; }
+.subscription-active { color: #19713b; font-weight: 800; }
+.subscription-expired { color: #9f2e2e; font-weight: 800; }
+.auto-renew-status { color: #52709b; font-weight: 700; }
+.auto-renew-hint { color: #64748b; font-size: 14px; line-height: 1.5; }
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }

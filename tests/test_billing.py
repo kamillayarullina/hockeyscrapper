@@ -1,4 +1,7 @@
-from Backend import payments
+from datetime import datetime, timedelta
+
+from Backend import models, payments
+from Backend.main import process_due_renewals
 
 
 def register_user(client, email="billing@example.com"):
@@ -78,12 +81,13 @@ def test_checkout_creates_payment_for_a_team(client, monkeypatch):
     response = client.post(
         "/billing/checkout",
         headers=auth_headers(user),
-        json={"team_name": "CSKA"},
+        json={"team_name": "CSKA", "enable_auto_renew": True},
     )
     assert response.status_code == 200
     assert response.json()["checkout_url"] == "https://payment.example/checkout"
     assert captured["amount"] == "39.00"
     assert captured["description"] == "HockeyScrapper: подписка на CSKA"
+    assert captured["save_payment_method"] is True
 
 
 def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
@@ -103,7 +107,7 @@ def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
     checkout = client.post(
         "/billing/checkout",
         headers=auth_headers(user),
-        json={"team_name": "CSKA"},
+        json={"team_name": "CSKA", "enable_auto_renew": True},
     )
     assert checkout.status_code == 200
     payment_id = checkout.json()["payment_id"]
@@ -116,6 +120,7 @@ def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
             "status": "succeeded",
             "amount": {"value": "39.00", "currency": "RUB"},
             "metadata": {"order_id": payment_id},
+            "payment_method": {"id": "saved-card-1", "saved": True},
         },
     )
     webhook = client.post("/payments/yookassa/webhook", json={"object": {"id": "provider-payment-2"}})
@@ -127,7 +132,22 @@ def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
     assert subscriptions.json()["membership"]["team_subscription_count"] == 4
     assert subscriptions.json()["membership"]["paid_team_price_rub"] == 39
 
-    # Unsubscribing only disables notifications; the successful payment remains an entitlement.
+    paid_subscriptions = client.get("/billing/subscriptions", headers=auth_headers(user))
+    assert paid_subscriptions.status_code == 200
+    paid_team = paid_subscriptions.json()["subscriptions"][0]
+    assert paid_team["team_name"] == "cska"
+    assert paid_team["is_active"] is True
+    assert paid_team["auto_renew"] is True
+    assert paid_team["can_enable_auto_renew"] is True
+
+    disable_auto_renew = client.patch(
+        "/billing/subscriptions/cska/auto-renew",
+        headers=auth_headers(user),
+        json={"enabled": False},
+    )
+    assert disable_auto_renew.json()["auto_renew"] is False
+
+    # Unsubscribing only disables notifications while the monthly subscription is active.
     unsubscribe = client.post(
         "/subscription/toggle",
         headers=auth_headers(user),
@@ -157,6 +177,59 @@ def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
         json={"chat_id": user["chat_id"], "team_name": "Replacement team"},
     )
     assert replacement.status_code == 200
+
+
+def test_expired_paid_team_subscription_stops_notifications(client, db_session):
+    user = register_user(client)
+    add_three_free_teams(client, user)
+    db_session.add(models.SubscriptionModel(chat_id=user["chat_id"], type="team", value="cska"))
+    db_session.add(
+        models.PaidTeamSubscriptionModel(
+            chat_id=user["chat_id"],
+            team_name="cska",
+            expires_at=datetime.utcnow() - timedelta(minutes=1),
+            auto_renew=False,
+        )
+    )
+    db_session.commit()
+
+    response = client.post(
+        "/subscription/toggle",
+        headers=auth_headers(user),
+        json={"chat_id": user["chat_id"], "team_name": "CSKA"},
+    )
+    assert response.status_code == 402
+    subscriptions = client.get(f"/subscriptions/{user['chat_id']}", headers=auth_headers(user))
+    assert "cska" not in subscriptions.json()["subscriptions"]
+
+
+def test_due_auto_renewal_creates_yookassa_payment(db_session, monkeypatch):
+    db_session.add(
+        models.PaidTeamSubscriptionModel(
+            chat_id=99,
+            team_name="cska",
+            expires_at=datetime.utcnow() - timedelta(minutes=1),
+            auto_renew=True,
+            payment_method_id="saved-card-1",
+        )
+    )
+    db_session.commit()
+    captured = {}
+
+    def fake_recurring_payment(**kwargs):
+        captured.update(kwargs)
+        return {"id": "renewal-payment-1", "status": "pending"}
+
+    monkeypatch.setattr(payments, "create_recurring_payment", fake_recurring_payment)
+    result = process_due_renewals(db_session)
+
+    assert result["renewals_started"] == 1
+    assert captured["amount"] == "39.00"
+    assert captured["payment_method_id"] == "saved-card-1"
+    payment = db_session.query(models.PaymentModel).filter(
+        models.PaymentModel.provider_payment_id == "renewal-payment-1"
+    ).first()
+    assert payment.plan_code == "team_subscription_renewal"
 
 
 def test_webhook_rejects_payment_with_wrong_order(client, monkeypatch):

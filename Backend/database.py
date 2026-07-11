@@ -52,12 +52,19 @@ def ensure_schema() -> None:
             if column not in existing_columns:
                 connection.execute(text(f"ALTER TABLE users ADD COLUMN {column} {definition}"))
 
-    payment_columns = set()
     if "payments" in inspector.get_table_names():
         payment_columns = {column["name"] for column in inspector.get_columns("payments")}
-    if "payments" in inspector.get_table_names() and "team_name" not in payment_columns:
+    else:
+        payment_columns = set()
+    payment_additions = {
+        "team_name": "VARCHAR",
+        "auto_renew_requested": "BOOLEAN DEFAULT 0",
+    }
+    if "payments" in inspector.get_table_names():
         with engine.begin() as connection:
-            connection.execute(text("ALTER TABLE payments ADD COLUMN team_name VARCHAR"))
+            for column, definition in payment_additions.items():
+                if column not in payment_columns:
+                    connection.execute(text(f"ALTER TABLE payments ADD COLUMN {column} {definition}"))
 
 
 def get_db():

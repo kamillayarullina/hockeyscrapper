@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои платные команды - HockeyScrapper</title>
+    <link rel="stylesheet" href="style_main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="profile-container billing-container">
+        <a class="back-link" href="main.html">К профилю</a>
+        <p class="billing-eyebrow">МОИ ПОДПИСКИ</p>
+        <h1>Команды на месяц</h1>
+        <p class="billing-lead">Здесь указаны срок подписки и настройки автопродления для платных команд.</p>
+        <section id="paidTeams" class="paid-teams-list" aria-live="polite">Загружаем подписки...</section>
+    </main>
+
+    <script>
+        const token = localStorage.getItem("token");
+        const container = document.getElementById("paidTeams");
+
+        function headers() {
+            return { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" };
+        }
+
+        function formatDate(value) {
+            return new Date(value).toLocaleDateString("ru-RU", {
+                day: "numeric", month: "long", year: "numeric"
+            });
+        }
+
+        async function setAutoRenew(teamName, enabled, input, message) {
+            if (enabled && !window.confirm("Вы подтверждаете ежемесячное списание 39 ₽ за эту команду до отключения автопродления?")) {
+                input.checked = false;
+                return;
+            }
+            input.disabled = true;
+            try {
+                const response = await fetch(`/billing/subscriptions/${encodeURIComponent(teamName)}/auto-renew`, {
+                    method: "PATCH",
+                    headers: headers(),
+                    body: JSON.stringify({ enabled })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || "Не удалось изменить автопродление");
+                message.textContent = data.auto_renew ? "Автопродление включено" : "Автопродление отключено";
+            } catch (error) {
+                input.checked = !enabled;
+                message.textContent = error.message;
+            } finally {
+                input.disabled = false;
+            }
+        }
+
+        function render(subscriptions, monthlyPrice) {
+            container.innerHTML = "";
+            if (!subscriptions.length) {
+                const empty = document.createElement("article");
+                empty.className = "plan-card";
+                empty.innerHTML = "<h2>Платных подписок пока нет</h2><p>После трёх бесплатных команд здесь появятся команды, подключённые за 39 ₽ в месяц.</p>";
+                const link = document.createElement("a");
+                link.className = "btn plan-buy";
+                link.href = "sub.html";
+                link.textContent = "Выбрать команду";
+                empty.append(link);
+                container.append(empty);
+                return;
+            }
+
+            subscriptions.forEach((subscription) => {
+                const card = document.createElement("article");
+                card.className = "paid-team-card";
+                const title = document.createElement("h2");
+                title.className = "team-name";
+                title.textContent = subscription.team_name;
+                const status = document.createElement("p");
+                status.className = subscription.is_active ? "subscription-active" : "subscription-expired";
+                status.textContent = subscription.is_active
+                    ? `Активна до ${formatDate(subscription.expires_at)}`
+                    : `Срок закончился ${formatDate(subscription.expires_at)}`;
+                const price = document.createElement("p");
+                price.className = "plan-period";
+                price.textContent = `${monthlyPrice} ₽ в месяц`;
+                const message = document.createElement("p");
+                message.className = "auto-renew-status";
+                message.textContent = subscription.auto_renew ? "Автопродление включено" : "Автопродление отключено";
+                card.append(title, status, price, message);
+
+                if (subscription.is_active && subscription.can_enable_auto_renew) {
+                    const label = document.createElement("label");
+                    label.className = "renew-switch";
+                    const input = document.createElement("input");
+                    input.type = "checkbox";
+                    input.checked = subscription.auto_renew;
+                    const text = document.createElement("span");
+                    text.textContent = "Автопродление";
+                    input.addEventListener("change", () => setAutoRenew(subscription.team_name, input.checked, input, message));
+                    label.append(input, text);
+                    card.append(label);
+                } else if (subscription.is_active) {
+                    const hint = document.createElement("p");
+                    hint.className = "auto-renew-hint";
+                    hint.textContent = "Автопродление не подключено. Его можно выбрать при следующем оформлении подписки.";
+                    card.append(hint);
+                } else {
+                    const link = document.createElement("a");
+                    link.className = "btn plan-buy";
+                    link.href = "sub.html";
+                    link.textContent = "Подключить снова";
+                    card.append(link);
+                }
+                container.append(card);
+            });
+        }
+
+        async function loadSubscriptions() {
+            if (!token) {
+                window.location.href = "vhod/vhod.html";
+                return;
+            }
+            try {
+                const response = await fetch("/billing/subscriptions", { headers: headers() });
+                if (response.status === 401) {
+                    window.location.href = "vhod/vhod.html";
+                    return;
+                }
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || "Не удалось загрузить подписки");
+                render(data.subscriptions, data.monthly_price_rub);
+            } catch (error) {
+                container.textContent = error.message;
+            }
+        }
+
+        loadSubscriptions();
+    </script>
+</body>
+</html>
