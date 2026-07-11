@@ -26,6 +26,7 @@ nav:
   - Product:
     - User Stories: user-stories.md
     - Roadmap: roadmap.md
+    - Monetization: monetization.md
   - Testing:
     - Testing Strategy: testing.md
     - Quality Requirements: quality-requirements.md

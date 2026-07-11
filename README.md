@@ -41,6 +41,7 @@ Open [http://localhost:8000](http://localhost:8000) in your browser. See [docs/d
 | [User Acceptance Tests](docs/user-acceptance-tests.md) | UAT scenarios |
 | [Definition of Done](docs/definition-of-done.md) | Completion standard |
 | [Roadmap](docs/roadmap.md) | Upcoming sprints and milestones |
+| [Monetization](docs/monetization.md) | Premium plans and YooKassa deployment setup |
 
 ## Architecture Overview
 

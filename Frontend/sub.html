@@ -68,7 +68,9 @@
             await resolveChatId();
             if (!chatId) { render(); return; }
             try {
-                const r = await fetch(`${API}/subscriptions/${chatId}`);
+                const r = await fetch(`${API}/subscriptions/${chatId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
                 if (!r.ok) { render(); return; }
                 const data = await r.json();
                 subscriptions = data.subscriptions || [];
@@ -121,14 +123,23 @@
             try {
                 const r = await fetch(`${API}/subscription/toggle`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
                     body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
                 });
                 const result = await r.json();
                 if (r.ok) {
                     await loadSubscriptions();
                 } else {
-                    alert(result.message || "Ошибка");
+                    const error = result.detail || result.message || "Ошибка";
+                    if (error.code === "payment_required") {
+                        alert(error.message);
+                        window.location.href = `billing.html?team=${encodeURIComponent(error.team_name || team)}`;
+                    } else {
+                        alert(typeof error === "string" ? error : "Ошибка");
+                    }
                 }
             } catch (err) {
                 alert("Ошибка сети: " + err.message);
