@@ -102,6 +102,7 @@
 <div class="modal-overlay" id="subModal">
     <div class="modal">
         <h3>Добавить подписку</h3>
+        <div id="subModalError" class="msg msg-err" style="display:none"></div>
         <div class="form-group">
             <label>Название команды</label>
             <input id="subValue" placeholder="Например: ЦСКА">
@@ -172,10 +173,26 @@ function closeSubModal() {
 
 async function saveSub() {
     const value = document.getElementById("subValue").value.trim();
-    if (!value) return;
-    await api(`/admin/users/${_subChatId}/subscriptions`, { method: "POST", body: JSON.stringify({ type: "team", value }) });
-    closeSubModal();
-    loadUsers();
+    const errEl = document.getElementById("subModalError");
+    errEl.style.display = "none";
+    if (!value) {
+        errEl.textContent = "Введите название команды";
+        errEl.style.display = "flex";
+        return;
+    }
+    if (value.length > 100) {
+        errEl.textContent = "Название слишком длинное (макс. 100 символов)";
+        errEl.style.display = "flex";
+        return;
+    }
+    try {
+        await api(`/admin/users/${_subChatId}/subscriptions`, { method: "POST", body: JSON.stringify({ type: "team", value }) });
+        closeSubModal();
+        loadUsers();
+    } catch (e) {
+        errEl.textContent = e.message;
+        errEl.style.display = "flex";
+    }
 }
 
 // Users
@@ -256,10 +273,20 @@ async function loadProxies() {
 async function addProxy() {
     const url = document.getElementById("proxyUrl").value.trim();
     if (!url) return alert("Укажите URL прокси");
+    if (!/^https?:\/\/|^socks[45]:\/\//.test(url)) {
+        return alert("URL должен начинаться с http://, https://, socks4:// или socks5://");
+    }
     const proxy_type = document.getElementById("proxyType").value.trim() || "http";
+    if (!["http", "socks4", "socks5"].includes(proxy_type)) {
+        return alert("Тип прокси должен быть http, socks4 или socks5");
+    }
     const country = document.getElementById("proxyCountry").value.trim() || "";
-    await api("/admin/proxies", { method: "POST", body: JSON.stringify({ url, proxy_type, country, note: "" }) });
-    loadProxies();
+    try {
+        const res = await api("/admin/proxies", { method: "POST", body: JSON.stringify({ url, proxy_type, country, note: "" }) });
+        loadProxies();
+    } catch (e) {
+        alert(e.message);
+    }
 }
 
 async function toggleProxy(id) {
@@ -295,6 +322,42 @@ async function loadSettings() {
                     <button class="btn btn-danger" onclick="clearMatches()">Очистить матчи</button>
                 </div>
             </div>
+            <div style="margin-top:28px;padding-top:24px;border-top:2px solid #d4e0f0">
+                <h3 style="text-align:center;color:var(--darkblue);font-size:20px;margin-bottom:16px;font-weight:800">📨 Уведомление всем пользователям</h3>
+                <div class="form-row">
+                    <div style="flex:1"><label>Заголовок</label>
+                        <input class="inp" id="notifyTitle" value="Тестовое уведомление" style="width:100%">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div style="flex:1"><label>Дата</label>
+                        <input class="inp" id="notifyDate" placeholder="оставьте пустым для сегодня" style="width:100%">
+                    </div>
+                    <div style="flex:1"><label>Место</label>
+                        <input class="inp" id="notifyPlace" value="Админ-панель" style="width:100%">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div style="flex:1"><label>Цена от</label>
+                        <input class="inp" id="notifyPriceMin" value="—" style="width:100%">
+                    </div>
+                    <div style="flex:1"><label>Цена до</label>
+                        <input class="inp" id="notifyPriceMax" value="—" style="width:100%">
+                    </div>
+                    <div style="flex:1"><label>Доступность</label>
+                        <input class="inp" id="notifyAvailability" value="—" style="width:100%">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div style="flex:1"><label>Ссылка</label>
+                        <input class="inp" id="notifyLink" placeholder="https://..." style="width:100%">
+                    </div>
+                </div>
+                <div style="text-align:center;margin-top:12px">
+                    <button class="btn btn-success" onclick="sendNotify()">📨 Отправить</button>
+                </div>
+                <div id="notifyMsg"></div>
+            </div>
             <div id="settingsMsg"></div>
         </div>`;
     try {
@@ -311,14 +374,21 @@ function msg(text, ok = true) {
 async function saveParseInterval() {
     const minutes = parseInt(document.getElementById("parseInterval").value);
     if (isNaN(minutes) || minutes < 1 || minutes > 1440) return msg("От 1 до 1440", false);
-    await api("/admin/settings/parse-interval", { method: "PUT", body: JSON.stringify({ minutes }) });
-    msg("Интервал сохранён");
+    try {
+        await api("/admin/settings/parse-interval", { method: "PUT", body: JSON.stringify({ minutes }) });
+        msg("Интервал сохранён");
+    } catch (e) { msg(e.message, false); }
 }
 
 async function saveBotProxy() {
     const proxy_url = document.getElementById("botProxyUrl").value.trim();
-    await api("/admin/settings/bot-proxy", { method: "PUT", body: JSON.stringify({ proxy_url }) });
-    msg("Прокси для бота сохранён. Для применения нужен перезапуск бота.");
+    if (proxy_url && !/^https?:\/\/|^socks[45]:\/\//.test(proxy_url)) {
+        return msg("URL должен начинаться с http://, https://, socks4:// или socks5://", false);
+    }
+    try {
+        await api("/admin/settings/bot-proxy", { method: "PUT", body: JSON.stringify({ proxy_url }) });
+        msg("Прокси для бота сохранён. Для применения нужен перезапуск бота.");
+    } catch (e) { msg(e.message, false); }
 }
 
 async function triggerParse() {
@@ -326,10 +396,27 @@ async function triggerParse() {
     msg(res.message || "Запрос отправлен");
 }
 
-async function notifyAll() {
-    if (!confirm("Отправить тестовое уведомление всем пользователям?")) return;
-    const res = await api("/admin/notify", { method: "POST" });
-    msg(`Уведомление отправлено ${res.sent} пользователям`);
+async function sendNotify() {
+    const body = {
+        title: document.getElementById("notifyTitle").value.trim(),
+        date: document.getElementById("notifyDate").value.trim(),
+        place: document.getElementById("notifyPlace").value.trim(),
+        price_min: document.getElementById("notifyPriceMin").value.trim() || "—",
+        price_max: document.getElementById("notifyPriceMax").value.trim() || "—",
+        availability: document.getElementById("notifyAvailability").value.trim() || "—",
+        link: document.getElementById("notifyLink").value.trim(),
+    };
+    if (!body.title) return showNotifyMsg("Введите заголовок", false);
+    if (!confirm("Отправить уведомление всем пользователям?")) return;
+    try {
+        const res = await api("/admin/notify", { method: "POST", body: JSON.stringify(body) });
+        showNotifyMsg(`Уведомление отправлено ${res.sent} пользователям`, true);
+    } catch (e) {
+        showNotifyMsg(e.message, false);
+    }
+}
+function showNotifyMsg(text, ok) {
+    document.getElementById("notifyMsg").innerHTML = `<div class="msg ${ok ? 'msg-ok' : 'msg-err'}">${text}</div>`;
 }
 
 async function clearMatches() {

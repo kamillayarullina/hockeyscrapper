@@ -16,6 +16,7 @@ from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 from pydantic import BaseModel, EmailStr, field_validator
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import func
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -117,7 +118,10 @@ class LinkCodeRequest(BaseModel):
 
 @app.post("/register")
 def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
-    existing = db.query(models.UserModel).filter(models.UserModel.email == user_data.email).first()
+    email_norm = user_data.email.lower().strip()
+    existing = db.query(models.UserModel).filter(
+        func.lower(models.UserModel.email) == email_norm
+    ).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
 
@@ -130,7 +134,7 @@ def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
             user = models.UserModel(
                 chat_id=new_chat_id,
                 username=user_data.username,
-                email=user_data.email,
+                email=email_norm,
                 telegram=user_data.telegram,
                 password_hash=hashed,
                 is_active=1
@@ -155,7 +159,10 @@ def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
 
 @app.post("/login")
 def login_user(login_data: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(models.UserModel).filter(models.UserModel.email == login_data.email).first()
+    email_norm = login_data.email.lower().strip()
+    user = db.query(models.UserModel).filter(
+        func.lower(models.UserModel.email) == email_norm
+    ).first()
     if not user or not verify_password(login_data.password, user.password_hash):
         raise HTTPException(status_code=400, detail="Invalid email or password")
     token = create_token(user.chat_id, user.email)
@@ -174,10 +181,12 @@ def login_user(login_data: UserLogin, db: Session = Depends(get_db)):
 
 @app.post("/forgot_password")
 async def forgot_password(request: dict, db: Session = Depends(get_db)):
-    email = request.get("email", "")
+    email = request.get("email", "").lower().strip()
     if not email:
         raise HTTPException(status_code=400, detail="Email is required")
-    user = db.query(models.UserModel).filter(models.UserModel.email == email).first()
+    user = db.query(models.UserModel).filter(
+        func.lower(models.UserModel.email) == email
+    ).first()
     if not user:
         raise HTTPException(status_code=400, detail="Такого пользователя не существует")
 
@@ -206,18 +215,21 @@ async def forgot_password(request: dict, db: Session = Depends(get_db)):
 
 @app.post("/new_password")
 async def new_password(request: NewPasswordRequest, db: Session = Depends(get_db)):
-    user = db.query(models.UserModel).filter(models.UserModel.email == request.email).first()
+    email_norm = request.email.lower().strip()
+    user = db.query(models.UserModel).filter(
+        func.lower(models.UserModel.email) == email_norm
+    ).first()
     if not user:
         raise HTTPException(status_code=400, detail="Пользователь не найден")
 
-    user_code = test_code.get(request.email)
+    user_code = test_code.get(email_norm)
     if not user_code:
         raise HTTPException(status_code=400, detail="Код не запрашивался")
 
-    created = _code_created_at.get(request.email, 0)
+    created = _code_created_at.get(email_norm, 0)
     if time.time() - created > CODE_TTL_SECONDS:
-        test_code.pop(request.email, None)
-        _code_created_at.pop(request.email, None)
+        test_code.pop(email_norm, None)
+        _code_created_at.pop(email_norm, None)
         raise HTTPException(status_code=400, detail="Код истёк, запросите новый")
 
     if user_code["code"] != request.code:
@@ -402,15 +414,70 @@ class ParseIntervalSchema(BaseModel):
 class BotProxySchema(BaseModel):
     proxy_url: str
 
+    @field_validator("proxy_url")
+    def proxy_url_valid(cls, v):
+        v = v.strip()
+        if v and not any(v.startswith(p) for p in ("http://", "https://", "socks4://", "socks5://")):
+            raise ValueError("URL должен начинаться с http://, https://, socks4:// или socks5://")
+        return v
+
+class NotifySchema(BaseModel):
+    title: str = "Тестовое уведомление"
+    date: str = ""
+    place: str = "Админ-панель"
+    price_min: str = "—"
+    price_max: str = "—"
+    availability: str = "—"
+    link: str = ""
+
+    @field_validator("title")
+    def title_valid(cls, v):
+        v = v.strip()
+        if not v:
+            raise ValueError("Заголовок не может быть пустым")
+        if len(v) > 200:
+            raise ValueError("Заголовок слишком длинный (макс. 200 символов)")
+        return v
+
 class AddSubscriptionSchema(BaseModel):
     type: str
     value: str
+
+    @field_validator("type")
+    def type_valid(cls, v):
+        if v not in ("team", "venue"):
+            raise ValueError("Тип подписки должен быть 'team' или 'venue'")
+        return v
+
+    @field_validator("value")
+    def value_valid(cls, v):
+        v = v.strip()
+        if not v:
+            raise ValueError("Название не может быть пустым")
+        if len(v) > 100:
+            raise ValueError("Название слишком длинное (макс. 100 символов)")
+        return v
 
 class AddProxySchema(BaseModel):
     url: str
     proxy_type: str = "http"
     country: str = ""
     note: str = ""
+
+    @field_validator("url")
+    def url_valid(cls, v):
+        v = v.strip()
+        if not v:
+            raise ValueError("URL прокси не может быть пустым")
+        if not any(v.startswith(p) for p in ("http://", "https://", "socks4://", "socks5://")):
+            raise ValueError("URL должен начинаться с http://, https://, socks4:// или socks5://")
+        return v
+
+    @field_validator("proxy_type")
+    def proxy_type_valid(cls, v):
+        if v not in ("http", "socks4", "socks5"):
+            raise ValueError("Тип прокси должен быть http, socks4 или socks5")
+        return v
 
 # ── Routes ───────────────────────────────────────────────────────────────────
 
@@ -482,25 +549,27 @@ def admin_add_subscription(chat_id: int, body: AddSubscriptionSchema,
     user = db.query(models.UserModel).filter(models.UserModel.chat_id == chat_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+    normalized = body.value.lower().strip()
     existing = db.query(models.SubscriptionModel).filter(
         models.SubscriptionModel.chat_id == chat_id,
         models.SubscriptionModel.type == body.type,
-        models.SubscriptionModel.value == body.value,
+        func.lower(models.SubscriptionModel.value) == normalized,
     ).first()
     if existing:
-        raise HTTPException(status_code=400, detail="Subscription already exists")
-    sub = models.SubscriptionModel(chat_id=chat_id, type=body.type, value=body.value)
+        raise HTTPException(status_code=400, detail=f"Подписка '{body.value}' уже существует")
+    sub = models.SubscriptionModel(chat_id=chat_id, type=body.type, value=normalized)
     db.add(sub)
     db.commit()
-    return {"status": "added"}
+    return {"status": "added", "value": normalized}
 
 @app.delete("/admin/users/{chat_id}/subscriptions")
 def admin_remove_subscription(chat_id: int, type: str = "team", value: str = "",
                                db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    normalized = value.lower().strip()
     sub = db.query(models.SubscriptionModel).filter(
         models.SubscriptionModel.chat_id == chat_id,
         models.SubscriptionModel.type == type,
-        models.SubscriptionModel.value == value,
+        func.lower(models.SubscriptionModel.value) == normalized,
     ).first()
     if not sub:
         raise HTTPException(status_code=404, detail="Subscription not found")
@@ -615,7 +684,7 @@ def admin_trigger_parse(db: Session = Depends(get_db), admin=Depends(_require_ad
     return {"status": "parse_triggered", "message": "Парсер запустится в ближайшем цикле"}
 
 @app.post("/admin/notify")
-async def admin_notify_all(admin=Depends(_require_admin)):
+async def admin_notify_all(body: NotifySchema, admin=Depends(_require_admin)):
     BOT_TOKEN = os.getenv("BOT_TOKEN", "")
     if not BOT_TOKEN:
         raise HTTPException(status_code=400, detail="BOT_TOKEN not configured")
@@ -630,16 +699,17 @@ async def admin_notify_all(admin=Depends(_require_admin)):
     await adb.init()
     users = await adb.get_all_users()
     chat_ids = [u["chat_id"] for u in users]
+    event = {
+        "title": body.title,
+        "date": body.date or datetime.now().strftime("%d.%m.%Y"),
+        "place": body.place,
+        "price_min": body.price_min,
+        "price_max": body.price_max,
+        "availability": body.availability,
+        "link": body.link,
+    }
     sent = await notifier.notify_subscribers(
-        event={
-            "title": "Тестовое уведомление",
-            "date": datetime.now().strftime("%d.%m.%Y"),
-            "place": "Админ-панель",
-            "price_min": "—",
-            "price_max": "—",
-            "availability": "—",
-            "link": "",
-        },
+        event=event,
         subscriber_chat_ids=chat_ids,
         db=adb,
         reason="available",
