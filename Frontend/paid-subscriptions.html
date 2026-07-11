@@ -85,10 +85,12 @@
                 price.textContent = `${monthlyPrice} ₽ в месяц`;
                 const message = document.createElement("p");
                 message.className = "auto-renew-status";
-                message.textContent = subscription.auto_renew ? "Автопродление включено" : "Автопродление отключено";
+                message.textContent = subscription.auto_renew
+                    ? "Автопродление включено"
+                    : "Автопродление отключено";
                 card.append(title, status, price, message);
 
-                if (subscription.is_active && subscription.can_enable_auto_renew) {
+                if (subscription.is_active) {
                     const label = document.createElement("label");
                     label.className = "renew-switch";
                     const input = document.createElement("input");
@@ -99,11 +101,12 @@
                     input.addEventListener("change", () => setAutoRenew(subscription.team_name, input.checked, input, message));
                     label.append(input, text);
                     card.append(label);
-                } else if (subscription.is_active) {
-                    const hint = document.createElement("p");
-                    hint.className = "auto-renew-hint";
-                    hint.textContent = "Автопродление не подключено. Его можно выбрать при следующем оформлении подписки.";
-                    card.append(hint);
+                    if (!subscription.can_enable_auto_renew) {
+                        const hint = document.createElement("p");
+                        hint.className = "auto-renew-hint";
+                        hint.textContent = "При включении нужно будет привязать способ оплаты YooKassa.";
+                        card.append(hint);
+                    }
                 } else {
                     const link = document.createElement("a");
                     link.className = "btn plan-buy";

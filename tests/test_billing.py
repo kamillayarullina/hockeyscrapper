@@ -110,6 +110,29 @@ def test_local_demo_checkout_activates_team_without_yookassa(client, monkeypatch
     assert paid["auto_renew"] is True
 
 
+def test_local_demo_can_enable_auto_renew_after_first_payment(client, db_session, monkeypatch):
+    user = register_user(client, "demo-toggle@example.com")
+    monkeypatch.setenv("APP_BASE_URL", "http://127.0.0.1:8000")
+    monkeypatch.setenv("BILLING_DEMO_MODE", "true")
+    db_session.add(
+        models.PaidTeamSubscriptionModel(
+            chat_id=user["chat_id"],
+            team_name="cska",
+            expires_at=datetime.utcnow() + timedelta(days=30),
+            auto_renew=False,
+        )
+    )
+    db_session.commit()
+
+    response = client.patch(
+        "/billing/subscriptions/cska/auto-renew",
+        headers=auth_headers(user),
+        json={"enabled": True},
+    )
+    assert response.status_code == 200
+    assert response.json()["auto_renew"] is True
+
+
 def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
     user = register_user(client)
     add_three_free_teams(client, user)

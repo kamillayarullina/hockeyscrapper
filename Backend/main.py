@@ -635,10 +635,13 @@ def update_auto_renew(
         if subscription.expires_at <= datetime.utcnow():
             raise HTTPException(status_code=400, detail="Renew this subscription before enabling auto-renewal")
         if not subscription.payment_method_id:
-            raise HTTPException(
-                status_code=400,
-                detail="A saved payment method is required. Enable auto-renewal during the next payment.",
-            )
+            if _is_local_billing_demo():
+                subscription.payment_method_id = "demo-payment-method"
+            else:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Для автопродления нужно привязать способ оплаты в YooKassa.",
+                )
         subscription.auto_renew = True
         subscription.auto_renew_consented_at = datetime.utcnow()
     else:
