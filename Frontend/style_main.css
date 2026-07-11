@@ -304,10 +304,6 @@ body {
     font-size: 13px;
     font-weight: 600;
 }
-.btn-premium {
-    background: linear-gradient(135deg, #d67d16, #f0ad22);
-    box-shadow: 0 6px 20px rgba(214, 125, 22, 0.25);
-}
 .billing-container {
     max-width: 960px;
 }
