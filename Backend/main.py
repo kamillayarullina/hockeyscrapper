@@ -8,7 +8,7 @@ from collections import deque
 from pathlib import Path
 import shutil
 import uuid
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -143,6 +143,14 @@ def _get_authenticated_user(payload: dict, db: Session) -> models.UserModel:
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account is inactive")
     return user
+
+
+def _is_local_billing_demo() -> bool:
+    """Allow fake payments only on a loopback address explicitly marked as demo."""
+    if os.getenv("BILLING_DEMO_MODE", "").lower() not in {"1", "true", "yes"}:
+        return False
+    host = urlparse(os.getenv("APP_BASE_URL", "")).hostname
+    return host in {"127.0.0.1", "localhost"}
 
 
 def _membership(user: models.UserModel, db: Session) -> dict:
@@ -578,6 +586,7 @@ def get_billing_plans():
             "duration_days": TEAM_SUBSCRIPTION_DAYS,
         }],
         "free_team_limit": FREE_TEAM_LIMIT,
+        "demo_mode": _is_local_billing_demo(),
     }
 
 
@@ -690,6 +699,22 @@ def create_checkout(
     db.commit()
 
     app_base_url = os.getenv("APP_BASE_URL", "").rstrip("/")
+    if _is_local_billing_demo():
+        app_base_url = app_base_url or "http://127.0.0.1:8000"
+        payment.provider_payment_id = f"demo-{payment.id}"
+        _activate_monthly_team_subscription(
+            db,
+            payment,
+            {"payment_method": {"id": "demo-payment-method", "saved": request.enable_auto_renew}},
+        )
+        payment.status = "succeeded"
+        payment.paid_at = datetime.utcnow()
+        db.commit()
+        return {
+            "payment_id": payment.id,
+            "checkout_url": f"{app_base_url}/billing.html?{urlencode({'payment': 'success', 'team': team_name})}",
+        }
+
     if not app_base_url:
         payment.status = "failed"
         db.commit()

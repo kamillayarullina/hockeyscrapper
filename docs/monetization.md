@@ -30,3 +30,17 @@ receiving notifications when its current month ends.
    successful renewal before the next 30 days are granted.
 
 Never put YooKassa keys in frontend files or Git. The user is redirected to YooKassa for card entry, so HockeyScrapper does not process or store card data.
+
+## Local Demo
+
+To review the interface without YooKassa credentials, start the application with:
+
+```powershell
+$env:APP_BASE_URL = "http://127.0.0.1:8000"
+$env:BILLING_DEMO_MODE = "true"
+.\.venv\Scripts\python.exe -m uvicorn Backend.main:app --host 127.0.0.1 --port 8000
+```
+
+The demo mode only works for `localhost` or `127.0.0.1`. Each checkout is marked as
+successful without contacting YooKassa or charging money. Never enable it on a
+public server.

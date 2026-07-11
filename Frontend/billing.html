@@ -158,6 +158,9 @@
                 if (!plansResponse.ok || !membershipResponse.ok) throw new Error("Не удалось загрузить данные оплаты");
                 const plans = await plansResponse.json();
                 teamPrice = plans.plans[0].amount_rub;
+                if (plans.demo_mode) {
+                    showNotice("Демо-режим: после нажатия «Оплатить» подписка активируется без настоящего списания денег.");
+                }
                 renderMembership(await membershipResponse.json());
                 renderCheckout();
                 checkReturnedPayment();

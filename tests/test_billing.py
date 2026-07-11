@@ -90,6 +90,26 @@ def test_checkout_creates_payment_for_a_team(client, monkeypatch):
     assert captured["save_payment_method"] is True
 
 
+def test_local_demo_checkout_activates_team_without_yookassa(client, monkeypatch):
+    user = register_user(client, "demo-billing@example.com")
+    add_three_free_teams(client, user)
+    monkeypatch.setenv("APP_BASE_URL", "http://127.0.0.1:8000")
+    monkeypatch.setenv("BILLING_DEMO_MODE", "true")
+
+    response = client.post(
+        "/billing/checkout",
+        headers=auth_headers(user),
+        json={"team_name": "CSKA", "enable_auto_renew": True},
+    )
+    assert response.status_code == 200
+    assert response.json()["checkout_url"].startswith("http://127.0.0.1:8000/billing.html?payment=success")
+
+    subscriptions = client.get(f"/subscriptions/{user['chat_id']}", headers=auth_headers(user))
+    assert "cska" in subscriptions.json()["subscriptions"]
+    paid = client.get("/billing/subscriptions", headers=auth_headers(user)).json()["subscriptions"][0]
+    assert paid["auto_renew"] is True
+
+
 def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
     user = register_user(client)
     add_three_free_teams(client, user)
