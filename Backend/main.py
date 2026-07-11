@@ -3,11 +3,12 @@ import os
 import time
 import logging
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import deque
 from pathlib import Path
 import shutil
 import uuid
+from urllib.parse import urlencode, urlparse
 
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,9 +21,10 @@ from sqlalchemy.exc import IntegrityError
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Backend import models
-from Backend.database import engine, get_db
+from Backend.database import engine, ensure_schema, get_db
 from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
+from Backend import payments
 from services.team_matcher import get_team_info
 
 test_code = {}
@@ -31,6 +33,7 @@ _last_forgot_request = {}
 CODE_TTL_SECONDS = 300
 
 models.Base.metadata.create_all(bind=engine)
+ensure_schema()
 
 app = FastAPI(title="HockeyScrapper API")
 
@@ -46,11 +49,11 @@ app.add_middleware(
 )
 
 conf_email = ConnectionConfig(
-    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "hqbo bhdk cxfg gabq"),
-    MAIL_USERNAME = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
-    MAIL_FROM = os.getenv("MAIL_USERNAME", "sakirovsamir401@gmail.com"),
+    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", os.getenv("EMAIL_PASSWORD", "")),
+    MAIL_USERNAME = os.getenv("MAIL_USERNAME", os.getenv("EMAIL_LOGIN", "")),
+    MAIL_FROM = os.getenv("MAIL_FROM", os.getenv("EMAIL_LOGIN", "noreply@example.com")),
     MAIL_PORT = int(os.getenv("MAIL_PORT", "587")),
-    MAIL_SERVER = os.getenv("MAIL_SERVER", "smtp.gmail.com"),
+    MAIL_SERVER = os.getenv("MAIL_SERVER", os.getenv("EMAIL_SMTP_SERVER", "smtp.gmail.com")),
     MAIL_STARTTLS = os.getenv("MAIL_STARTTLS", "True") == "True",
     MAIL_SSL_TLS = os.getenv("MAIL_SSL_TLS", "False") == "True",
 ) 
@@ -114,6 +117,283 @@ class NewPasswordRequest(BaseModel):
 
 class LinkCodeRequest(BaseModel):
     chat_id: int
+
+
+class CheckoutRequest(BaseModel):
+    team_name: str
+    enable_auto_renew: bool = False
+    save_payment_method_consent: bool = False
+
+
+class AutoRenewRequest(BaseModel):
+    enabled: bool
+
+
+FREE_TEAM_LIMIT = 3
+PAID_TEAM_PRICE_KOPEKS = 3900
+PAID_TEAM_PRICE_RUB = PAID_TEAM_PRICE_KOPEKS // 100
+TEAM_SUBSCRIPTION_PAYMENT = "team_subscription"
+TEAM_SUBSCRIPTION_RENEWAL = "team_subscription_renewal"
+TEAM_SUBSCRIPTION_DAYS = 30
+
+
+def _get_authenticated_user(payload: dict, db: Session) -> models.UserModel:
+    user = db.query(models.UserModel).filter(models.UserModel.chat_id == int(payload["sub"])).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if not user.is_active:
+        raise HTTPException(status_code=403, detail="Account is inactive")
+    return user
+
+
+def _is_local_billing_demo() -> bool:
+    """Allow fake payments only on a loopback address explicitly marked as demo."""
+    if os.getenv("BILLING_DEMO_MODE", "").lower() not in {"1", "true", "yes"}:
+        return False
+    host = urlparse(os.getenv("APP_BASE_URL", "")).hostname
+    return host in {"127.0.0.1", "localhost"}
+
+
+def _membership(user: models.UserModel, db: Session) -> dict:
+    team_count = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == user.chat_id,
+        models.SubscriptionModel.type == "team",
+    ).count()
+    free_team_count = _free_team_subscription_count(db, user.chat_id)
+    return {
+        "pricing_model": "per_team",
+        "free_team_limit": FREE_TEAM_LIMIT,
+        "free_team_slots_remaining": max(FREE_TEAM_LIMIT - free_team_count, 0),
+        "paid_team_price_rub": PAID_TEAM_PRICE_RUB,
+        "team_subscription_count": team_count,
+        "payment_method_saved": bool(_get_or_migrate_billing_profile(db, user.chat_id)),
+    }
+
+
+def _get_or_migrate_billing_profile(db: Session, chat_id: int) -> models.BillingProfileModel | None:
+    """Return the user's shared payment method, migrating an older per-team method."""
+    profile = db.query(models.BillingProfileModel).filter(
+        models.BillingProfileModel.chat_id == chat_id,
+    ).first()
+    if profile:
+        return profile
+
+    legacy_subscription = db.query(models.PaidTeamSubscriptionModel).filter(
+        models.PaidTeamSubscriptionModel.chat_id == chat_id,
+        models.PaidTeamSubscriptionModel.payment_method_id.isnot(None),
+    ).first()
+    if not legacy_subscription:
+        return None
+
+    now = datetime.utcnow()
+    profile = models.BillingProfileModel(
+        chat_id=chat_id,
+        payment_method_id=legacy_subscription.payment_method_id,
+        consented_at=legacy_subscription.auto_renew_consented_at or now,
+        saved_at=now,
+    )
+    db.add(profile)
+    db.flush()
+    return profile
+
+
+def _active_paid_team_values(db: Session, chat_id: int) -> set[str]:
+    """Return teams with an unexpired monthly paid subscription."""
+    rows = db.query(models.PaidTeamSubscriptionModel.team_name).filter(
+        models.PaidTeamSubscriptionModel.chat_id == chat_id,
+        models.PaidTeamSubscriptionModel.expires_at > datetime.utcnow(),
+    ).all()
+    return {team_name for (team_name,) in rows}
+
+
+def _free_team_subscription_count(db: Session, chat_id: int) -> int:
+    paid_teams = _active_paid_team_values(db, chat_id)
+    teams = db.query(models.SubscriptionModel.value).filter(
+        models.SubscriptionModel.chat_id == chat_id,
+        models.SubscriptionModel.type == "team",
+    ).all()
+    return sum(team_name not in paid_teams for (team_name,) in teams)
+
+
+def _add_team_subscription(db: Session, chat_id: int, team_name: str) -> None:
+    """Add the paid or free team and its venue subscription without committing."""
+    team_value = team_name.strip().lower()
+    db.add(models.SubscriptionModel(chat_id=chat_id, type="team", value=team_value))
+    team_info = get_team_info(team_name)
+    if not team_info:
+        return
+
+    venue_value = f"{team_info['city']}, {team_info['venue']}".lower()
+    existing_venue = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == chat_id,
+        models.SubscriptionModel.type == "venue",
+        models.SubscriptionModel.value == venue_value,
+    ).first()
+    if not existing_venue:
+        db.add(models.SubscriptionModel(chat_id=chat_id, type="venue", value=venue_value))
+
+
+def _remove_team_subscription(db: Session, chat_id: int, team_name: str) -> None:
+    """Remove a team from notifications without deleting its payment history."""
+    team_value = team_name.strip().lower()
+    db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == chat_id,
+        models.SubscriptionModel.type == "team",
+        models.SubscriptionModel.value == team_value,
+    ).delete()
+    team_info = get_team_info(team_name)
+    if team_info:
+        venue_value = f"{team_info['city']}, {team_info['venue']}".lower()
+        db.query(models.SubscriptionModel).filter(
+            models.SubscriptionModel.chat_id == chat_id,
+            models.SubscriptionModel.type == "venue",
+            models.SubscriptionModel.value == venue_value,
+        ).delete()
+
+
+def _disable_expired_nonrenewing_subscriptions(db: Session) -> int:
+    """Stop notifications for monthly subscriptions that ended without auto-renewal."""
+    expired = db.query(models.PaidTeamSubscriptionModel).filter(
+        models.PaidTeamSubscriptionModel.expires_at <= datetime.utcnow(),
+        models.PaidTeamSubscriptionModel.auto_renew.is_(False),
+    ).all()
+    for subscription in expired:
+        _remove_team_subscription(db, subscription.chat_id, subscription.team_name)
+    return len(expired)
+
+
+def _activate_monthly_team_subscription(
+    db: Session,
+    payment: models.PaymentModel,
+    verified_payment: dict,
+) -> None:
+    if not payment.team_name:
+        raise HTTPException(status_code=400, detail="Team name is required")
+
+    now = datetime.utcnow()
+    subscription = db.query(models.PaidTeamSubscriptionModel).filter(
+        models.PaidTeamSubscriptionModel.chat_id == payment.chat_id,
+        models.PaidTeamSubscriptionModel.team_name == payment.team_name,
+    ).first()
+    starts_at = now
+    if subscription and subscription.expires_at > now:
+        starts_at = subscription.expires_at
+
+    payment_method = verified_payment.get("payment_method", {})
+    saved_payment_method_id = payment_method.get("id") if payment_method.get("saved") else None
+    if saved_payment_method_id and payment.save_payment_method_requested:
+        billing_profile = db.query(models.BillingProfileModel).filter(
+            models.BillingProfileModel.chat_id == payment.chat_id,
+        ).first()
+        if billing_profile:
+            billing_profile.payment_method_id = saved_payment_method_id
+            billing_profile.saved_at = now
+        else:
+            billing_profile = models.BillingProfileModel(
+                chat_id=payment.chat_id,
+                payment_method_id=saved_payment_method_id,
+                consented_at=now,
+                saved_at=now,
+            )
+            db.add(billing_profile)
+        db.flush()
+    else:
+        billing_profile = _get_or_migrate_billing_profile(db, payment.chat_id)
+
+    can_auto_renew = bool(billing_profile)
+    if not subscription:
+        subscription = models.PaidTeamSubscriptionModel(
+            chat_id=payment.chat_id,
+            team_name=payment.team_name,
+            expires_at=starts_at + timedelta(days=TEAM_SUBSCRIPTION_DAYS),
+            auto_renew=bool(payment.auto_renew_requested and can_auto_renew),
+            auto_renew_consented_at=now if payment.auto_renew_requested and can_auto_renew else None,
+        )
+        db.add(subscription)
+    else:
+        subscription.expires_at = starts_at + timedelta(days=TEAM_SUBSCRIPTION_DAYS)
+        if payment.plan_code == TEAM_SUBSCRIPTION_RENEWAL:
+            subscription.auto_renew = True
+        elif payment.auto_renew_requested and can_auto_renew:
+            subscription.auto_renew = True
+            subscription.auto_renew_consented_at = now
+
+    existing = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == payment.chat_id,
+        models.SubscriptionModel.type == "team",
+        models.SubscriptionModel.value == payment.team_name,
+    ).first()
+    if not existing:
+        _add_team_subscription(db, payment.chat_id, payment.team_name)
+
+
+def process_due_renewals(db: Session) -> dict[str, int]:
+    """Create YooKassa renewal payments and stop expired subscriptions without renewal."""
+    now = datetime.utcnow()
+    result = {"renewals_started": 0, "expired_disabled": 0, "skipped": 0}
+
+    result["expired_disabled"] = _disable_expired_nonrenewing_subscriptions(db)
+    db.commit()
+
+    due_subscriptions = db.query(models.PaidTeamSubscriptionModel).filter(
+        models.PaidTeamSubscriptionModel.expires_at <= now,
+        models.PaidTeamSubscriptionModel.auto_renew.is_(True),
+    ).all()
+    for subscription in due_subscriptions:
+        billing_profile = _get_or_migrate_billing_profile(db, subscription.chat_id)
+        if not billing_profile:
+            subscription.auto_renew = False
+            _remove_team_subscription(db, subscription.chat_id, subscription.team_name)
+            db.commit()
+            result["expired_disabled"] += 1
+            continue
+
+        pending = db.query(models.PaymentModel).filter(
+            models.PaymentModel.chat_id == subscription.chat_id,
+            models.PaymentModel.team_name == subscription.team_name,
+            models.PaymentModel.plan_code == TEAM_SUBSCRIPTION_RENEWAL,
+            models.PaymentModel.status == "pending",
+        ).first()
+        if pending:
+            result["skipped"] += 1
+            continue
+
+        payment = models.PaymentModel(
+            id=str(uuid.uuid4()),
+            chat_id=subscription.chat_id,
+            plan_code=TEAM_SUBSCRIPTION_RENEWAL,
+            provider="yookassa",
+            amount_kopeks=PAID_TEAM_PRICE_KOPEKS,
+            currency="RUB",
+            status="pending",
+            idempotency_key=str(uuid.uuid4()),
+            team_name=subscription.team_name,
+            auto_renew_requested=True,
+        )
+        db.add(payment)
+        db.commit()
+        try:
+            provider_payment = payments.create_recurring_payment(
+                amount=f"{PAID_TEAM_PRICE_KOPEKS / 100:.2f}",
+                description=f"HockeyScrapper: продление подписки на {subscription.team_name}",
+                order_id=payment.id,
+                idempotency_key=payment.idempotency_key,
+                payment_method_id=billing_profile.payment_method_id,
+            )
+            provider_payment_id = provider_payment.get("id")
+            if not provider_payment_id:
+                raise payments.PaymentProviderError("YooKassa returned an incomplete renewal payment")
+            payment.provider_payment_id = provider_payment_id
+            db.commit()
+            result["renewals_started"] += 1
+        except payments.PaymentProviderError:
+            payment.status = "failed"
+            subscription.auto_renew = False
+            _remove_team_subscription(db, subscription.chat_id, subscription.team_name)
+            db.commit()
+            result["expired_disabled"] += 1
+
+    return result
 
 @app.post("/register")
 def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
@@ -232,15 +512,14 @@ async def new_password(request: NewPasswordRequest, db: Session = Depends(get_db
 
 @app.get("/me")
 def get_me(payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    user = db.query(models.UserModel).filter(models.UserModel.chat_id == int(payload["sub"])).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    user = _get_authenticated_user(payload, db)
     return {
         "chat_id": user.chat_id,
         "username": user.username,
         "email": user.email,
         "telegram": user.telegram,
         "avatar_url": user.avatar_url,
+        "membership": _membership(user, db),
     }
 
 @app.put("/me/avatar")
@@ -293,58 +572,343 @@ def generate_link_code(req: LinkCodeRequest, db: Session = Depends(get_db)):
     return {"code": code, "link": f"https://t.me/{bot_username}?start={code}"}
 
 @app.post("/subscription/toggle")
-def toggle_subscription(sub_data: SubscriptionToggle, db: Session = Depends(get_db)):
+def toggle_subscription(
+    sub_data: SubscriptionToggle,
+    payload: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = _get_authenticated_user(payload, db)
+    if _disable_expired_nonrenewing_subscriptions(db):
+        db.commit()
+    if sub_data.chat_id != user.chat_id:
+        raise HTTPException(status_code=403, detail="You can only manage your own subscriptions")
+
+    team_name = sub_data.team_name.strip()
+    team_value = team_name.lower()
     existing = db.query(models.SubscriptionModel).filter(
-        models.SubscriptionModel.chat_id == sub_data.chat_id,
+        models.SubscriptionModel.chat_id == user.chat_id,
         models.SubscriptionModel.type == "team",
-        models.SubscriptionModel.value == sub_data.team_name.lower()
+        models.SubscriptionModel.value == team_value,
     ).first()
 
     if existing:
-        db.delete(existing)
-        team_info = get_team_info(sub_data.team_name)
-        if team_info:
-            venue_value = f"{team_info['city']}, {team_info['venue']}".lower()
-            db.query(models.SubscriptionModel).filter(
-                models.SubscriptionModel.chat_id == sub_data.chat_id,
-                models.SubscriptionModel.type == "venue",
-                models.SubscriptionModel.value == venue_value
-            ).delete()
+        _remove_team_subscription(db, user.chat_id, team_name)
         db.commit()
         return {"status": "removed", "message": f"Unsubscribed from {sub_data.team_name}"}
     else:
-        new_sub = models.SubscriptionModel(
-            chat_id=sub_data.chat_id,
-            type="team",
-            value=sub_data.team_name.lower()
-        )
-        db.add(new_sub)
+        paid_teams = _active_paid_team_values(db, user.chat_id)
+        if team_value not in paid_teams and _free_team_subscription_count(db, user.chat_id) >= FREE_TEAM_LIMIT:
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "code": "payment_required",
+                    "message": f"Первые {FREE_TEAM_LIMIT} команды бесплатны. Подписка на следующую команду стоит {PAID_TEAM_PRICE_RUB} ₽.",
+                    "team_name": team_name,
+                    "price_rub": PAID_TEAM_PRICE_RUB,
+                },
+            )
+        _add_team_subscription(db, user.chat_id, team_name)
         db.commit()
-        team_info = get_team_info(sub_data.team_name)
-        if team_info:
-            venue_value = f"{team_info['city']}, {team_info['venue']}".lower()
-            existing_venue = db.query(models.SubscriptionModel).filter(
-                models.SubscriptionModel.chat_id == sub_data.chat_id,
-                models.SubscriptionModel.type == "venue",
-                models.SubscriptionModel.value == venue_value
-            ).first()
-            if not existing_venue:
-                venue_sub = models.SubscriptionModel(
-                    chat_id=sub_data.chat_id,
-                    type="venue",
-                    value=venue_value
-                )
-                db.add(venue_sub)
-                db.commit()
-        return {"status": "added", "message": f"Subscribed to {sub_data.team_name}"}
+        return {"status": "added", "message": f"Subscribed to {team_name}"}
 
 @app.get("/subscriptions/{chat_id}")
-def get_user_subscriptions(chat_id: int, db: Session = Depends(get_db)):
+def get_user_subscriptions(
+    chat_id: int,
+    payload: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = _get_authenticated_user(payload, db)
+    if _disable_expired_nonrenewing_subscriptions(db):
+        db.commit()
+    if chat_id != user.chat_id:
+        raise HTTPException(status_code=403, detail="You can only view your own subscriptions")
     subs = db.query(models.SubscriptionModel).filter(
-        models.SubscriptionModel.chat_id == chat_id
+        models.SubscriptionModel.chat_id == user.chat_id
     ).all()
     teams = [s.value for s in subs if s.type == "team"]
-    return {"chat_id": chat_id, "subscriptions": teams}
+    return {"chat_id": user.chat_id, "subscriptions": teams, "membership": _membership(user, db)}
+
+
+@app.get("/billing/plans")
+def get_billing_plans():
+    return {
+        "plans": [{
+            "code": TEAM_SUBSCRIPTION_PAYMENT,
+            "name": "Подписка на команду на месяц",
+            "amount_rub": PAID_TEAM_PRICE_RUB,
+            "duration_days": TEAM_SUBSCRIPTION_DAYS,
+        }],
+        "free_team_limit": FREE_TEAM_LIMIT,
+        "demo_mode": _is_local_billing_demo(),
+    }
+
+
+@app.get("/billing/me")
+def get_billing_membership(payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    return _membership(_get_authenticated_user(payload, db), db)
+
+
+@app.get("/billing/subscriptions")
+def get_paid_team_subscriptions(payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
+    user = _get_authenticated_user(payload, db)
+    now = datetime.utcnow()
+    billing_profile = _get_or_migrate_billing_profile(db, user.chat_id)
+    if billing_profile:
+        db.commit()
+    subscriptions = db.query(models.PaidTeamSubscriptionModel).filter(
+        models.PaidTeamSubscriptionModel.chat_id == user.chat_id,
+    ).order_by(models.PaidTeamSubscriptionModel.expires_at.desc()).all()
+    return {
+        "monthly_price_rub": PAID_TEAM_PRICE_RUB,
+        "subscriptions": [
+            {
+                "team_name": subscription.team_name,
+                "expires_at": subscription.expires_at.isoformat(),
+                "is_active": subscription.expires_at > now,
+                "auto_renew": subscription.auto_renew,
+                "can_enable_auto_renew": bool(billing_profile),
+            }
+            for subscription in subscriptions
+        ],
+    }
+
+
+@app.patch("/billing/subscriptions/{team_name}/auto-renew")
+def update_auto_renew(
+    team_name: str,
+    request: AutoRenewRequest,
+    payload: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = _get_authenticated_user(payload, db)
+    subscription = db.query(models.PaidTeamSubscriptionModel).filter(
+        models.PaidTeamSubscriptionModel.chat_id == user.chat_id,
+        models.PaidTeamSubscriptionModel.team_name == team_name.strip().lower(),
+    ).first()
+    if not subscription:
+        raise HTTPException(status_code=404, detail="Paid subscription not found")
+    if request.enabled:
+        if subscription.expires_at <= datetime.utcnow():
+            raise HTTPException(status_code=400, detail="Renew this subscription before enabling auto-renewal")
+        billing_profile = _get_or_migrate_billing_profile(db, user.chat_id)
+        if not billing_profile:
+            if _is_local_billing_demo():
+                now = datetime.utcnow()
+                billing_profile = models.BillingProfileModel(
+                    chat_id=user.chat_id,
+                    payment_method_id="demo-payment-method",
+                    consented_at=now,
+                    saved_at=now,
+                )
+                db.add(billing_profile)
+            else:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Для автопродления нужно привязать способ оплаты в YooKassa.",
+                )
+        subscription.auto_renew = True
+        subscription.auto_renew_consented_at = datetime.utcnow()
+    else:
+        subscription.auto_renew = False
+    db.commit()
+    return {"team_name": subscription.team_name, "auto_renew": subscription.auto_renew}
+
+
+@app.post("/billing/checkout")
+def create_checkout(
+    request: CheckoutRequest,
+    payload: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = _get_authenticated_user(payload, db)
+    if _disable_expired_nonrenewing_subscriptions(db):
+        db.commit()
+    team_name = request.team_name.strip()
+    if not team_name:
+        raise HTTPException(status_code=400, detail="Team name is required")
+
+    team_value = team_name.lower()
+    existing = db.query(models.SubscriptionModel).filter(
+        models.SubscriptionModel.chat_id == user.chat_id,
+        models.SubscriptionModel.type == "team",
+        models.SubscriptionModel.value == team_value,
+    ).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="You are already subscribed to this team")
+
+    if team_value in _active_paid_team_values(db, user.chat_id):
+        raise HTTPException(status_code=409, detail="This paid subscription is already active")
+
+    if _free_team_subscription_count(db, user.chat_id) < FREE_TEAM_LIMIT:
+        raise HTTPException(status_code=400, detail="The first three team subscriptions are free")
+
+    billing_profile = _get_or_migrate_billing_profile(db, user.chat_id)
+    if billing_profile:
+        db.commit()
+    elif not request.save_payment_method_consent:
+        raise HTTPException(
+            status_code=400,
+            detail="Подтвердите сохранение способа оплаты в YooKassa для первой платной покупки.",
+        )
+
+    pending = db.query(models.PaymentModel).filter(
+        models.PaymentModel.chat_id == user.chat_id,
+        models.PaymentModel.team_name == team_value,
+        models.PaymentModel.status == "pending",
+    ).first()
+    if pending:
+        raise HTTPException(status_code=409, detail="Payment for this team is already pending")
+
+    payment = models.PaymentModel(
+        id=str(uuid.uuid4()),
+        chat_id=user.chat_id,
+        plan_code=TEAM_SUBSCRIPTION_PAYMENT,
+        provider="yookassa",
+        amount_kopeks=PAID_TEAM_PRICE_KOPEKS,
+        currency="RUB",
+        status="pending",
+        idempotency_key=str(uuid.uuid4()),
+        team_name=team_value,
+        auto_renew_requested=request.enable_auto_renew,
+        save_payment_method_requested=not bool(billing_profile),
+    )
+    db.add(payment)
+    db.commit()
+
+    app_base_url = os.getenv("APP_BASE_URL", "").rstrip("/")
+    if _is_local_billing_demo():
+        app_base_url = app_base_url or "http://127.0.0.1:8000"
+        payment.provider_payment_id = f"demo-{payment.id}"
+        _activate_monthly_team_subscription(
+            db,
+            payment,
+            {
+                "payment_method": {
+                    "id": billing_profile.payment_method_id if billing_profile else "demo-payment-method",
+                    "saved": True,
+                }
+            },
+        )
+        payment.status = "succeeded"
+        payment.paid_at = datetime.utcnow()
+        db.commit()
+        return {
+            "payment_id": payment.id,
+            "checkout_url": f"{app_base_url}/billing.html?{urlencode({'payment': 'success', 'team': team_name})}",
+        }
+
+    if not app_base_url:
+        payment.status = "failed"
+        db.commit()
+        raise HTTPException(status_code=503, detail="Billing is not configured")
+
+    return_url = f"{app_base_url}/billing.html?{urlencode({'payment': 'success', 'team': team_name})}"
+    try:
+        if billing_profile:
+            provider_payment = payments.create_recurring_payment(
+                amount=f"{PAID_TEAM_PRICE_KOPEKS / 100:.2f}",
+                description=f"HockeyScrapper: подписка на {team_name}",
+                order_id=payment.id,
+                idempotency_key=payment.idempotency_key,
+                payment_method_id=billing_profile.payment_method_id,
+            )
+            checkout_url = return_url
+        else:
+            provider_payment = payments.create_payment(
+                amount=f"{PAID_TEAM_PRICE_KOPEKS / 100:.2f}",
+                description=f"HockeyScrapper: подписка на {team_name}",
+                return_url=return_url,
+                order_id=payment.id,
+                idempotency_key=payment.idempotency_key,
+                save_payment_method=True,
+            )
+            checkout_url = provider_payment.get("confirmation", {}).get("confirmation_url")
+        provider_payment_id = provider_payment.get("id")
+        if not checkout_url or not provider_payment_id:
+            raise payments.PaymentProviderError("YooKassa returned an incomplete payment")
+    except payments.PaymentProviderError as error:
+        payment.status = "failed"
+        db.commit()
+        raise HTTPException(status_code=503, detail=str(error)) from error
+
+    payment.provider_payment_id = provider_payment_id
+    # The webhook performs the authoritative verification and activation.
+    payment.status = "pending"
+    db.commit()
+    return {"payment_id": payment.id, "checkout_url": checkout_url}
+
+
+@app.get("/billing/payments/{payment_id}")
+def get_payment_status(
+    payment_id: str,
+    payload: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    user = _get_authenticated_user(payload, db)
+    payment = db.query(models.PaymentModel).filter(models.PaymentModel.id == payment_id).first()
+    if not payment or payment.chat_id != user.chat_id:
+        raise HTTPException(status_code=404, detail="Payment not found")
+    return {
+        "id": payment.id,
+        "team_name": payment.team_name,
+        "status": payment.status,
+        "amount_rub": payment.amount_kopeks / 100,
+        "paid_at": payment.paid_at.isoformat() if payment.paid_at else None,
+    }
+
+
+@app.post("/payments/yookassa/webhook")
+def yookassa_webhook(notification: dict, db: Session = Depends(get_db)):
+    provider_payment_id = notification.get("object", {}).get("id")
+    if not provider_payment_id:
+        raise HTTPException(status_code=400, detail="Payment id is required")
+
+    payment = db.query(models.PaymentModel).filter(
+        models.PaymentModel.provider_payment_id == provider_payment_id
+    ).first()
+    if not payment:
+        return {"status": "ignored"}
+
+    try:
+        verified_payment = payments.get_payment(provider_payment_id)
+    except payments.PaymentProviderError as error:
+        raise HTTPException(status_code=503, detail="Payment verification is unavailable") from error
+
+    expected_amount = f"{payment.amount_kopeks / 100:.2f}"
+    verified_amount = verified_payment.get("amount", {})
+    if (
+        verified_payment.get("metadata", {}).get("order_id") != payment.id
+        or verified_amount.get("currency") != payment.currency
+        or verified_amount.get("value") != expected_amount
+    ):
+        raise HTTPException(status_code=400, detail="Payment verification failed")
+
+    provider_status = verified_payment.get("status", "pending")
+    if provider_status == "succeeded" and payment.status != "succeeded":
+        user = db.query(models.UserModel).filter(models.UserModel.chat_id == payment.chat_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        if payment.plan_code not in {TEAM_SUBSCRIPTION_PAYMENT, TEAM_SUBSCRIPTION_RENEWAL} or not payment.team_name:
+            raise HTTPException(status_code=400, detail="Unsupported payment type")
+        _activate_monthly_team_subscription(db, payment, verified_payment)
+        payment.status = "succeeded"
+        payment.paid_at = datetime.utcnow()
+        db.commit()
+    elif provider_status == "canceled" and payment.status == "pending":
+        payment.status = "canceled"
+        if payment.plan_code == TEAM_SUBSCRIPTION_RENEWAL and payment.team_name:
+            subscription = db.query(models.PaidTeamSubscriptionModel).filter(
+                models.PaidTeamSubscriptionModel.chat_id == payment.chat_id,
+                models.PaidTeamSubscriptionModel.team_name == payment.team_name,
+            ).first()
+            if subscription:
+                subscription.auto_renew = False
+                if subscription.expires_at <= datetime.utcnow():
+                    _remove_team_subscription(db, payment.chat_id, payment.team_name)
+        db.commit()
+
+    return {"status": "ok"}
+
 
 @app.get("/matches")
 def get_all_matches(db: Session = Depends(get_db)):
