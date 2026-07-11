@@ -4,6 +4,11 @@ HockeyScrapper lets each user follow their first three teams for free. Every add
 team costs 39 RUB as a one-time payment. The team is added only after the backend
 verifies a successful payment with YooKassa.
 
+An accepted payment remains linked to that specific team. If the user later
+unsubscribes, notifications stop, but they can subscribe to the same paid team
+again without another payment. Paid team subscriptions do not consume one of the
+three free team slots.
+
 ## Configure YooKassa
 
 1. Create a YooKassa shop and first use its test credentials.

@@ -127,6 +127,37 @@ def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
     assert subscriptions.json()["membership"]["team_subscription_count"] == 4
     assert subscriptions.json()["membership"]["paid_team_price_rub"] == 39
 
+    # Unsubscribing only disables notifications; the successful payment remains an entitlement.
+    unsubscribe = client.post(
+        "/subscription/toggle",
+        headers=auth_headers(user),
+        json={"chat_id": user["chat_id"], "team_name": "CSKA"},
+    )
+    assert unsubscribe.status_code == 200
+
+    resubscribe = client.post(
+        "/subscription/toggle",
+        headers=auth_headers(user),
+        json={"chat_id": user["chat_id"], "team_name": "CSKA"},
+    )
+    assert resubscribe.status_code == 200
+    subscriptions = client.get(f"/subscriptions/{user['chat_id']}", headers=auth_headers(user))
+    assert "cska" in subscriptions.json()["subscriptions"]
+
+    # A paid team does not occupy a free slot: replacing a free team is still free.
+    remove_free_team = client.post(
+        "/subscription/toggle",
+        headers=auth_headers(user),
+        json={"chat_id": user["chat_id"], "team_name": "Team 0"},
+    )
+    assert remove_free_team.status_code == 200
+    replacement = client.post(
+        "/subscription/toggle",
+        headers=auth_headers(user),
+        json={"chat_id": user["chat_id"], "team_name": "Replacement team"},
+    )
+    assert replacement.status_code == 200
+
 
 def test_webhook_rejects_payment_with_wrong_order(client, monkeypatch):
     user = register_user(client)

@@ -13,7 +13,7 @@
         <a class="back-link" href="sub.html">К командам</a>
         <p class="billing-eyebrow">ПОДПИСКА НА КОМАНДУ</p>
         <h1>Первые 3 команды бесплатно</h1>
-        <p class="billing-lead">Каждая следующая подписка на команду стоит 39 ₽. Оплата разовая.</p>
+        <p class="billing-lead">Каждая следующая подписка на команду стоит 39 ₽. Оплата разовая: купленную команду можно отключать и подключать снова без новой оплаты.</p>
 
         <section class="membership-summary" id="membershipSummary" aria-live="polite">
             Загружаем информацию о подписках...
@@ -83,7 +83,7 @@
             price.innerHTML = `<strong>${teamPrice}</strong> ₽`;
             const explanation = document.createElement("p");
             explanation.className = "plan-period";
-            explanation.textContent = "Разовая оплата. После подтверждения команда сразу добавится в ваши подписки.";
+            explanation.textContent = "Разовая оплата. После подтверждения команда добавится в подписки, а позже её можно подключить снова без новой оплаты.";
             const button = document.createElement("button");
             button.className = "btn plan-buy";
             button.type = "button";

@@ -143,13 +143,34 @@ def _membership(user: models.UserModel, db: Session) -> dict:
         models.SubscriptionModel.chat_id == user.chat_id,
         models.SubscriptionModel.type == "team",
     ).count()
+    free_team_count = _free_team_subscription_count(db, user.chat_id)
     return {
         "pricing_model": "per_team",
         "free_team_limit": FREE_TEAM_LIMIT,
-        "free_team_slots_remaining": max(FREE_TEAM_LIMIT - team_count, 0),
+        "free_team_slots_remaining": max(FREE_TEAM_LIMIT - free_team_count, 0),
         "paid_team_price_rub": PAID_TEAM_PRICE_RUB,
         "team_subscription_count": team_count,
     }
+
+
+def _paid_team_values(db: Session, chat_id: int) -> set[str]:
+    """Return every team the user has paid to follow, including inactive subscriptions."""
+    rows = db.query(models.PaymentModel.team_name).filter(
+        models.PaymentModel.chat_id == chat_id,
+        models.PaymentModel.plan_code == TEAM_SUBSCRIPTION_PAYMENT,
+        models.PaymentModel.status == "succeeded",
+        models.PaymentModel.team_name.isnot(None),
+    ).all()
+    return {team_name for (team_name,) in rows}
+
+
+def _free_team_subscription_count(db: Session, chat_id: int) -> int:
+    paid_teams = _paid_team_values(db, chat_id)
+    teams = db.query(models.SubscriptionModel.value).filter(
+        models.SubscriptionModel.chat_id == chat_id,
+        models.SubscriptionModel.type == "team",
+    ).all()
+    return sum(team_name not in paid_teams for (team_name,) in teams)
 
 
 def _add_team_subscription(db: Session, chat_id: int, team_name: str) -> None:
@@ -376,11 +397,8 @@ def toggle_subscription(
         db.commit()
         return {"status": "removed", "message": f"Unsubscribed from {sub_data.team_name}"}
     else:
-        team_count = db.query(models.SubscriptionModel).filter(
-            models.SubscriptionModel.chat_id == user.chat_id,
-            models.SubscriptionModel.type == "team",
-        ).count()
-        if team_count >= FREE_TEAM_LIMIT:
+        paid_teams = _paid_team_values(db, user.chat_id)
+        if team_value not in paid_teams and _free_team_subscription_count(db, user.chat_id) >= FREE_TEAM_LIMIT:
             raise HTTPException(
                 status_code=402,
                 detail={
@@ -448,11 +466,10 @@ def create_checkout(
     if existing:
         raise HTTPException(status_code=409, detail="You are already subscribed to this team")
 
-    team_count = db.query(models.SubscriptionModel).filter(
-        models.SubscriptionModel.chat_id == user.chat_id,
-        models.SubscriptionModel.type == "team",
-    ).count()
-    if team_count < FREE_TEAM_LIMIT:
+    if team_value in _paid_team_values(db, user.chat_id):
+        raise HTTPException(status_code=409, detail="This team has already been paid for; subscribe to it from the teams page")
+
+    if _free_team_subscription_count(db, user.chat_id) < FREE_TEAM_LIMIT:
         raise HTTPException(status_code=400, detail="The first three team subscriptions are free")
 
     pending = db.query(models.PaymentModel).filter(
