@@ -279,7 +279,7 @@ async function loadSettings() {
         <div style="max-width:500px;margin:0 auto">
             <div class="form-row">
                 <div style="flex:1"><label>Интервал парсинга (минуты)</label>
-                    <input class="inp" id="parseInterval" type="number" min="1" max="1440" value="30" style="width:100%">
+                    <input class="inp" id="parseInterval" type="number" min="1" max="999" value="30" style="width:100%">
                 </div>
                 <button class="btn btn-primary" onclick="saveParseInterval()" style="margin-top:18px">Сохранить</button>
             </div>
@@ -310,7 +310,7 @@ function msg(text, ok = true) {
 
 async function saveParseInterval() {
     const minutes = parseInt(document.getElementById("parseInterval").value);
-    if (isNaN(minutes) || minutes < 1 || minutes > 1440) return msg("От 1 до 1440", false);
+    if (isNaN(minutes) || minutes < 1 || minutes > 999) return msg("От 1 до 999", false);
     await api("/admin/settings/parse-interval", { method: "PUT", body: JSON.stringify({ minutes }) });
     msg("Интервал сохранён");
 }
