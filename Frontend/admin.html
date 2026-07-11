@@ -1,791 +1,395 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>–ê–¥–º–∏–Ω-–ø–∞–Ω–µ–ª—å</title>
+    <title>¶–¶+¶-¶¨¶--¶¨¶-¶-¶¶¶¨TÃ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style_main.css">
     <style>
-        body {
-            align-items: flex-start;
-            padding: 30px 20px;
-        }
-
-        .admin-container {
-            width: min(1200px, 94vw);
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-radius: 28px;
-            padding: 40px 42px 42px;
-            box-shadow: 0 30px 70px rgba(13, 57, 140, 0.12), 0 10px 30px rgba(0, 0, 0, 0.04);
-            animation: fadeUp 0.5s ease-out;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--darkblue);
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            letter-spacing: -0.4px;
-        }
-
-        .header-sub {
-            text-align: center;
-            color: var(--lidark);
-            font-size: 15px;
-            margin-bottom: 28px;
-            display: block;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .tab {
-            padding: 10px 28px;
-            background: transparent;
-            border: 2px solid var(--darkblue);
-            color: var(--lidark);
-            cursor: pointer;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 14px;
-            transition: all .2s;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .tab:hover {
-            background: var(--darkblue);
-            color: #fff;
-        }
-
-        .tab.active {
-            background: var(--darkblue);
-            color: #fff;
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn .2s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-            margin-top: 4px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-        th {
-            text-align: left;
-            padding: 14px 14px;
-            color: var(--darkblue);
-            font-weight: 800;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-            border-bottom: 2px solid #d4e0f0;
-        }
-
-        td {
-            padding: 12px 14px;
-            border-bottom: 1px solid #e8edf5;
-            vertical-align: middle;
-            color: #333;
-        }
-
-        tr:hover td {
-            background: rgba(13, 57, 140, .04);
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 12px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .badge-active {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .badge-banned {
-            background: #fbe9e7;
-            color: #c62828;
-        }
-
-        .badge-yes {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .badge-no {
-            background: #fff3e0;
-            color: #e65100;
-        }
-
-        .badge-enabled {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .badge-disabled {
-            background: #e0e7f0;
-            color: #888;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 22px;
-            border: none;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
-            transition: all .2s;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .btn-sm {
-            font-size: 11px;
-            padding: 5px 14px;
-            border-radius: 40px;
-        }
-
-        .btn-primary {
-            background: var(--darkblue);
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            opacity: .85;
-        }
-
-        .btn-danger {
-            background: #c62828;
-            color: #fff;
-        }
-
-        .btn-danger:hover {
-            opacity: .85;
-        }
-
-        .btn-secondary {
-            background: #e0e7f0;
-            color: var(--darkblue);
-        }
-
-        .btn-secondary:hover {
-            background: #d0d8e5;
-        }
-
-        .btn-success {
-            background: #2e7d32;
-            color: #fff;
-        }
-
-        .btn-success:hover {
-            opacity: .85;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px 14px;
-            text-align: center;
-            border: 2px solid #d4e0f0;
-            transition: all .2s;
-        }
-
-        .card:hover {
-            border-color: var(--darkblue);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(13, 57, 140, .1);
-        }
-
-        .card .num {
-            font-size: 30px;
-            font-weight: 800;
-            color: var(--darkblue);
-            display: block;
-        }
-
-        .card .label {
-            font-size: 12px;
-            color: var(--lidark);
-            margin-top: 4px;
-            font-weight: 600;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 12px;
-            margin: 14px 0;
-            flex-wrap: wrap;
-            align-items: end;
-        }
-
-        .form-row label {
-            font-size: 13px;
-            color: var(--lidark);
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 700;
-        }
-
-        .form-row input,
-        .form-row select {
-            padding: 10px 16px;
-            border: 2px solid #d4e0f0;
-            border-radius: 40px;
-            color: #333;
-            font-size: 14px;
-            font-family: 'Nunito', sans-serif;
-            transition: all .2s;
-            background: white;
-        }
-
-        .form-row input:focus,
-        .form-row select:focus {
-            border-color: var(--darkblue);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(13, 57, 140, .1);
-        }
-
-        .msg {
-            padding: 12px 18px;
-            border-radius: 40px;
-            margin: 12px 0;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .msg-ok {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .msg-err {
-            background: #fbe9e7;
-            color: #c62828;
-        }
-
-        .log-line {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            padding: 5px 0;
-            border-bottom: 1px solid #e8edf5;
-            color: #555;
-        }
-
-        .log-line .level-ERROR {
-            color: #c62828;
-            font-weight: 700;
-        }
-
-        .log-line .level-WARNING {
-            color: #e65100;
-        }
-
-        .inp {
-            padding: 10px 16px;
-            border: 2px solid #d4e0f0;
-            border-radius: 40px;
-            color: #333;
-            font-size: 14px;
-            font-family: 'Nunito', sans-serif;
-            transition: all .2s;
-            background: white;
-        }
-
-        .inp:focus {
-            border-color: var(--darkblue);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(13, 57, 140, .1);
-        }
-
-        .subs-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 3px 10px 3px 8px;
-            border-radius: 40px;
-            font-size: 12px;
-            font-weight: 700;
-            margin: 2px 3px 2px 0;
-        }
-
-        .subs-tag-team {
-            background: #e8f0fe;
-            color: var(--darkblue);
-        }
-
-        .subs-tag .subs-date {
-            color: var(--lidark);
-            font-weight: 400;
-            font-size: 11px;
-            opacity: .7;
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .4);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 35px;
-            padding: 35px;
-            min-width: 380px;
-            max-width: 440px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, .2);
-            animation: fadeIn .2s ease;
-        }
-
-        .modal h3 {
-            text-align: center;
-            color: var(--darkblue);
-            font-size: 24px;
-            margin-bottom: 24px;
-            font-weight: 800;
-        }
-
-        .modal .form-group {
-            margin-bottom: 18px;
-        }
-
-        .modal .form-group label {
-            display: block;
-            font-size: 13px;
-            color: var(--lidark);
-            margin-bottom: 6px;
-            font-weight: 700;
-        }
-
-        .modal .form-group input {
-            width: 100%;
-            padding: 12px 18px;
-            border: 2px solid #d4e0f0;
-            border-radius: 40px;
-            color: #333;
-            font-size: 14px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .modal .form-group input:focus {
-            border-color: var(--darkblue);
-            outline: none;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 28px;
-        }
-
-        .btn-cancel {
-            background: #e0e7f0;
-            color: var(--darkblue);
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .btn-cancel:hover {
-            background: #d0d8e5;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 30px 20px;
-            color: var(--lidark);
-            font-weight: 600;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #e8edf5;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--lidark);
-            border-radius: 3px;
-        }
+        body { align-items: flex-start; padding: 30px 20px; }
+        .admin-container { width: min(1200px, 94vw); margin: 0 auto; background: rgba(255,255,255,0.92); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: 28px; padding: 40px 42px 42px; box-shadow: 0 30px 70px rgba(13,57,140,0.12), 0 10px 30px rgba(0,0,0,0.04); animation: fadeUp 0.5s ease-out; }
+        h1 { text-align: center; color: var(--darkblue); font-size: 36px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.4px; }
+        .header-sub { text-align: center; color: var(--lidark); font-size: 15px; margin-bottom: 28px; display: block; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
+        .tab { padding: 10px 28px; background: transparent; border: 2px solid var(--darkblue); color: var(--lidark); cursor: pointer; border-radius: 40px; font-weight: 700; font-size: 14px; transition: all .2s; font-family: 'Nunito', sans-serif; }
+        .tab:hover { background: var(--darkblue); color: #fff; }
+        .tab.active { background: var(--darkblue); color: #fff; }
+        .tab-content { display: none; animation: fadeIn .2s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .table-wrap { overflow-x: auto; margin-top: 4px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { text-align: left; padding: 14px 14px; color: var(--darkblue); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid #d4e0f0; }
+        td { padding: 12px 14px; border-bottom: 1px solid #e8edf5; vertical-align: middle; color: #333; }
+        tr:hover td { background: rgba(13,57,140,.04); }
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 12px; border-radius: 40px; font-size: 12px; font-weight: 700; }
+        .badge-active { background: #e8f5e9; color: #2e7d32; }
+        .badge-banned { background: #fbe9e7; color: #c62828; }
+        .badge-yes { background: #e8f5e9; color: #2e7d32; }
+        .badge-no { background: #fff3e0; color: #e65100; }
+        .badge-enabled { background: #e8f5e9; color: #2e7d32; }
+        .badge-disabled { background: #e0e7f0; color: #888; }
+        .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 22px; border: none; border-radius: 40px; cursor: pointer; font-weight: 700; font-size: 13px; transition: all .2s; font-family: 'Nunito', sans-serif; }
+        .btn-sm { font-size: 11px; padding: 5px 14px; border-radius: 40px; }
+        .btn-primary { background: var(--darkblue); color: #fff; }
+        .btn-primary:hover { opacity: .85; }
+        .btn-danger { background: #c62828; color: #fff; }
+        .btn-danger:hover { opacity: .85; }
+        .btn-secondary { background: #e0e7f0; color: var(--darkblue); }
+        .btn-secondary:hover { background: #d0d8e5; }
+        .btn-success { background: #2e7d32; color: #fff; }
+        .btn-success:hover { opacity: .85; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .card { background: white; border-radius: 20px; padding: 20px 14px; text-align: center; border: 2px solid #d4e0f0; transition: all .2s; }
+        .card:hover { border-color: var(--darkblue); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13,57,140,.1); }
+        .card .num { font-size: 30px; font-weight: 800; color: var(--darkblue); display: block; }
+        .card .label { font-size: 12px; color: var(--lidark); margin-top: 4px; font-weight: 600; }
+        .form-row { display: flex; gap: 12px; margin: 14px 0; flex-wrap: wrap; align-items: end; }
+        .form-row label { font-size: 13px; color: var(--lidark); display: block; margin-bottom: 4px; font-weight: 700; }
+        .form-row input, .form-row select { padding: 10px 16px; border: 2px solid #d4e0f0; border-radius: 40px; color: #333; font-size: 14px; font-family: 'Nunito', sans-serif; transition: all .2s; background: white; }
+        .form-row input:focus, .form-row select:focus { border-color: var(--darkblue); outline: none; box-shadow: 0 0 0 3px rgba(13,57,140,.1); }
+        .msg { padding: 12px 18px; border-radius: 40px; margin: 12px 0; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; justify-content: center; }
+        .msg-ok { background: #e8f5e9; color: #2e7d32; }
+        .msg-err { background: #fbe9e7; color: #c62828; }
+        .log-line { font-family: 'Courier New', monospace; font-size: 12px; padding: 5px 0; border-bottom: 1px solid #e8edf5; color: #555; }
+        .log-line .level-ERROR { color: #c62828; font-weight: 700; }
+        .log-line .level-WARNING { color: #e65100; }
+        .inp { padding: 10px 16px; border: 2px solid #d4e0f0; border-radius: 40px; color: #333; font-size: 14px; font-family: 'Nunito', sans-serif; transition: all .2s; background: white; }
+        .inp:focus { border-color: var(--darkblue); outline: none; box-shadow: 0 0 0 3px rgba(13,57,140,.1); }
+        .subs-tag { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px 3px 8px; border-radius: 40px; font-size: 12px; font-weight: 700; margin: 2px 3px 2px 0; }
+        .subs-tag-team { background: #e8f0fe; color: var(--darkblue); }
+        .subs-tag .subs-date { color: var(--lidark); font-weight: 400; font-size: 11px; opacity: .7; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: white; border-radius: 35px; padding: 35px; min-width: 380px; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,.2); animation: fadeIn .2s ease; }
+        .modal h3 { text-align: center; color: var(--darkblue); font-size: 24px; margin-bottom: 24px; font-weight: 800; }
+        .modal .form-group { margin-bottom: 18px; }
+        .modal .form-group label { display: block; font-size: 13px; color: var(--lidark); margin-bottom: 6px; font-weight: 700; }
+        .modal .form-group input { width: 100%; padding: 12px 18px; border: 2px solid #d4e0f0; border-radius: 40px; color: #333; font-size: 14px; font-family: 'Nunito', sans-serif; }
+        .modal .form-group input:focus { border-color: var(--darkblue); outline: none; }
+        .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 28px; }
+        .btn-cancel { background: #e0e7f0; color: var(--darkblue); font-family: 'Nunito', sans-serif; }
+        .btn-cancel:hover { background: #d0d8e5; }
+        .empty-state { text-align: center; padding: 30px 20px; color: var(--lidark); font-weight: 600; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e8edf5; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: var(--lidark); border-radius: 3px; }
     </style>
 </head>
-
 <body>
-    <div class="admin-container">
-        <h1>–ü–∞–Ω–µ–ª—å —É–ø—Ä–∞–≤–ª–µ–Ω–∏—è</h1>
-        <span class="header-sub">HockeyScrapper ‚Äî –∞–¥–º–∏–Ω–∏—Å—Ç—Ä–∞—Ç–∏–≤–Ω–∞—è –ø–∞–Ω–µ–ª—å</span>
-        <div class="tabs" id="tabs">
-            <button class="tab active" data-tab="dashboard">–î–∞—à–±–æ—Ä–¥</button>
-            <button class="tab" data-tab="users">–ü–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª–∏</button>
-            <button class="tab" data-tab="proxies">–ü—Ä–æ–∫—Å–∏</button>
-            <button class="tab" data-tab="settings">–ù–∞—Å—Ç—Ä–æ–π–∫–∏</button>
-            <button class="tab" data-tab="sites">–°–∞–π—Ç—ã</button>
-            <button class="tab" data-tab="logs">–õ–æ–≥–∏</button>
-        </div>
-
-        <div id="tab-dashboard" class="tab-content active"></div>
-        <div id="tab-users" class="tab-content"></div>
-        <div id="tab-proxies" class="tab-content"></div>
-        <div id="tab-settings" class="tab-content"></div>
-        <div id="tab-sites" class="tab-content"></div>
-        <div id="tab-logs" class="tab-content"></div>
+<div class="admin-container">
+    <h1>¶ﬂ¶-¶-¶¶¶¨TÃ T√¶¨T¿¶-¶-¶¨¶¶¶-¶¨Tœ</h1>
+    <span class="header-sub">HockeyScrapper Ú¿‘ ¶-¶+¶-¶¨¶-¶¨T¡T¬T¿¶-T¬¶¨¶-¶-¶-Tœ ¶¨¶-¶-¶¶¶¨TÃ</span>
+    <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="dashboard">¶‘¶-T»¶-¶-T¿¶+</button>
+        <button class="tab" data-tab="users">¶ﬂ¶-¶¨TÃ¶¨¶-¶-¶-T¬¶¶¶¨¶¨</button>
+        <button class="tab" data-tab="proxies">¶ﬂT¿¶-¶¶T¡¶¨</button>
+        <button class="tab" data-tab="settings">¶›¶-T¡T¬T¿¶-¶¶¶¶¶¨</button>
+        <button class="tab" data-tab="sites">¶·¶-¶¶T¬TÀ</button>
+        <button class="tab" data-tab="logs">¶€¶-¶¶¶¨</button>
     </div>
 
-    <div class="modal-overlay" id="subModal">
-        <div class="modal">
-            <h3>–î–æ–±–∞–≤–∏—Ç—å –ø–æ–¥–ø–∏—Å–∫—É</h3>
-            <div class="form-group">
-                <label>–ù–∞–∑–≤–∞–Ω–∏–µ –∫–æ–º–∞–Ω–¥—ã</label>
-                <input id="subValue" placeholder="–ù–∞–ø—Ä–∏–º–µ—Ä: –¶–°–ö–ê">
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeSubModal()">–û—Ç–º–µ–Ω–∞</button>
-                <button class="btn btn-primary" onclick="saveSub()">–î–æ–±–∞–≤–∏—Ç—å</button>
-            </div>
+    <div id="tab-dashboard" class="tab-content active"></div>
+    <div id="tab-users" class="tab-content"></div>
+    <div id="tab-proxies" class="tab-content"></div>
+    <div id="tab-settings" class="tab-content"></div>
+    <div id="tab-sites" class="tab-content"></div>
+    <div id="tab-logs" class="tab-content"></div>
+</div>
+
+<div class="modal-overlay" id="subModal">
+    <div class="modal">
+        <h3>¶‘¶-¶-¶-¶-¶¨T¬TÃ ¶¨¶-¶+¶¨¶¨T¡¶¶T√</h3>
+        <div class="form-group">
+            <label>¶›¶-¶¨¶-¶-¶-¶¨¶¶ ¶¶¶-¶-¶-¶-¶+TÀ</label>
+            <input id="subValue" placeholder="¶›¶-¶¨T¿¶¨¶-¶¶T¿: ¶Ê¶·¶⁄¶–">
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-cancel" onclick="closeSubModal()">¶ﬁT¬¶-¶¶¶-¶-</button>
+            <button class="btn btn-primary" onclick="saveSub()">¶‘¶-¶-¶-¶-¶¨T¬TÃ</button>
         </div>
     </div>
+</div>
 
-    <script>
-        const token = localStorage.getItem("token");
-        if (!token) { window.location.href = "/vhod/vhod.html"; }
-        const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${token}` };
+<script>
+const token = localStorage.getItem("token");
+if (!token) { window.location.href = "/vhod/vhod.html"; }
+const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${token}` };
 
-        async function api(url, opts = {}) {
-            const res = await fetch(url, { headers: { ...headers, ...opts.headers }, ...opts });
-            if (res.status === 401) { localStorage.removeItem("token"); window.location.href = "/vhod/vhod.html"; }
-            if (!res.ok) { const err = await res.json().catch(() => ({ detail: res.statusText })); throw new Error(err.detail || "–û—à–∏–±–∫–∞"); }
-            return res.json();
-        }
+async function api(url, opts = {}) {
+    const res = await fetch(url, { headers: { ...headers, ...opts.headers }, ...opts });
+    if (res.status === 401) { localStorage.removeItem("token"); window.location.href = "/vhod/vhod.html"; }
+    if (!res.ok) { const err = await res.json().catch(() => ({ detail: res.statusText })); throw new Error(err.detail || "¶ﬁT»¶¨¶-¶¶¶-"); }
+    return res.json();
+}
 
-        // Admin check
-        (async () => {
-            try {
-                await api("/admin/check");
-            } catch { window.location.href = "/vhod/vhod.html"; }
-        })();
+// Admin check
+(async () => {
+    try {
+        await api("/admin/check");
+    } catch { window.location.href = "/vhod/vhod.html"; }
+})();
 
-        // Tabs
-        document.querySelectorAll(".tab").forEach(tab => {
-            tab.addEventListener("click", () => {
-                document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-                document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-                tab.classList.add("active");
-                document.getElementById("tab-" + tab.dataset.tab).classList.add("active");
-            });
-        });
+// Tabs
+document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById("tab-" + tab.dataset.tab).classList.add("active");
+    });
+});
 
-        // Dashboard
-        async function loadDashboard() {
-            const data = await api("/admin/stats");
-            const el = document.getElementById("tab-dashboard");
-            el.innerHTML = `<div class="card-grid">
-        <div class="card"><span class="num">${data.total_users}</span><span class="label">–í—Å–µ–≥–æ –ø–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª–µ–π</span></div>
-        <div class="card"><span class="num">${data.active_users}</span><span class="label">–ê–∫—Ç–∏–≤–Ω—ã—Ö</span></div>
-        <div class="card"><span class="num">${data.banned_users}</span><span class="label">–ó–∞–±–ª–æ–∫–∏—Ä–æ–≤–∞–Ω–æ</span></div>
-        <div class="card"><span class="num">${data.team_subs}</span><span class="label">–ü–æ–¥–ø–∏—Å–∫–∏ –Ω–∞ –∫–æ–º–∞–Ω–¥—ã</span></div>
-        <div class="card"><span class="num">${data.venue_subs}</span><span class="label">–ü–æ–¥–ø–∏—Å–∫–∏ –Ω–∞ —Å—Ç–∞–¥–∏–æ–Ω—ã</span></div>
-        <div class="card"><span class="num">${data.matches}</span><span class="label">–ú–∞—Ç—á–µ–π –≤ –±–∞–∑–µ</span></div>
-        <div class="card"><span class="num">${data.proxies}</span><span class="label">–ü—Ä–æ–∫—Å–∏</span></div>
+// Dashboard
+async function loadDashboard() {
+    const data = await api("/admin/stats");
+    const el = document.getElementById("tab-dashboard");
+    el.innerHTML = `<div class="card-grid">
+        <div class="card"><span class="num">${data.total_users}</span><span class="label">¶“T¡¶¶¶¶¶- ¶¨¶-¶¨TÃ¶¨¶-¶-¶-T¬¶¶¶¨¶¶¶¶</span></div>
+        <div class="card"><span class="num">${data.active_users}</span><span class="label">¶–¶¶T¬¶¨¶-¶-TÀT≈</span></div>
+        <div class="card"><span class="num">${data.banned_users}</span><span class="label">¶◊¶-¶-¶¨¶-¶¶¶¨T¿¶-¶-¶-¶-¶-</span></div>
+        <div class="card"><span class="num">${data.team_subs}</span><span class="label">¶ﬂ¶-¶+¶¨¶¨T¡¶¶¶¨ ¶-¶- ¶¶¶-¶-¶-¶-¶+TÀ</span></div>
+        <div class="card"><span class="num">${data.venue_subs}</span><span class="label">¶ﬂ¶-¶+¶¨¶¨T¡¶¶¶¨ ¶-¶- T¡T¬¶-¶+¶¨¶-¶-TÀ</span></div>
+        <div class="card"><span class="num">${data.matches}</span><span class="label">¶‹¶-T¬T«¶¶¶¶ ¶- ¶-¶-¶¨¶¶</span></div>
+        <div class="card"><span class="num">${data.proxies}</span><span class="label">¶ﬂT¿¶-¶¶T¡¶¨</span></div>
     </div>`;
-        }
+}
 
-        let _subChatId = null;
+let _subChatId = null;
 
-        function openSubModal(chatId) {
-            _subChatId = chatId;
-            document.getElementById("subValue").value = "";
-            document.getElementById("subModal").classList.add("active");
-        }
+function openSubModal(chatId) {
+    _subChatId = chatId;
+    document.getElementById("subValue").value = "";
+    document.getElementById("subModal").classList.add("active");
+}
 
-        function closeSubModal() {
-            document.getElementById("subModal").classList.remove("active");
-            _subChatId = null;
-        }
+function closeSubModal() {
+    document.getElementById("subModal").classList.remove("active");
+    _subChatId = null;
+}
 
-        async function saveSub() {
-            const value = document.getElementById("subValue").value.trim();
-            if (!value) return;
-            await api(`/admin/users/${_subChatId}/subscriptions`, { method: "POST", body: JSON.stringify({ type: "team", value }) });
-            closeSubModal();
-            loadUsers();
-        }
+async function saveSub() {
+    const value = document.getElementById("subValue").value.trim();
+    if (!value) return;
+    await api(`/admin/users/${_subChatId}/subscriptions`, { method: "POST", body: JSON.stringify({ type: "team", value }) });
+    closeSubModal();
+    loadUsers();
+}
 
-        // Users
-        async function loadUsers() {
-            const users = await api("/admin/users");
-            let html = `<div class="table-wrap"><table><thead><tr><th>ID</th><th>–ò–º—è</th><th>Email</th><th>Telegram</th><th>TG –ø—Ä–∏–≤—è–∑–∞–Ω</th><th>–ó–∞—Ä–µ–≥–∏—Å—Ç—Ä–∏—Ä–æ–≤–∞–Ω</th><th>–°—Ç–∞—Ç—É—Å</th><th>–ü–æ–¥–ø–∏—Å–∫–∏</th><th>–î–µ–π—Å—Ç–≤–∏—è</th></tr></thead><tbody>`;
-            if (!users.length) {
-                html += `<tr><td colspan="9"><div class="empty-state">–ü–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª–µ–π –Ω–µ—Ç</div></td></tr>`;
-            }
-            for (const u of users) {
-                const status = u.is_active ? '<span class="badge badge-active">–∞–∫—Ç–∏–≤–µ–Ω</span>' : '<span class="badge badge-banned">–∑–∞–±–ª–æ–∫–∏—Ä–æ–≤–∞–Ω</span>';
-                const tgLinked = u.chat_id > 0 ? '<span class="badge badge-yes">–î–∞</span>' : '<span class="badge badge-no">–ù–µ—Ç</span>';
-                const regDate = u.registered_at ? new Date(u.registered_at).toLocaleDateString("ru-RU") : "‚Äî";
-                const subs = u.subscriptions.filter(s => s.type === "team").map(s => {
-                    const d = s.created_at ? new Date(s.created_at).toLocaleDateString("ru-RU") : "";
-                    return `<span class="subs-tag subs-tag-team">${s.value} ${d ? `<span class="subs-date">${d}</span>` : ""}</span>`;
-                }).join(" ") || '<span style="color:#999;font-size:13px">‚Äî</span>';
-                html += `<tr>
+// Users
+async function loadUsers() {
+    const users = await api("/admin/users");
+    let html = `<div class="table-wrap"><table><thead><tr><th>ID</th><th>¶ÿ¶-Tœ</th><th>Email</th><th>Telegram</th><th>TG ¶¨T¿¶¨¶-Tœ¶¨¶-¶-</th><th>¶◊¶-T¿¶¶¶¶¶¨T¡T¬T¿¶¨T¿¶-¶-¶-¶-</th><th>¶·T¬¶-T¬T√T¡</th><th>¶ﬂ¶-¶+¶¨¶¨T¡¶¶¶¨</th><th>¶‘¶¶¶¶T¡T¬¶-¶¨Tœ</th></tr></thead><tbody>`;
+    if (!users.length) {
+        html += `<tr><td colspan="9"><div class="empty-state">¶ﬂ¶-¶¨TÃ¶¨¶-¶-¶-T¬¶¶¶¨¶¶¶¶ ¶-¶¶T¬</div></td></tr>`;
+    }
+    for (const u of users) {
+        const status = u.is_active ? '<span class="badge badge-active">¶-¶¶T¬¶¨¶-¶¶¶-</span>' : '<span class="badge badge-banned">¶¨¶-¶-¶¨¶-¶¶¶¨T¿¶-¶-¶-¶-</span>';
+        const tgLinked = u.chat_id > 0 ? '<span class="badge badge-yes">¶‘¶-</span>' : '<span class="badge badge-no">¶›¶¶T¬</span>';
+        const regDate = u.registered_at ? new Date(u.registered_at).toLocaleDateString("ru-RU") : "Ú¿‘";
+        const subs = u.subscriptions.filter(s => s.type === "team").map(s => {
+            const d = s.created_at ? new Date(s.created_at).toLocaleDateString("ru-RU") : "";
+            return `<span class="subs-tag subs-tag-team">${s.value} ${d ? `<span class="subs-date">${d}</span>` : ""}</span>`;
+        }).join(" ") || '<span style="color:#999;font-size:13px">Ú¿‘</span>';
+        html += `<tr>
             <td style="font-weight:800;color:var(--darkblue)">${u.chat_id}</td>
-            <td>${u.username || '<span style="color:#999">‚Äî</span>'}</td>
-            <td>${u.email || '<span style="color:#999">‚Äî</span>'}</td>
-            <td>${u.telegram || '<span style="color:#999">‚Äî</span>'}</td>
+            <td>${u.username || '<span style="color:#999">Ú¿‘</span>'}</td>
+            <td>${u.email || '<span style="color:#999">Ú¿‘</span>'}</td>
+            <td>${u.telegram || '<span style="color:#999">Ú¿‘</span>'}</td>
             <td>${tgLinked}</td>
             <td style="font-size:13px;color:#666">${regDate}</td>
             <td>${status}</td>
             <td style="max-width:220px">${subs}</td>
             <td>
                 <div style="display:flex;gap:4px;flex-wrap:nowrap">
-                    <button class="btn btn-sm btn-secondary" onclick="toggleBan(${u.chat_id})" title="${u.is_active ? "–ó–∞–±–ª–æ–∫–∏—Ä–æ–≤–∞—Ç—å" : "–†–∞–∑–±–ª–æ–∫–∏—Ä–æ–≤–∞—Ç—å"}">${u.is_active ? "üîí" : "üîì"}</button>
-                    <button class="btn btn-sm btn-primary" onclick="openSubModal(${u.chat_id})" title="–î–æ–±–∞–≤–∏—Ç—å –ø–æ–¥–ø–∏—Å–∫—É">+</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.chat_id})" title="–£–¥–∞–ª–∏—Ç—å">‚úï</button>
+                    <button class="btn btn-sm btn-secondary" onclick="toggleBan(${u.chat_id})" title="${u.is_active ? "¶◊¶-¶-¶¨¶-¶¶¶¨T¿¶-¶-¶-T¬TÃ" : "¶‡¶-¶¨¶-¶¨¶-¶¶¶¨T¿¶-¶-¶-T¬TÃ"}">${u.is_active ? "®ﬂ‘“" : "®ﬂ‘”"}</button>
+                    <button class="btn btn-sm btn-primary" onclick="openSubModal(${u.chat_id})" title="¶‘¶-¶-¶-¶-¶¨T¬TÃ ¶¨¶-¶+¶¨¶¨T¡¶¶T√">+</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.chat_id})" title="¶„¶+¶-¶¨¶¨T¬TÃ">Ú‹’</button>
                 </div>
             </td>
         </tr>`;
-            }
-            html += "</tbody></table></div>";
-            document.getElementById("tab-users").innerHTML = html;
-        }
+    }
+    html += "</tbody></table></div>";
+    document.getElementById("tab-users").innerHTML = html;
+}
 
-        async function toggleBan(chatId) {
-            await api(`/admin/users/${chatId}/ban`, { method: "PATCH" });
-            loadUsers();
-        }
+async function toggleBan(chatId) {
+    await api(`/admin/users/${chatId}/ban`, { method: "PATCH" });
+    loadUsers();
+}
 
-        async function deleteUser(chatId) {
-            if (!confirm("–£–¥–∞–ª–∏—Ç—å –ø–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª—è " + chatId + "?")) return;
-            await api(`/admin/users/${chatId}`, { method: "DELETE" });
-            loadUsers();
-        }
+async function deleteUser(chatId) {
+    if (!confirm("¶„¶+¶-¶¨¶¨T¬TÃ ¶¨¶-¶¨TÃ¶¨¶-¶-¶-T¬¶¶¶¨Tœ " + chatId + "?")) return;
+    await api(`/admin/users/${chatId}`, { method: "DELETE" });
+    loadUsers();
+}
 
-        // Proxies
-        async function loadProxies() {
-            const proxies = await api("/admin/proxies");
-            let html = `<div class="form-row">
-        <div><label>URL –ø—Ä–æ–∫—Å–∏</label><input class="inp" id="proxyUrl" placeholder="http://user:pass@host:port"></div>
-        <div><label>–¢–∏–ø</label><input class="inp" id="proxyType" placeholder="http/socks5" style="width:100px"></div>
-        <div><label>–°—Ç—Ä–∞–Ω–∞</label><input class="inp" id="proxyCountry" placeholder="RU" style="width:80px"></div>
-        <button class="btn btn-success" onclick="addProxy()" style="margin-bottom:2px">+ –î–æ–±–∞–≤–∏—Ç—å</button>
+// Proxies
+async function loadProxies() {
+    const proxies = await api("/admin/proxies");
+    let html = `<div class="form-row">
+        <div><label>URL ¶¨T¿¶-¶¶T¡¶¨</label><input class="inp" id="proxyUrl" placeholder="http://user:pass@host:port"></div>
+        <div><label>¶‚¶¨¶¨</label><input class="inp" id="proxyType" placeholder="http/socks5" style="width:100px"></div>
+        <div><label>¶·T¬T¿¶-¶-¶-</label><input class="inp" id="proxyCountry" placeholder="RU" style="width:80px"></div>
+        <button class="btn btn-success" onclick="addProxy()" style="margin-bottom:2px">+ ¶‘¶-¶-¶-¶-¶¨T¬TÃ</button>
     </div>`;
-            if (proxies.length) {
-                html += `<div class="table-wrap"><table><thead><tr><th>ID</th><th>URL</th><th>–¢–∏–ø</th><th>–°—Ç—Ä–∞–Ω–∞</th><th>–°—Ç–∞—Ç—É—Å</th><th>–î–µ–π—Å—Ç–≤–∏—è</th></tr></thead><tbody>`;
-                for (const p of proxies) {
-                    const status = p.enabled ? '<span class="badge badge-active">–≤–∫–ª—é—á—ë–Ω</span>' : '<span class="badge badge-banned">–æ—Ç–∫–ª—é—á—ë–Ω</span>';
-                    html += `<tr><td style="font-weight:800;color:var(--darkblue)">${p.id}</td><td style="font-family:monospace;font-size:13px">${p.url}</td><td>${p.proxy_type}</td><td>${p.country || '<span style="color:#999">‚Äî</span>'}</td><td>${status}</td><td>
+    if (proxies.length) {
+        html += `<div class="table-wrap"><table><thead><tr><th>ID</th><th>URL</th><th>¶‚¶¨¶¨</th><th>¶·T¬T¿¶-¶-¶-</th><th>¶·T¬¶-T¬T√T¡</th><th>¶‘¶¶¶¶T¡T¬¶-¶¨Tœ</th></tr></thead><tbody>`;
+        for (const p of proxies) {
+            const status = p.enabled ? '<span class="badge badge-active">¶-¶¶¶¨TŒT«T—¶-</span>' : '<span class="badge badge-banned">¶-T¬¶¶¶¨TŒT«T—¶-</span>';
+            html += `<tr><td style="font-weight:800;color:var(--darkblue)">${p.id}</td><td style="font-family:monospace;font-size:13px">${p.url}</td><td>${p.proxy_type}</td><td>${p.country || '<span style="color:#999">Ú¿‘</span>'}</td><td>${status}</td><td>
                 <div style="display:flex;gap:4px">
-                    <button class="btn btn-sm btn-secondary" onclick="toggleProxy(${p.id})">${p.enabled ? "–í—ã–∫–ª" : "–í–∫–ª"}</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteProxy(${p.id})">‚úï</button>
+                    <button class="btn btn-sm btn-secondary" onclick="toggleProxy(${p.id})">${p.enabled ? "¶“TÀ¶¶¶¨" : "¶“¶¶¶¨"}</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteProxy(${p.id})">Ú‹’</button>
                 </div>
             </td></tr>`;
-                }
-                html += "</tbody></table></div>";
-            } else {
-                html += '<div class="empty-state">–ü—Ä–æ–∫—Å–∏ –Ω–µ –¥–æ–±–∞–≤–ª–µ–Ω—ã</div>';
-            }
-            document.getElementById("tab-proxies").innerHTML = html;
         }
+        html += "</tbody></table></div>";
+    } else {
+        html += '<div class="empty-state">¶ﬂT¿¶-¶¶T¡¶¨ ¶-¶¶ ¶+¶-¶-¶-¶-¶¨¶¶¶-TÀ</div>';
+    }
+    document.getElementById("tab-proxies").innerHTML = html;
+}
 
-        async function addProxy() {
-            const url = document.getElementById("proxyUrl").value.trim();
-            if (!url) return alert("–£–∫–∞–∂–∏—Ç–µ URL –ø—Ä–æ–∫—Å–∏");
-            const proxy_type = document.getElementById("proxyType").value.trim() || "http";
-            const country = document.getElementById("proxyCountry").value.trim() || "";
-            await api("/admin/proxies", { method: "POST", body: JSON.stringify({ url, proxy_type, country, note: "" }) });
-            loadProxies();
-        }
+async function addProxy() {
+    const url = document.getElementById("proxyUrl").value.trim();
+    if (!url) return alert("¶„¶¶¶-¶¶¶¨T¬¶¶ URL ¶¨T¿¶-¶¶T¡¶¨");
+    const proxy_type = document.getElementById("proxyType").value.trim() || "http";
+    const country = document.getElementById("proxyCountry").value.trim() || "";
+    await api("/admin/proxies", { method: "POST", body: JSON.stringify({ url, proxy_type, country, note: "" }) });
+    loadProxies();
+}
 
-        async function toggleProxy(id) {
-            await api(`/admin/proxies/${id}/toggle`, { method: "PATCH" });
-            loadProxies();
-        }
+async function toggleProxy(id) {
+    await api(`/admin/proxies/${id}/toggle`, { method: "PATCH" });
+    loadProxies();
+}
 
-        async function deleteProxy(id) {
-            if (!confirm("–£–¥–∞–ª–∏—Ç—å –ø—Ä–æ–∫—Å–∏ #" + id + "?")) return;
-            await api(`/admin/proxies/${id}`, { method: "DELETE" });
-            loadProxies();
-        }
+async function deleteProxy(id) {
+    if (!confirm("¶„¶+¶-¶¨¶¨T¬TÃ ¶¨T¿¶-¶¶T¡¶¨ #" + id + "?")) return;
+    await api(`/admin/proxies/${id}`, { method: "DELETE" });
+    loadProxies();
+}
 
-        // Settings
-        async function loadSettings() {
-            document.getElementById("tab-settings").innerHTML = `
+// Settings
+async function loadSettings() {
+    document.getElementById("tab-settings").innerHTML = `
         <div style="max-width:500px;margin:0 auto">
             <div class="form-row">
-                <div style="flex:1"><label>–ò–Ω—Ç–µ—Ä–≤–∞–ª –ø–∞—Ä—Å–∏–Ω–≥–∞ (–º–∏–Ω—É—Ç—ã)</label>
+                <div style="flex:1"><label>¶ÿ¶-T¬¶¶T¿¶-¶-¶¨ ¶¨¶-T¿T¡¶¨¶-¶¶¶- (¶-¶¨¶-T√T¬TÀ)</label>
                     <input class="inp" id="parseInterval" type="number" min="1" max="999" value="30" style="width:100%">
                 </div>
-                <button class="btn btn-primary" onclick="saveParseInterval()" style="margin-top:18px">–°–æ—Ö—Ä–∞–Ω–∏—Ç—å</button>
+                <button class="btn btn-primary" onclick="saveParseInterval()" style="margin-top:18px">¶·¶-T≈T¿¶-¶-¶¨T¬TÃ</button>
             </div>
             <div class="form-row">
-                <div style="flex:1"><label>–ü—Ä–æ–∫—Å–∏ –¥–ª—è –±–æ—Ç–∞ (BOT_PROXY)</label>
+                <div style="flex:1"><label>¶ﬂT¿¶-¶¶T¡¶¨ ¶+¶¨Tœ ¶-¶-T¬¶- (BOT_PROXY)</label>
                     <input class="inp" id="botProxyUrl" style="width:100%" placeholder="socks5://user:pass@host:port">
                 </div>
-                <button class="btn btn-primary" onclick="saveBotProxy()" style="margin-top:18px">–°–æ—Ö—Ä–∞–Ω–∏—Ç—å</button>
+                <button class="btn btn-primary" onclick="saveBotProxy()" style="margin-top:18px">¶·¶-T≈T¿¶-¶-¶¨T¬TÃ</button>
             </div>
             <div style="margin-top:28px;padding-top:24px;border-top:2px solid #d4e0f0;text-align:center">
                 <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-                    <button class="btn btn-success" onclick="triggerParse()">‚ñ∂ –ó–∞–ø—É—Å—Ç–∏—Ç—å –ø–∞—Ä—Å–∏–Ω–≥</button>
-                    <button class="btn btn-danger" onclick="clearMatches()">–û—á–∏—Å—Ç–∏—Ç—å –º–∞—Ç—á–∏</button>
+                    <button class="btn btn-success" onclick="triggerParse()">Ú÷¶ ¶◊¶-¶¨T√T¡T¬¶¨T¬TÃ ¶¨¶-T¿T¡¶¨¶-¶¶</button>
+                    <button class="btn btn-danger" onclick="clearMatches()">¶ﬁT«¶¨T¡T¬¶¨T¬TÃ ¶-¶-T¬T«¶¨</button>
                 </div>
             </div>
             <div id="settingsMsg"></div>
         </div>`;
-            try {
-                const settings = await api("/admin/settings");
-                if (settings.parse_interval_minutes) document.getElementById("parseInterval").value = settings.parse_interval_minutes;
-                if (settings.bot_proxy_url) document.getElementById("botProxyUrl").value = settings.bot_proxy_url;
-            } catch { }
-        }
+    try {
+        const settings = await api("/admin/settings");
+        if (settings.parse_interval_minutes) document.getElementById("parseInterval").value = settings.parse_interval_minutes;
+        if (settings.bot_proxy_url) document.getElementById("botProxyUrl").value = settings.bot_proxy_url;
+    } catch {}
+}
 
-        function msg(text, ok = true) {
-            document.getElementById("settingsMsg").innerHTML = `<div class="msg ${ok ? 'msg-ok' : 'msg-err'}">${text}</div>`;
-        }
+function msg(text, ok = true) {
+    document.getElementById("settingsMsg").innerHTML = `<div class="msg ${ok ? 'msg-ok' : 'msg-err'}">${text}</div>`;
+}
 
-        async function saveParseInterval() {
-            const minutes = parseInt(document.getElementById("parseInterval").value);
-            if (isNaN(minutes) || minutes < 1 || minutes > 999) return msg("–û—Ç 1 –¥–æ 999", false);
-            await api("/admin/settings/parse-interval", { method: "PUT", body: JSON.stringify({ minutes }) });
-            msg("–ò–Ω—Ç–µ—Ä–≤–∞–ª —Å–æ—Ö—Ä–∞–Ω—ë–Ω");
-        }
+async function saveParseInterval() {
+    const minutes = parseInt(document.getElementById("parseInterval").value);
+    if (isNaN(minutes) || minutes < 1 || minutes > 999) return msg("¶ﬁT¬ 1 ¶+¶- 999", false);
+    await api("/admin/settings/parse-interval", { method: "PUT", body: JSON.stringify({ minutes }) });
+    msg("¶ÿ¶-T¬¶¶T¿¶-¶-¶¨ T¡¶-T≈T¿¶-¶-T—¶-");
+}
 
-        async function saveBotProxy() {
-            const proxy_url = document.getElementById("botProxyUrl").value.trim();
-            await api("/admin/settings/bot-proxy", { method: "PUT", body: JSON.stringify({ proxy_url }) });
-            msg("–ü—Ä–æ–∫—Å–∏ –¥–ª—è –±–æ—Ç–∞ —Å–æ—Ö—Ä–∞–Ω—ë–Ω. –î–ª—è –ø—Ä–∏–º–µ–Ω–µ–Ω–∏—è –Ω—É–∂–µ–Ω –ø–µ—Ä–µ–∑–∞–ø—É—Å–∫ –±–æ—Ç–∞.");
-        }
+async function saveBotProxy() {
+    const proxy_url = document.getElementById("botProxyUrl").value.trim();
+    await api("/admin/settings/bot-proxy", { method: "PUT", body: JSON.stringify({ proxy_url }) });
+    msg("¶ﬂT¿¶-¶¶T¡¶¨ ¶+¶¨Tœ ¶-¶-T¬¶- T¡¶-T≈T¿¶-¶-T—¶-. ¶‘¶¨Tœ ¶¨T¿¶¨¶-¶¶¶-¶¶¶-¶¨Tœ ¶-T√¶¶¶¶¶- ¶¨¶¶T¿¶¶¶¨¶-¶¨T√T¡¶¶ ¶-¶-T¬¶-.");
+}
 
-        async function triggerParse() {
-            const res = await api("/admin/trigger-parse", { method: "POST" });
-            msg(res.message || "–ó–∞–ø—Ä–æ—Å –æ—Ç–ø—Ä–∞–≤–ª–µ–Ω");
-        }
+async function triggerParse() {
+    const res = await api("/admin/trigger-parse", { method: "POST" });
+    msg(res.message || "¶◊¶-¶¨T¿¶-T¡ ¶-T¬¶¨T¿¶-¶-¶¨¶¶¶-");
+}
 
-        async function notifyAll() {
-            if (!confirm("–û—Ç–ø—Ä–∞–≤–∏—Ç—å —Ç–µ—Å—Ç–æ–≤–æ–µ —É–≤–µ–¥–æ–º–ª–µ–Ω–∏–µ –≤—Å–µ–º –ø–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª—è–º?")) return;
-            const res = await api("/admin/notify", { method: "POST" });
-            msg(`–£–≤–µ–¥–æ–º–ª–µ–Ω–∏–µ –æ—Ç–ø—Ä–∞–≤–ª–µ–Ω–æ ${res.sent} –ø–æ–ª—å–∑–æ–≤–∞—Ç–µ–ª—è–º`);
-        }
+async function notifyAll() {
+    if (!confirm("¶ﬁT¬¶¨T¿¶-¶-¶¨T¬TÃ T¬¶¶T¡T¬¶-¶-¶-¶¶ T√¶-¶¶¶+¶-¶-¶¨¶¶¶-¶¨¶¶ ¶-T¡¶¶¶- ¶¨¶-¶¨TÃ¶¨¶-¶-¶-T¬¶¶¶¨Tœ¶-?")) return;
+    const res = await api("/admin/notify", { method: "POST" });
+    msg(`¶„¶-¶¶¶+¶-¶-¶¨¶¶¶-¶¨¶¶ ¶-T¬¶¨T¿¶-¶-¶¨¶¶¶-¶- ${res.sent} ¶¨¶-¶¨TÃ¶¨¶-¶-¶-T¬¶¶¶¨Tœ¶-`);
+}
 
-        async function clearMatches() {
-            if (!confirm("–£–¥–∞–ª–∏—Ç—å –≤—Å–µ –º–∞—Ç—á–∏? –≠—Ç–æ –¥–µ–π—Å—Ç–≤–∏–µ –Ω–µ–æ–±—Ä–∞—Ç–∏–º–æ.")) return;
-            const res = await api("/admin/matches", { method: "DELETE" });
-            msg(`–£–¥–∞–ª–µ–Ω–æ ${res.deleted} –º–∞—Ç—á–µ–π`);
-        }
+async function clearMatches() {
+    if (!confirm("¶„¶+¶-¶¨¶¨T¬TÃ ¶-T¡¶¶ ¶-¶-T¬T«¶¨? ¶ÌT¬¶- ¶+¶¶¶¶T¡T¬¶-¶¨¶¶ ¶-¶¶¶-¶-T¿¶-T¬¶¨¶-¶-.")) return;
+    const res = await api("/admin/matches", { method: "DELETE" });
+    msg(`¶„¶+¶-¶¨¶¶¶-¶- ${res.deleted} ¶-¶-T¬T«¶¶¶¶`);
+}
 
-        // Sites
-        async function loadSites() {
-            const sites = await api("/admin/sites");
-            let html = `<div class="table-wrap"><table><thead><tr><th>–°–∞–π—Ç</th><th>–ü–∞—Ä—Å–µ—Ä</th><th>–ò–Ω—Ç–µ—Ä–≤–∞–ª</th><th>–°—Ç–∞—Ç—É—Å</th><th>–î–µ–π—Å—Ç–≤–∏—è</th></tr></thead><tbody>`;
-            if (!sites.length) {
-                html += `<tr><td colspan="5"><div class="empty-state">–°–∞–π—Ç—ã –Ω–µ –Ω–∞—Å—Ç—Ä–æ–µ–Ω—ã</div></td></tr>`;
-            }
-            for (const s of sites) {
-                html += `<tr><td style="font-weight:700">${s.name}</td><td><span class="badge" style="background:#e8f0fe;color:var(--darkblue);font-weight:700">${s.parser}</span></td><td style="color:#666">${s.interval_minutes} –º–∏–Ω</td><td>${s.enabled ? '<span class="badge badge-active">–≤–∫–ª—é—á—ë–Ω</span>' : '<span class="badge badge-banned">–æ—Ç–∫–ª—é—á—ë–Ω</span>'}</td><td>
-            <button class="btn btn-sm btn-secondary" onclick="toggleSite('${s.name}')">${s.enabled ? "–í—ã–∫–ª—é—á–∏—Ç—å" : "–í–∫–ª—é—á–∏—Ç—å"}</button>
+// Sites
+async function loadSites() {
+    const sites = await api("/admin/sites");
+    let html = `<div class="table-wrap"><table><thead><tr><th>¶·¶-¶¶T¬</th><th>¶ﬂ¶-T¿T¡¶¶T¿</th><th>¶ÿ¶-T¬¶¶T¿¶-¶-¶¨</th><th>¶·T¬¶-T¬T√T¡</th><th>¶‘¶¶¶¶T¡T¬¶-¶¨Tœ</th></tr></thead><tbody>`;
+    if (!sites.length) {
+        html += `<tr><td colspan="5"><div class="empty-state">¶·¶-¶¶T¬TÀ ¶-¶¶ ¶-¶-T¡T¬T¿¶-¶¶¶-TÀ</div></td></tr>`;
+    }
+    for (const s of sites) {
+        html += `<tr><td style="font-weight:700">${s.name}</td><td><span class="badge" style="background:#e8f0fe;color:var(--darkblue);font-weight:700">${s.parser}</span></td><td style="color:#666">${s.interval_minutes} ¶-¶¨¶-</td><td>${s.enabled ? '<span class="badge badge-active">¶-¶¶¶¨TŒT«T—¶-</span>' : '<span class="badge badge-banned">¶-T¬¶¶¶¨TŒT«T—¶-</span>'}</td><td>
+            <button class="btn btn-sm btn-secondary" onclick="toggleSite('${s.name}')">${s.enabled ? "¶“TÀ¶¶¶¨TŒT«¶¨T¬TÃ" : "¶“¶¶¶¨TŒT«¶¨T¬TÃ"}</button>
         </td></tr>`;
-            }
-            html += "</tbody></table></div>";
-            document.getElementById("tab-sites").innerHTML = html;
-        }
+    }
+    html += "</tbody></table></div>";
+    document.getElementById("tab-sites").innerHTML = html;
+}
 
-        async function toggleSite(name) {
-            await api(`/admin/sites/${encodeURIComponent(name)}/toggle`, { method: "PUT" });
-            loadSites();
-        }
+async function toggleSite(name) {
+    await api(`/admin/sites/${encodeURIComponent(name)}/toggle`, { method: "PUT" });
+    loadSites();
+}
 
-        // Logs
-        async function loadLogs() {
-            const data = await api("/admin/logs");
-            const logs = data.logs || [];
-            let html = logs.length ? `<div style="max-height:500px;overflow-y:auto;font-family:'Courier New',monospace;font-size:12px;background:#f8f9fc;padding:16px;border-radius:20px;border:2px solid #d4e0f0">` : '<div class="empty-state">–õ–æ–≥–æ–≤ –Ω–µ—Ç</div>';
-            for (const line of logs.slice().reverse()) {
-                let cls = "";
-                if (line.includes(" ERROR ")) cls = "level-ERROR";
-                else if (line.includes(" WARNING ")) cls = "level-WARNING";
-                html += `<div class="log-line"><span class="${cls}">${escapeHtml(line)}</span></div>`;
-            }
-            if (logs.length) html += "</div>";
-            document.getElementById("tab-logs").innerHTML = html;
-        }
+// Logs
+async function loadLogs() {
+    const data = await api("/admin/logs");
+    const logs = data.logs || [];
+    let html = logs.length ? `<div style="max-height:500px;overflow-y:auto;font-family:'Courier New',monospace;font-size:12px;background:#f8f9fc;padding:16px;border-radius:20px;border:2px solid #d4e0f0">` : '<div class="empty-state">¶€¶-¶¶¶-¶- ¶-¶¶T¬</div>';
+    for (const line of logs.slice().reverse()) {
+        let cls = "";
+        if (line.includes(" ERROR ")) cls = "level-ERROR";
+        else if (line.includes(" WARNING ")) cls = "level-WARNING";
+        html += `<div class="log-line"><span class="${cls}">${escapeHtml(line)}</span></div>`;
+    }
+    if (logs.length) html += "</div>";
+    document.getElementById("tab-logs").innerHTML = html;
+}
 
-        function escapeHtml(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function escapeHtml(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-        // Tab switching loaders
-        document.querySelectorAll(".tab").forEach(tab => {
-            tab.addEventListener("click", () => {
-                const name = tab.dataset.tab;
-                if (name === "dashboard" && !document.querySelector("#tab-dashboard .card")) loadDashboard();
-                if (name === "users") loadUsers();
-                if (name === "proxies") loadProxies();
-                if (name === "settings") loadSettings();
-                if (name === "sites") loadSites();
-                if (name === "logs") loadLogs();
-            });
-        });
+// Tab switching loaders
+document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+        const name = tab.dataset.tab;
+        if (name === "dashboard" && !document.querySelector("#tab-dashboard .card")) loadDashboard();
+        if (name === "users") loadUsers();
+        if (name === "proxies") loadProxies();
+        if (name === "settings") loadSettings();
+        if (name === "sites") loadSites();
+        if (name === "logs") loadLogs();
+    });
+});
 
-        loadDashboard();
-    </script>
+loadDashboard();
+</script>
 </body>
-
 </html>
