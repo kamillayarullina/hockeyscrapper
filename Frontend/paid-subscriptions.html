@@ -121,10 +121,16 @@
                 return;
             }
             try {
-                const response = await fetch("/billing/subscriptions", { headers: headers() });
+                const response = await fetch("/billing/subscriptions", {
+                    headers: headers(),
+                    cache: "no-store"
+                });
                 if (response.status === 401) {
                     window.location.href = "vhod/vhod.html";
                     return;
+                }
+                if (!response.headers.get("content-type")?.includes("application/json")) {
+                    throw new Error("Сервер вернул устаревшую страницу вместо данных. Обновите страницу ещё раз.");
                 }
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.detail || "Не удалось загрузить подписки");
