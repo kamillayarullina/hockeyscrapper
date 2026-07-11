@@ -390,6 +390,17 @@ body {
     margin: 0 0 20px;
 }
 .auto-renew-consent input, .renew-switch input { accent-color: #bd6a0c; margin-top: 3px; }
+.saved-payment-method {
+    background: #eef8f1;
+    border: 1px solid #b9dfc4;
+    border-radius: 12px;
+    color: #19713b;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.45;
+    margin: 0 0 18px;
+    padding: 12px 14px;
+}
 .paid-teams-list { display: grid; gap: 16px; margin-top: 24px; }
 .paid-team-card {
     background: rgba(255, 255, 255, 0.93);

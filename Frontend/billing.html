@@ -28,6 +28,7 @@
         const params = new URLSearchParams(window.location.search);
         const selectedTeam = params.get("team");
         let teamPrice = 39;
+        let paymentMethodSaved = false;
 
         function authHeaders() {
             return { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" };
@@ -84,6 +85,21 @@
             const explanation = document.createElement("p");
             explanation.className = "plan-period";
             explanation.textContent = "Подписка действует 30 дней. После подтверждения команда добавится в ваши уведомления.";
+            const paymentMethodBlock = document.createElement("div");
+            if (paymentMethodSaved) {
+                paymentMethodBlock.className = "saved-payment-method";
+                paymentMethodBlock.textContent = "Способ оплаты уже привязан. Повторно вводить карту не потребуется.";
+            } else {
+                const saveMethod = document.createElement("label");
+                saveMethod.className = "auto-renew-consent";
+                const saveCheckbox = document.createElement("input");
+                saveCheckbox.type = "checkbox";
+                saveCheckbox.id = "savePaymentMethodConsent";
+                const saveText = document.createElement("span");
+                saveText.textContent = "Я согласен сохранить способ оплаты в YooKassa для будущих покупок и возможности включать автопродление. HockeyScrapper не хранит данные карты.";
+                saveMethod.append(saveCheckbox, saveText);
+                paymentMethodBlock.append(saveMethod);
+            }
             const autoRenew = document.createElement("label");
             autoRenew.className = "auto-renew-consent";
             const checkbox = document.createElement("input");
@@ -97,11 +113,16 @@
             button.type = "button";
             button.textContent = `Оплатить ${teamPrice} ₽`;
             button.addEventListener("click", () => startCheckout(button));
-            card.append(title, team, price, explanation, autoRenew, button);
+            card.append(title, team, price, explanation, paymentMethodBlock, autoRenew, button);
             checkout.append(card);
         }
 
         async function startCheckout(button) {
+            const saveConsent = document.getElementById("savePaymentMethodConsent")?.checked || false;
+            if (!paymentMethodSaved && !saveConsent) {
+                showNotice("Подтвердите сохранение способа оплаты для первой платной покупки.", "error");
+                return;
+            }
             button.disabled = true;
             button.textContent = "Переходим к оплате...";
             try {
@@ -110,7 +131,8 @@
                     headers: authHeaders(),
                     body: JSON.stringify({
                         team_name: selectedTeam,
-                        enable_auto_renew: document.getElementById("enableAutoRenew")?.checked || false
+                        enable_auto_renew: document.getElementById("enableAutoRenew")?.checked || false,
+                        save_payment_method_consent: paymentMethodSaved || saveConsent
                     })
                 });
                 const data = await response.json();
@@ -161,7 +183,9 @@
                 if (plans.demo_mode) {
                     showNotice("Демо-режим: после нажатия «Оплатить» подписка активируется без настоящего списания денег.");
                 }
-                renderMembership(await membershipResponse.json());
+                const membership = await membershipResponse.json();
+                paymentMethodSaved = membership.payment_method_saved;
+                renderMembership(membership);
                 renderCheckout();
                 checkReturnedPayment();
             } catch (error) {

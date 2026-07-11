@@ -59,6 +59,7 @@ def ensure_schema() -> None:
     payment_additions = {
         "team_name": "VARCHAR",
         "auto_renew_requested": "BOOLEAN DEFAULT 0",
+        "save_payment_method_requested": "BOOLEAN DEFAULT 0",
     }
     if "payments" in inspector.get_table_names():
         with engine.begin() as connection:

@@ -46,6 +46,18 @@ class PaidTeamSubscriptionModel(Base):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
 
+class BillingProfileModel(Base):
+    """A YooKassa payment method saved once for all of a user's paid teams."""
+
+    __tablename__ = "billing_profiles"
+
+    chat_id: Mapped[int] = mapped_column(primary_key=True)
+    payment_method_id: Mapped[str] = mapped_column(nullable=False)
+    consented_at: Mapped[datetime] = mapped_column(nullable=False)
+    saved_at: Mapped[datetime] = mapped_column(nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
 class MatchModel(Base):
     __tablename__ = "matches"
 
@@ -107,5 +119,6 @@ class PaymentModel(Base):
     # The team unlocked by this payment. Nullable for payment rows created before this feature.
     team_name: Mapped[str] = mapped_column(nullable=True)
     auto_renew_requested: Mapped[bool] = mapped_column(default=False)
+    save_payment_method_requested: Mapped[bool] = mapped_column(default=False)
     created_at = Column(DateTime, server_default=func.now())
     paid_at = Column(DateTime, nullable=True)

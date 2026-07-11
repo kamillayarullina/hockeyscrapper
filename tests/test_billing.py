@@ -81,13 +81,62 @@ def test_checkout_creates_payment_for_a_team(client, monkeypatch):
     response = client.post(
         "/billing/checkout",
         headers=auth_headers(user),
-        json={"team_name": "CSKA", "enable_auto_renew": True},
+        json={
+            "team_name": "CSKA",
+            "enable_auto_renew": True,
+            "save_payment_method_consent": True,
+        },
     )
     assert response.status_code == 200
     assert response.json()["checkout_url"] == "https://payment.example/checkout"
     assert captured["amount"] == "39.00"
     assert captured["description"] == "HockeyScrapper: подписка на CSKA"
     assert captured["save_payment_method"] is True
+
+
+def test_first_paid_team_requires_payment_method_consent(client):
+    user = register_user(client, "consent-required@example.com")
+    add_three_free_teams(client, user)
+
+    response = client.post(
+        "/billing/checkout",
+        headers=auth_headers(user),
+        json={"team_name": "CSKA"},
+    )
+    assert response.status_code == 400
+    assert "сохранение способа оплаты" in response.json()["detail"]
+
+
+def test_next_paid_team_uses_users_saved_payment_method(client, db_session, monkeypatch):
+    user = register_user(client, "shared-card@example.com")
+    add_three_free_teams(client, user)
+    monkeypatch.setenv("APP_BASE_URL", "https://hockeyscrapper.example")
+    now = datetime.utcnow()
+    db_session.add(
+        models.BillingProfileModel(
+            chat_id=user["chat_id"],
+            payment_method_id="shared-card-1",
+            consented_at=now,
+            saved_at=now,
+        )
+    )
+    db_session.commit()
+    captured = {}
+
+    def fake_recurring_payment(**kwargs):
+        captured.update(kwargs)
+        return {"id": "provider-payment-shared", "status": "pending"}
+
+    monkeypatch.setattr(payments, "create_recurring_payment", fake_recurring_payment)
+    response = client.post(
+        "/billing/checkout",
+        headers=auth_headers(user),
+        json={"team_name": "SKA", "enable_auto_renew": False},
+    )
+
+    assert response.status_code == 200
+    assert captured["payment_method_id"] == "shared-card-1"
+    assert response.json()["checkout_url"].startswith("https://hockeyscrapper.example/billing.html")
 
 
 def test_local_demo_checkout_activates_team_without_yookassa(client, monkeypatch):
@@ -99,7 +148,11 @@ def test_local_demo_checkout_activates_team_without_yookassa(client, monkeypatch
     response = client.post(
         "/billing/checkout",
         headers=auth_headers(user),
-        json={"team_name": "CSKA", "enable_auto_renew": True},
+        json={
+            "team_name": "CSKA",
+            "enable_auto_renew": True,
+            "save_payment_method_consent": True,
+        },
     )
     assert response.status_code == 200
     assert response.json()["checkout_url"].startswith("http://127.0.0.1:8000/billing.html?payment=success")
@@ -150,7 +203,11 @@ def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
     checkout = client.post(
         "/billing/checkout",
         headers=auth_headers(user),
-        json={"team_name": "CSKA", "enable_auto_renew": True},
+        json={
+            "team_name": "CSKA",
+            "enable_auto_renew": True,
+            "save_payment_method_consent": True,
+        },
     )
     assert checkout.status_code == 200
     payment_id = checkout.json()["payment_id"]
@@ -174,6 +231,7 @@ def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
     assert "cska" in subscriptions.json()["subscriptions"]
     assert subscriptions.json()["membership"]["team_subscription_count"] == 4
     assert subscriptions.json()["membership"]["paid_team_price_rub"] == 39
+    assert subscriptions.json()["membership"]["payment_method_saved"] is True
 
     paid_subscriptions = client.get("/billing/subscriptions", headers=auth_headers(user))
     assert paid_subscriptions.status_code == 200
@@ -247,13 +305,21 @@ def test_expired_paid_team_subscription_stops_notifications(client, db_session):
 
 
 def test_due_auto_renewal_creates_yookassa_payment(db_session, monkeypatch):
+    now = datetime.utcnow()
+    db_session.add(
+        models.BillingProfileModel(
+            chat_id=99,
+            payment_method_id="saved-card-1",
+            consented_at=now,
+            saved_at=now,
+        )
+    )
     db_session.add(
         models.PaidTeamSubscriptionModel(
             chat_id=99,
             team_name="cska",
             expires_at=datetime.utcnow() - timedelta(minutes=1),
             auto_renew=True,
-            payment_method_id="saved-card-1",
         )
     )
     db_session.commit()
@@ -291,7 +357,7 @@ def test_webhook_rejects_payment_with_wrong_order(client, monkeypatch):
     response = client.post(
         "/billing/checkout",
         headers=auth_headers(user),
-        json={"team_name": "CSKA"},
+        json={"team_name": "CSKA", "save_payment_method_consent": True},
     )
     assert response.status_code == 200
 
