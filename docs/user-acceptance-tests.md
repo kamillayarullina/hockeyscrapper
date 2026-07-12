@@ -173,3 +173,30 @@ After all steps:
 **Executed by:** Daniil
 **Date:** 3.07.2026
 **Notes:** All good, no chages
+
+## UAT-007: Purchase premium subscription
+**Linked to:** US-06 Monetization
+**Type:** new (mvp v3)
+**Status:** Active
+
+**User goal:**
+As a user, I want to purchase a premium subscription, so that I can unlock subscriptions.
+
+**Preconditions:**
+- User is logged in
+- User is on the pricing page
+- User has a valid payment method 
+
+**Step-by-step instructions:**
+1. User navigates to the "Pricing" page
+2. User pushes button "Buy Premium"
+
+**Expected outcome:**
+After all steps:
+-User sees the free plan limits and premium plan benefits
+-User can now subscribe to unlimited teams
+
+**Result:** Pass
+**Executed by:** Daniil
+**Date:** 12.07.2026
+**Notes:** All good, no chages

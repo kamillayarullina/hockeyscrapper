@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <style>
+        .form-error {
+            color: #c62828;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .form-error.visible { display: block; }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -19,6 +30,7 @@
     <div class="wrapper">
         <form id="loginForm">
             <h1>Вход</h1>
+            <div class="form-error" id="loginError"></div>
         <div class="input-box">
             <input type="email" name="email" placeholder="E-mail" required>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" >
@@ -43,6 +55,7 @@ fill="currentColor" viewBox="0 0 24 24" >
         </form>
     </div>
     <script>
+        if (localStorage.getItem("token")) { window.location.href = "../main.html"; }
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -74,11 +87,13 @@ fill="currentColor" viewBox="0 0 24 24" >
                 } else {
                     let msg = 'Неверный логин или пароль';
                     try { const err = await response.json(); msg = err.detail || msg; } catch {}
-                    alert(msg);
+                    document.getElementById('loginError').textContent = msg;
+                    document.getElementById('loginError').classList.add('visible');
                 }
 
             } catch (err) {
-                alert('Ошибка сети');
+                document.getElementById('loginError').textContent = 'Ошибка сети';
+                document.getElementById('loginError').classList.add('visible');
             }
         });
     </script>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление подписки HockeyScrapper</title>
+    <link rel="stylesheet" href="style_main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="profile-container billing-container">
+        <a class="back-link" href="sub.html">К командам</a>
+        <p class="billing-eyebrow">ПОДПИСКА НА КОМАНДУ</p>
+        <h1>Выберите срок подписки</h1>
+        <p class="billing-lead">Каждая команда оплачивается отдельно: 39 ₽ на месяц или 390 ₽ на год.</p>
+
+        <div id="billingNotice" class="payment-notice" role="status">
+            Учебный режим: реальные денежные операции не производятся. После подтверждения система имитирует успешную оплату и активирует подписку.
+        </div>
+        <section id="membershipSummary" class="membership-summary" aria-live="polite"></section>
+        <section id="checkout" class="pricing-grid" aria-live="polite"></section>
+        <p class="billing-security">Банковская карта и аккаунт платёжного сервиса не требуются.</p>
+    </main>
+
+    <script>
+        const token = localStorage.getItem("token");
+        const selectedTeam = new URLSearchParams(window.location.search).get("team");
+        let plans = [];
+
+        function authHeaders() {
+            return { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" };
+        }
+
+        function showNotice(message, type = "info") {
+            const notice = document.getElementById("billingNotice");
+            notice.textContent = message;
+            notice.className = `payment-notice ${type}`;
+        }
+
+        function renderMembership(membership) {
+            const summary = document.getElementById("membershipSummary");
+            summary.innerHTML = "";
+            const title = document.createElement("strong");
+            title.textContent = `Активных команд: ${membership.team_subscription_count}`;
+            const details = document.createElement("span");
+            details.textContent = " Бесплатных подписок нет: для каждой новой команды выбирается отдельный срок.";
+            summary.append(title, details);
+        }
+
+        function renderCheckout() {
+            const checkout = document.getElementById("checkout");
+            checkout.innerHTML = "";
+            if (!selectedTeam) {
+                const card = document.createElement("article");
+                card.className = "plan-card";
+                card.innerHTML = "<h2>Сначала выберите команду</h2><p>Вернитесь к списку и нажмите «Подписаться».</p>";
+                const link = document.createElement("a");
+                link.className = "btn plan-buy";
+                link.href = "sub.html";
+                link.textContent = "Выбрать команду";
+                card.append(link);
+                checkout.append(card);
+                return;
+            }
+
+            plans.forEach((plan) => {
+                const card = document.createElement("article");
+                card.className = "plan-card";
+                const title = document.createElement("h2");
+                title.textContent = selectedTeam;
+                const period = document.createElement("p");
+                period.className = "plan-period";
+                period.textContent = plan.name;
+                const price = document.createElement("p");
+                price.className = "plan-price";
+                price.innerHTML = `<strong>${plan.amount_rub}</strong> ₽`;
+                const duration = document.createElement("p");
+                duration.textContent = `Доступ на ${plan.duration_days} дней после учебного подтверждения.`;
+                const autoRenew = document.createElement("label");
+                autoRenew.className = "auto-renew-consent";
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.className = "enable-auto-renew";
+                const consentText = document.createElement("span");
+                consentText.textContent = `Включить автопродление этого тарифа в учебном режиме.`;
+                autoRenew.append(checkbox, consentText);
+                const button = document.createElement("button");
+                button.className = "btn plan-buy";
+                button.type = "button";
+                button.textContent = `Смоделировать оплату ${plan.amount_rub} ₽`;
+                button.addEventListener("click", () => startCheckout(plan, checkbox.checked, button));
+                card.append(title, period, price, duration, autoRenew, button);
+                checkout.append(card);
+            });
+        }
+
+        async function startCheckout(plan, enableAutoRenew, button) {
+            const confirmed = window.confirm(
+                `Это учебная имитация. Реальные деньги не списываются. Активировать подписку на команду «${selectedTeam}» за ${plan.amount_rub} ₽ на ${plan.period_label}?`
+            );
+            if (!confirmed) return;
+
+            button.disabled = true;
+            button.textContent = "Активируем подписку...";
+            try {
+                const response = await fetch("/billing/checkout", {
+                    method: "POST",
+                    headers: authHeaders(),
+                    body: JSON.stringify({
+                        team_name: selectedTeam,
+                        plan_code: plan.code,
+                        enable_auto_renew: enableAutoRenew
+                    })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || "Не удалось активировать подписку");
+                showNotice(`${data.message} Команда «${selectedTeam}» подключена.`, "success");
+                document.getElementById("checkout").innerHTML = "";
+                const link = document.createElement("a");
+                link.className = "btn plan-buy";
+                link.href = "paid-subscriptions.html";
+                link.textContent = "Перейти к моим платным командам";
+                document.getElementById("checkout").append(link);
+            } catch (error) {
+                showNotice(error.message, "error");
+                button.disabled = false;
+                button.textContent = `Смоделировать оплату ${plan.amount_rub} ₽`;
+            }
+        }
+
+        async function loadBilling() {
+            if (!token) {
+                window.location.href = "vhod/vhod.html";
+                return;
+            }
+            try {
+                const [plansResponse, membershipResponse] = await Promise.all([
+                    fetch("/billing/plans"),
+                    fetch("/billing/me", { headers: authHeaders() })
+                ]);
+                if (membershipResponse.status === 401) {
+                    window.location.href = "vhod/vhod.html";
+                    return;
+                }
+                if (!plansResponse.ok || !membershipResponse.ok) {
+                    throw new Error("Не удалось загрузить тарифы");
+                }
+                plans = (await plansResponse.json()).plans;
+                renderMembership(await membershipResponse.json());
+                renderCheckout();
+            } catch (error) {
+                showNotice(error.message, "error");
+            }
+        }
+
+        loadBilling();
+    </script>
+</body>
+</html>

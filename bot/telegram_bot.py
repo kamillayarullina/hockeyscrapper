@@ -96,6 +96,17 @@ async def cmd_subscribe(message: Message):
 
     db = get_db()
 
+    # Проверка лимита подписок для монетизации
+    user_subs = await db.get_user_subscriptions(message.from_user.id)
+    team_count = len(user_subs.get("team", []))
+    if team_count >= 4:
+        await message.answer(
+            "🚫 Достигнут лимит бесплатных подписок.\n"
+            "Для добавления новой команды оформите платную подписку на сайте:\n"
+            "https://hockeyscrapper.ru/sub.html"
+        )
+        return
+
     # Подписка на команду
     is_new_team = await db.subscribe(message.from_user.id, "team", team_canonical.lower())
 
@@ -178,7 +189,7 @@ async def cmd_list(message: Message):
     if venues:
         text += f"<b>🏟 Стадионы ({len(venues)}):</b>\n"
         for v in venues:
-            text += f"• {escape(v.title())}\n"
+            text += f"• {escape(_capitalize_russian(v))}\n"
 
     text += "\nЧтобы отписаться: /unsubscribe <code>ЦСКА</code>"
 
@@ -292,6 +303,21 @@ async def cmd_stats(message: Message):
     await message.answer(text)
 
 
+def _capitalize_russian(name: str) -> str:
+    words = name.split()
+    if not words:
+        return name
+    result = []
+    for w in words:
+        if w and len(w) > 1 and w[0].isalpha():
+            result.append(w[0].upper() + w[1:])
+        elif w and len(w) == 1:
+            result.append(w.upper())
+        else:
+            result.append(w)
+    return " ".join(result)
+
+
 def _is_admin(chat_id: int) -> bool:
     """Проверяет, является ли пользователь админом."""
     admin_id = os.environ.get("ADMIN_CHAT_ID", "0")
@@ -348,8 +374,8 @@ async def cmd_admin_interval(message: Message):
         return
     try:
         minutes = int(args[1])
-        if minutes < 1 or minutes > 1440:
-            await message.answer("❗ Интервал должен быть от 1 до 1440 минут.")
+        if minutes < 1 or minutes > 999:
+            await message.answer("❗ Интервал должен быть от 1 до 999 минут.")
             return
         db = get_db()
         await db.set_setting("parse_interval_minutes", str(minutes))
@@ -447,7 +473,9 @@ async def cmd_admin_run(message: Message):
         return
     await message.answer("⏳ Запуск принудительного цикла парсинга...")
     from services.parser_runner import ParserRunner
-    runner = ParserRunner()
+    import os as _os
+    _base = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+    runner = ParserRunner(config_path=_os.path.join(_base, "config", "sites.yaml"))
     await runner.load_config()
     await runner.run_cycle()
     await message.answer("✅ Цикл парсинга завершён.")

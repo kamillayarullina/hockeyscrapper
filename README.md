@@ -1,99 +1,66 @@
 # HockeyScrapper 🏒
 
-Track KHL hockey tickets. Web dashboard + Telegram bot in one project.
+Track KHL hockey tickets. Scrapes ticket-hockey.ru, khl.ru, and Yandex Afisha for match tickets and sends Telegram notifications when tickets matching your subscriptions become available. Includes a web dashboard for managing subscriptions, profile, and account linking.
 
-## Features
+## Quick Links
 
-- **Ticket search** — scrapes ticket-hockey.ru, khl.ru, yandex.afisha
-- **Notifications** — Telegram bot sends alerts on new tickets
-- **Auth** — register / login with JWT
-- **Subscriptions** — follow teams and venues
-- **Telegram linking** — auto-link web account via one-time code
-
-## Reports
-
-- [Week 2 report](reports/week2/README.md) — user stories, prototype, MVP v0, customer meeting
-- [MVP v0 report](reports/week2/mvp-v0-report.md) — foundation details, smoke-check scenario
-
-## Documentation
-
-- [Development Process](docs/development-process.md)
-- [Hosted Documentation Site](https://kamillayarullina.github.io/hockeyscrapper/) — browsable docs (architecture, testing, ADRs, UATs, roadmap)
+- **Product access** — Run locally (see [Local Setup](#local-setup)) or deploy via [Render](render.yaml) / [Docker Compose](docker-compose.yml). No public deployment is currently active.
+- **Hosted documentation** — [kamillayarullina.github.io/hockeyscrapper](https://kamillayarullina.github.io/hockeyscrapper/) — architecture, testing, ADRs, UATs, roadmap
+- **Customer handover** — [docs/customer-handover.md](docs/customer-handover.md) — usage, deployment, troubleshooting, known limitations
+- **Contributing** — [CONTRIBUTING.md](CONTRIBUTING.md) — how to contribute, workflow, review expectations
+- **Agent guidance** — [AGENTS.md](AGENTS.md) — setup commands, safety cautions for coding agents
 
 ## Local Setup
 
-### Requirements
-- Python 3.10 or higher
-- Git
-
-### Steps
-
 ```bash
-# 1. Clone
 git clone https://github.com/kamillayarullina/hockeyscrapper.git
 cd hockeyscrapper
-
-# 2. Virtual environment
 python -m venv .venv
-.venv\Scripts\activate    # Windows
-
-# 3. Dependencies
+source .venv/bin/activate    # Linux/macOS — Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-playwright install         # for parsers
-
-# 4. Environment
-cp .env.example .env
-# Edit .env — set BOT_TOKEN (get token from @BotFather)
+playwright install chromium
+cp .env.example .env          # edit .env with your BOT_TOKEN
 ```
 
-### Run
+Run everything (API + bot + parser):
 
 ```bash
 # Everything (API + frontend + bot + parser)
-python -m main --all
+python main.py --verbose
 
 # Open in browser
 start http://localhost:8000
 ```
 
-### Options
+Open [http://localhost:8000](http://localhost:8000) in your browser. See [docs/development-process.md](docs/development-process.md) for component-specific flags and Docker deployment.
 
-| Command | Starts |
-|---------|--------|
-| `python -m main --all` | API + bot + parser |
-| `python -m main --api-only` | API + frontend only |
-| `python -m main --bot-only` | Telegram bot only |
+## Maintained Documentation
 
-### Public access (optional)
+| Document | Audience |
+|---|---|
+| [Architecture](docs/architecture/README.md) | System design, ADRs, static/dynamic/deployment views |
+| [Testing Strategy](docs/testing.md) | Test locations, coverage targets, QA gates |
+| [Quality Requirements](docs/quality-requirements.md) | Measurable quality attributes (QR-01–QR-05) |
+| [User Stories](docs/user-stories.md) | Requirements and story index |
+| [User Acceptance Tests](docs/user-acceptance-tests.md) | UAT scenarios |
+| [Definition of Done](docs/definition-of-done.md) | Completion standard |
+| [Roadmap](docs/roadmap.md) | Upcoming sprints and milestones |
+| [Monetization](docs/monetization.md) | Premium plans and YooKassa deployment setup |
 
-```bash
-# Cloudflare Tunnel — exposes localhost to the internet
-cloudflared tunnel --url http://localhost:8000
-```
+## Architecture Overview
+
+![Static architecture diagram](docs/architecture/static-view/static.svg)
+
+The system follows a modular monolithic architecture: parsers, bot, backend, and frontend share a common database and service layer. See [architecture docs](docs/architecture/README.md) for the full static, dynamic, and deployment views.
 
 ## Stack
 
-- **Backend:** FastAPI, SQLAlchemy, JWT (python-jose)
-- **Frontend:** HTML + CSS (vanilla)
-- **Bot:** aiogram 3.x
-- **Parsers:** Playwright, BeautifulSoup, aiohttp
-- **Database:** SQLite (dev) / PostgreSQL (prod) via `databases` library
-- **Hosting:** Render / Docker / Fly.io
-
-## Project Structure
-
-```
-Backend/       — API endpoints, JWT, ORM models
-bot/           — Telegram bot (aiogram)
-parsers/       — KHL, Yandex Afisha, club sites
-services/      — DB, notifications, proxy rotation, team matching
-Frontend/      — HTML pages (index, profile, subscriptions, login)
-config/        — parser config (sites.yaml)
-```
-## Links to week2
-
-[`reports/week2/mvp-v0-report.md`](reports/week2/mvp-v0-report.md)
-[`reports/week2/README.md`](reports/week2/README.md)
+**Backend** — FastAPI, SQLAlchemy, JWT (python-jose)  
+**Frontend** — HTML + CSS (vanilla)  
+**Bot** — aiogram 3.x  
+**Parsers** — Playwright, BeautifulSoup, aiohttp  
+**Database** — SQLite (dev) / PostgreSQL (prod)  
+**Hosting** — Render / Docker
 
 ## License
 

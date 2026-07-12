@@ -2,12 +2,14 @@
 
 import aiosqlite
 import logging
+import os
 from typing import Optional
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-DB_PATH = "data/tickets.db"
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DB_PATH = os.environ.get("DB_PATH", str(_PROJECT_ROOT / "data" / "tickets.db"))
 
 
 class Database:
@@ -97,14 +99,22 @@ class Database:
     # ─────────────────────────────────────────────
     async def add_user(self, chat_id: int, username: Optional[str], first_name: Optional[str]) -> None:
         async with aiosqlite.connect(self.db_path) as db:
-            await db.execute("""
-                INSERT INTO users (chat_id, username, first_name)
-                VALUES (?, ?, ?)
-                ON CONFLICT(chat_id) DO UPDATE SET
-                    username = excluded.username,
-                    first_name = excluded.first_name,
-                    is_active = 1
-            """, (chat_id, username, first_name))
+            db.row_factory = aiosqlite.Row
+            cols = ["chat_id", "username", "first_name", "is_active"]
+            vals: list = [chat_id, username, first_name, 1]
+            async with db.execute("PRAGMA table_info(users)") as c:
+                existing = {r["name"] for r in await c.fetchall()}
+            for extra, default in [("premium_plan", "free"), ("premium_until", None)]:
+                if extra in existing:
+                    cols.append(extra)
+                    vals.append(default)
+            await db.execute(
+                f"INSERT INTO users ({', '.join(cols)}) "  # nosec B608
+                f"VALUES ({', '.join('?' * len(cols))}) "
+                f"ON CONFLICT(chat_id) DO UPDATE SET "
+                f"username = excluded.username, first_name = excluded.first_name, is_active = 1",
+                vals,
+            )
             await db.commit()
 
     async def get_all_users(self) -> list[dict]:
@@ -207,7 +217,10 @@ class Database:
         """
         match_id = match.get("match_id", "")
         async with aiosqlite.connect(self.db_path) as db:
-            existing = await self.get_match_by_id(match_id)
+            db.row_factory = aiosqlite.Row
+            async with db.execute("SELECT * FROM matches WHERE match_id = ?", (match_id,)) as cursor:
+                existing_row = await cursor.fetchone()
+                existing = dict(existing_row) if existing_row else None
             if existing:
                 existing_sources = existing.get("sources", "")
                 if source_name and source_name not in existing_sources:
