@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from Backend import models, payments
+from Backend import models
 from Backend.main import process_due_renewals
 
 
@@ -22,32 +22,35 @@ def auth_headers(user):
     return {"Authorization": f"Bearer {user['access_token']}"}
 
 
-def add_three_free_teams(client, user):
-    for index in range(3):
-        response = client.post(
-            "/subscription/toggle",
-            headers=auth_headers(user),
-            json={"chat_id": user["chat_id"], "team_name": f"Team {index}"},
-        )
-        assert response.status_code == 200
+def checkout(client, user, team="CSKA", plan_code="team_monthly", auto_renew=False):
+    return client.post(
+        "/billing/checkout",
+        headers=auth_headers(user),
+        json={
+            "team_name": team,
+            "plan_code": plan_code,
+            "enable_auto_renew": auto_renew,
+        },
+    )
 
 
-def test_first_three_team_subscriptions_are_free(client):
+def test_first_team_requires_a_paid_plan(client):
     user = register_user(client)
-    add_three_free_teams(client, user)
 
     response = client.post(
         "/subscription/toggle",
         headers=auth_headers(user),
-        json={"chat_id": user["chat_id"], "team_name": "Fourth team"},
+        json={"chat_id": user["chat_id"], "team_name": "CSKA"},
     )
+
     assert response.status_code == 402
-    assert response.json()["detail"] == {
-        "code": "payment_required",
-        "message": "Первые 3 команды бесплатны. Подписка на следующую команду стоит 39 ₽.",
-        "team_name": "Fourth team",
-        "price_rub": 39,
-    }
+    detail = response.json()["detail"]
+    assert detail["code"] == "payment_required"
+    assert detail["team_name"] == "CSKA"
+    assert detail["plans"] == [
+        {"code": "team_monthly", "amount_rub": 39},
+        {"code": "team_yearly", "amount_rub": 390},
+    ]
 
 
 def test_user_cannot_manage_another_users_subscriptions(client):
@@ -59,202 +62,118 @@ def test_user_cannot_manage_another_users_subscriptions(client):
         headers=auth_headers(first_user),
         json={"chat_id": second_user["chat_id"], "team_name": "CSKA"},
     )
+
     assert response.status_code == 403
 
 
-def test_checkout_creates_payment_for_a_team(client, monkeypatch):
-    user = register_user(client)
-    add_three_free_teams(client, user)
-    monkeypatch.setenv("APP_BASE_URL", "https://hockeyscrapper.example")
+def test_legacy_free_team_is_removed_and_now_requires_payment(client, db_session):
+    user = register_user(client, "legacy-free@example.com")
+    db_session.add(models.SubscriptionModel(chat_id=user["chat_id"], type="team", value="cska"))
+    db_session.commit()
 
-    captured = {}
-
-    def fake_create_payment(**kwargs):
-        captured.update(kwargs)
-        return {
-            "id": "provider-payment-1",
-            "status": "pending",
-            "confirmation": {"confirmation_url": "https://payment.example/checkout"},
-        }
-
-    monkeypatch.setattr(payments, "create_payment", fake_create_payment)
+    membership = client.get("/billing/me", headers=auth_headers(user))
     response = client.post(
-        "/billing/checkout",
+        "/subscription/toggle",
         headers=auth_headers(user),
-        json={
-            "team_name": "CSKA",
-            "enable_auto_renew": True,
-            "save_payment_method_consent": True,
-        },
+        json={"chat_id": user["chat_id"], "team_name": "CSKA"},
     )
+
+    assert membership.status_code == 200
+    assert membership.json()["team_subscription_count"] == 0
+    assert response.status_code == 402
+
+
+def test_billing_plans_are_monthly_and_yearly_mock_plans(client):
+    response = client.get("/billing/plans")
+
     assert response.status_code == 200
-    assert response.json()["checkout_url"] == "https://payment.example/checkout"
-    assert captured["amount"] == "39.00"
-    assert captured["description"] == "HockeyScrapper: подписка на CSKA"
-    assert captured["save_payment_method"] is True
+    data = response.json()
+    assert data["payment_mode"] == "mock"
+    assert data["free_team_limit"] == 0
+    assert data["plans"] == [
+        {
+            "code": "team_monthly",
+            "name": "Подписка на команду на месяц",
+            "amount_rub": 39,
+            "duration_days": 30,
+            "period_label": "месяц",
+        },
+        {
+            "code": "team_yearly",
+            "name": "Подписка на команду на год",
+            "amount_rub": 390,
+            "duration_days": 365,
+            "period_label": "год",
+        },
+    ]
 
 
-def test_first_paid_team_requires_payment_method_consent(client):
-    user = register_user(client, "consent-required@example.com")
-    add_three_free_teams(client, user)
+def test_monthly_mock_checkout_activates_first_team(client, db_session):
+    user = register_user(client, "monthly@example.com")
 
-    response = client.post(
-        "/billing/checkout",
-        headers=auth_headers(user),
-        json={"team_name": "CSKA"},
-    )
+    response = checkout(client, user, auto_renew=True)
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "succeeded"
+    assert data["plan_code"] == "team_monthly"
+    assert "Реальные деньги не списывались" in data["message"]
+
+    payment = db_session.query(models.PaymentModel).one()
+    assert payment.provider == "mock"
+    assert payment.amount_kopeks == 3900
+    assert payment.status == "succeeded"
+
+    subscription = db_session.query(models.PaidTeamSubscriptionModel).one()
+    assert subscription.team_name == "cska"
+    assert subscription.plan_code == "team_monthly"
+    assert subscription.auto_renew is True
+    assert timedelta(days=29) < subscription.expires_at - datetime.utcnow() <= timedelta(days=30)
+
+
+def test_yearly_mock_checkout_activates_team_for_a_year(client, db_session):
+    user = register_user(client, "yearly@example.com")
+
+    response = checkout(client, user, team="SKA", plan_code="team_yearly")
+
+    assert response.status_code == 200
+    payment = db_session.query(models.PaymentModel).one()
+    subscription = db_session.query(models.PaidTeamSubscriptionModel).one()
+    assert payment.amount_kopeks == 39000
+    assert subscription.plan_code == "team_yearly"
+    assert timedelta(days=364) < subscription.expires_at - datetime.utcnow() <= timedelta(days=365)
+
+
+def test_unknown_plan_is_rejected(client):
+    user = register_user(client, "unknown-plan@example.com")
+
+    response = checkout(client, user, plan_code="lifetime")
+
     assert response.status_code == 400
-    assert "сохранение способа оплаты" in response.json()["detail"]
+    assert response.json()["detail"] == "Unknown subscription plan"
 
 
-def test_next_paid_team_uses_users_saved_payment_method(client, db_session, monkeypatch):
-    user = register_user(client, "shared-card@example.com")
-    add_three_free_teams(client, user)
-    monkeypatch.setenv("APP_BASE_URL", "https://hockeyscrapper.example")
-    now = datetime.utcnow()
-    db_session.add(
-        models.BillingProfileModel(
-            chat_id=user["chat_id"],
-            payment_method_id="shared-card-1",
-            consented_at=now,
-            saved_at=now,
-        )
-    )
-    db_session.commit()
-    captured = {}
+def test_duplicate_active_team_cannot_be_purchased_again(client):
+    user = register_user(client, "duplicate@example.com")
+    assert checkout(client, user).status_code == 200
 
-    def fake_recurring_payment(**kwargs):
-        captured.update(kwargs)
-        return {"id": "provider-payment-shared", "status": "pending"}
+    response = checkout(client, user)
 
-    monkeypatch.setattr(payments, "create_recurring_payment", fake_recurring_payment)
-    response = client.post(
-        "/billing/checkout",
-        headers=auth_headers(user),
-        json={"team_name": "SKA", "enable_auto_renew": False},
-    )
-
-    assert response.status_code == 200
-    assert captured["payment_method_id"] == "shared-card-1"
-    assert response.json()["checkout_url"].startswith("https://hockeyscrapper.example/billing.html")
+    assert response.status_code == 409
+    assert response.json()["detail"] == "You are already subscribed to this team"
 
 
-def test_local_demo_checkout_activates_team_without_yookassa(client, monkeypatch):
-    user = register_user(client, "demo-billing@example.com")
-    add_three_free_teams(client, user)
-    monkeypatch.setenv("APP_BASE_URL", "http://127.0.0.1:8000")
-    monkeypatch.setenv("BILLING_DEMO_MODE", "true")
+def test_unsubscribe_keeps_paid_access_and_resubscribe_is_free(client):
+    user = register_user(client, "resubscribe@example.com")
+    assert checkout(client, user).status_code == 200
 
-    response = client.post(
-        "/billing/checkout",
-        headers=auth_headers(user),
-        json={
-            "team_name": "CSKA",
-            "enable_auto_renew": True,
-            "save_payment_method_consent": True,
-        },
-    )
-    assert response.status_code == 200
-    assert response.json()["checkout_url"].startswith("http://127.0.0.1:8000/billing.html?payment=success")
-
-    subscriptions = client.get(f"/subscriptions/{user['chat_id']}", headers=auth_headers(user))
-    assert "cska" in subscriptions.json()["subscriptions"]
-    paid = client.get("/billing/subscriptions", headers=auth_headers(user)).json()["subscriptions"][0]
-    assert paid["auto_renew"] is True
-
-
-def test_local_demo_can_enable_auto_renew_after_first_payment(client, db_session, monkeypatch):
-    user = register_user(client, "demo-toggle@example.com")
-    monkeypatch.setenv("APP_BASE_URL", "http://127.0.0.1:8000")
-    monkeypatch.setenv("BILLING_DEMO_MODE", "true")
-    db_session.add(
-        models.PaidTeamSubscriptionModel(
-            chat_id=user["chat_id"],
-            team_name="cska",
-            expires_at=datetime.utcnow() + timedelta(days=30),
-            auto_renew=False,
-        )
-    )
-    db_session.commit()
-
-    response = client.patch(
-        "/billing/subscriptions/cska/auto-renew",
-        headers=auth_headers(user),
-        json={"enabled": True},
-    )
-    assert response.status_code == 200
-    assert response.json()["auto_renew"] is True
-
-
-def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
-    user = register_user(client)
-    add_three_free_teams(client, user)
-    monkeypatch.setenv("APP_BASE_URL", "https://hockeyscrapper.example")
-
-    monkeypatch.setattr(
-        payments,
-        "create_payment",
-        lambda **kwargs: {
-            "id": "provider-payment-2",
-            "status": "pending",
-            "confirmation": {"confirmation_url": "https://payment.example/checkout"},
-        },
-    )
-    checkout = client.post(
-        "/billing/checkout",
-        headers=auth_headers(user),
-        json={
-            "team_name": "CSKA",
-            "enable_auto_renew": True,
-            "save_payment_method_consent": True,
-        },
-    )
-    assert checkout.status_code == 200
-    payment_id = checkout.json()["payment_id"]
-
-    monkeypatch.setattr(
-        payments,
-        "get_payment",
-        lambda provider_payment_id: {
-            "id": provider_payment_id,
-            "status": "succeeded",
-            "amount": {"value": "39.00", "currency": "RUB"},
-            "metadata": {"order_id": payment_id},
-            "payment_method": {"id": "saved-card-1", "saved": True},
-        },
-    )
-    webhook = client.post("/payments/yookassa/webhook", json={"object": {"id": "provider-payment-2"}})
-    assert webhook.status_code == 200
-
-    subscriptions = client.get(f"/subscriptions/{user['chat_id']}", headers=auth_headers(user))
-    assert subscriptions.status_code == 200
-    assert "cska" in subscriptions.json()["subscriptions"]
-    assert subscriptions.json()["membership"]["team_subscription_count"] == 4
-    assert subscriptions.json()["membership"]["paid_team_price_rub"] == 39
-    assert subscriptions.json()["membership"]["payment_method_saved"] is True
-
-    paid_subscriptions = client.get("/billing/subscriptions", headers=auth_headers(user))
-    assert paid_subscriptions.status_code == 200
-    paid_team = paid_subscriptions.json()["subscriptions"][0]
-    assert paid_team["team_name"] == "cska"
-    assert paid_team["is_active"] is True
-    assert paid_team["auto_renew"] is True
-    assert paid_team["can_enable_auto_renew"] is True
-
-    disable_auto_renew = client.patch(
-        "/billing/subscriptions/cska/auto-renew",
-        headers=auth_headers(user),
-        json={"enabled": False},
-    )
-    assert disable_auto_renew.json()["auto_renew"] is False
-
-    # Unsubscribing only disables notifications while the monthly subscription is active.
     unsubscribe = client.post(
         "/subscription/toggle",
         headers=auth_headers(user),
         json={"chat_id": user["chat_id"], "team_name": "CSKA"},
     )
     assert unsubscribe.status_code == 200
+    assert unsubscribe.json()["status"] == "removed"
 
     resubscribe = client.post(
         "/subscription/toggle",
@@ -262,114 +181,93 @@ def test_verified_webhook_adds_paid_team_subscription(client, monkeypatch):
         json={"chat_id": user["chat_id"], "team_name": "CSKA"},
     )
     assert resubscribe.status_code == 200
-    subscriptions = client.get(f"/subscriptions/{user['chat_id']}", headers=auth_headers(user))
-    assert "cska" in subscriptions.json()["subscriptions"]
+    assert resubscribe.json()["status"] == "added"
 
-    # A paid team does not occupy a free slot: replacing a free team is still free.
-    remove_free_team = client.post(
-        "/subscription/toggle",
+
+def test_paid_subscription_list_contains_plan_and_expiry(client):
+    user = register_user(client, "list@example.com")
+    assert checkout(client, user, plan_code="team_yearly").status_code == 200
+
+    response = client.get("/billing/subscriptions", headers=auth_headers(user))
+
+    assert response.status_code == 200
+    subscription = response.json()["subscriptions"][0]
+    assert subscription["team_name"] == "cska"
+    assert subscription["plan_code"] == "team_yearly"
+    assert subscription["price_rub"] == 390
+    assert subscription["period_label"] == "год"
+    assert subscription["is_active"] is True
+
+
+def test_auto_renew_can_be_enabled_and_disabled_without_payment_method(client):
+    user = register_user(client, "auto-renew@example.com")
+    assert checkout(client, user).status_code == 200
+
+    enabled = client.patch(
+        "/billing/subscriptions/cska/auto-renew",
         headers=auth_headers(user),
-        json={"chat_id": user["chat_id"], "team_name": "Team 0"},
+        json={"enabled": True},
     )
-    assert remove_free_team.status_code == 200
-    replacement = client.post(
-        "/subscription/toggle",
+    disabled = client.patch(
+        "/billing/subscriptions/cska/auto-renew",
         headers=auth_headers(user),
-        json={"chat_id": user["chat_id"], "team_name": "Replacement team"},
+        json={"enabled": False},
     )
-    assert replacement.status_code == 200
+
+    assert enabled.status_code == 200
+    assert enabled.json()["auto_renew"] is True
+    assert disabled.status_code == 200
+    assert disabled.json()["auto_renew"] is False
 
 
-def test_expired_paid_team_subscription_stops_notifications(client, db_session):
-    user = register_user(client)
-    add_three_free_teams(client, user)
+def test_expired_subscription_without_auto_renew_stops_notifications(client, db_session):
+    user = register_user(client, "expired@example.com")
     db_session.add(models.SubscriptionModel(chat_id=user["chat_id"], type="team", value="cska"))
     db_session.add(
         models.PaidTeamSubscriptionModel(
             chat_id=user["chat_id"],
             team_name="cska",
-            expires_at=datetime.utcnow() - timedelta(minutes=1),
+            plan_code="team_monthly",
+            expires_at=datetime.utcnow() - timedelta(days=1),
             auto_renew=False,
         )
     )
     db_session.commit()
 
-    response = client.post(
-        "/subscription/toggle",
-        headers=auth_headers(user),
-        json={"chat_id": user["chat_id"], "team_name": "CSKA"},
-    )
-    assert response.status_code == 402
-    subscriptions = client.get(f"/subscriptions/{user['chat_id']}", headers=auth_headers(user))
-    assert "cska" not in subscriptions.json()["subscriptions"]
+    response = client.get(f"/subscriptions/{user['chat_id']}", headers=auth_headers(user))
+
+    assert response.status_code == 200
+    assert "cska" not in response.json()["subscriptions"]
 
 
-def test_due_auto_renewal_creates_yookassa_payment(db_session, monkeypatch):
-    now = datetime.utcnow()
-    db_session.add(
-        models.BillingProfileModel(
-            chat_id=99,
-            payment_method_id="saved-card-1",
-            consented_at=now,
-            saved_at=now,
-        )
+def test_due_yearly_auto_renewal_is_simulated(client, db_session):
+    user = register_user(client, "due-renewal@example.com")
+    db_session.add(models.SubscriptionModel(chat_id=user["chat_id"], type="team", value="ska"))
+    subscription = models.PaidTeamSubscriptionModel(
+        chat_id=user["chat_id"],
+        team_name="ska",
+        plan_code="team_yearly",
+        expires_at=datetime.utcnow() - timedelta(minutes=1),
+        auto_renew=True,
     )
-    db_session.add(
-        models.PaidTeamSubscriptionModel(
-            chat_id=99,
-            team_name="cska",
-            expires_at=datetime.utcnow() - timedelta(minutes=1),
-            auto_renew=True,
-        )
-    )
+    db_session.add(subscription)
     db_session.commit()
-    captured = {}
 
-    def fake_recurring_payment(**kwargs):
-        captured.update(kwargs)
-        return {"id": "renewal-payment-1", "status": "pending"}
-
-    monkeypatch.setattr(payments, "create_recurring_payment", fake_recurring_payment)
     result = process_due_renewals(db_session)
 
+    db_session.refresh(subscription)
+    payment = db_session.query(models.PaymentModel).one()
     assert result["renewals_started"] == 1
-    assert captured["amount"] == "39.00"
-    assert captured["payment_method_id"] == "saved-card-1"
-    payment = db_session.query(models.PaymentModel).filter(
-        models.PaymentModel.provider_payment_id == "renewal-payment-1"
-    ).first()
-    assert payment.plan_code == "team_subscription_renewal"
+    assert payment.provider == "mock"
+    assert payment.amount_kopeks == 39000
+    assert payment.status == "succeeded"
+    assert timedelta(days=364) < subscription.expires_at - datetime.utcnow() <= timedelta(days=365)
 
 
-def test_webhook_rejects_payment_with_wrong_order(client, monkeypatch):
-    user = register_user(client)
-    add_three_free_teams(client, user)
-    monkeypatch.setenv("APP_BASE_URL", "https://hockeyscrapper.example")
-    monkeypatch.setattr(
-        payments,
-        "create_payment",
-        lambda **kwargs: {
-            "id": "provider-payment-3",
-            "status": "pending",
-            "confirmation": {"confirmation_url": "https://payment.example/checkout"},
-        },
-    )
-    response = client.post(
+def test_billing_endpoints_require_authentication(client):
+    assert client.get("/billing/me").status_code in {401, 403}
+    assert client.get("/billing/subscriptions").status_code in {401, 403}
+    assert client.post(
         "/billing/checkout",
-        headers=auth_headers(user),
-        json={"team_name": "CSKA", "save_payment_method_consent": True},
-    )
-    assert response.status_code == 200
-
-    monkeypatch.setattr(
-        payments,
-        "get_payment",
-        lambda provider_payment_id: {
-            "id": provider_payment_id,
-            "status": "succeeded",
-            "amount": {"value": "39.00", "currency": "RUB"},
-            "metadata": {"order_id": "someone-elses-order"},
-        },
-    )
-    webhook = client.post("/payments/yookassa/webhook", json={"object": {"id": "provider-payment-3"}})
-    assert webhook.status_code == 400
+        json={"team_name": "CSKA", "plan_code": "team_monthly"},
+    ).status_code in {401, 403}

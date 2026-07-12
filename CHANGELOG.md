@@ -1,3 +1,12 @@
+## [Unreleased]
+
+### Changed
+
+- Align monetization with Week 6 customer feedback: every team is paid separately from the first subscription.
+- Add 39 RUB monthly and 390 RUB yearly mock subscription plans.
+- Replace YooKassa integration and payment-method storage with an explicit educational mock-payment flow.
+- Keep per-team auto-renewal as a mock setting and update billing documentation and UAT scenarios.
+
 ## [1.3.1] - 2026-07-03
 
 ### Bug Fixes

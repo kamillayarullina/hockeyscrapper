@@ -36,9 +36,9 @@ total:17 SP
 
 | Change | Issue/PR | Summary |
 |---|---|---|
-| Monetisation Backend | [#228](https://github.com/kamillayarullina/hockeyscrapper/issues/228) | Backend implementation for subscription tiers or payment integration |
-| Monetisation Frontend | [#229](https://github.com/kamillayarullina/hockeyscrapper/issues/229) | Frontend pages for monetisation — pricing, checkout, subscription management |
-| Monetisation (US-06) | [#63](https://github.com/kamillayarullina/hockeyscrapper/issues/63) | Full monetisation user story — subscription tiers, payment processing |
+| Monetisation Backend | [#228](https://github.com/kamillayarullina/hockeyscrapper/issues/228) | Per-team mock subscriptions from the first team, with monthly and yearly periods |
+| Monetisation Frontend | [#229](https://github.com/kamillayarullina/hockeyscrapper/issues/229) | Mock checkout, plan selection, expiry dates, and per-team auto-renewal management |
+| Monetisation (US-06) | [#63](https://github.com/kamillayarullina/hockeyscrapper/issues/63) | Customer-approved mock-only flow: 39 RUB/month or 390 RUB/year per team |
 | Parsing time validation | [#230](https://github.com/kamillayarullina/hockeyscrapper/issues/230) | Frontend and backend validation for parsing time input in admin panel (range 1–999) |
 | Parser improvements | [#231](https://github.com/kamillayarullina/hockeyscrapper/issues/231) | Improved parsing of individual KHL club websites, better CAPTCHA bypass |
 | Password improvement | [#232](https://github.com/kamillayarullina/hockeyscrapper/issues/232) | Password strength requirements display on registration page, stronger backend validation |
@@ -59,7 +59,7 @@ total:17 SP
 
 ## Customer-Facing Documentation Review
 
--будет
+During the Week 6 meeting, the team walked the customer through the repository README, run instructions, architecture/testing documentation, and the customer-handover document. The customer did not request documentation changes during the call and planned to review the updated hosted version later. The monetisation documentation was updated after the meeting to record the mock-only payment decision and the monthly/yearly per-team plans.
 
 ---
 
@@ -74,6 +74,7 @@ total:17 SP
 | VPS access handover | Not started | Provide SSH access or migrate to customer infrastructure |
 | Backup/recovery documentation | Not started | Document SQLite and PostgreSQL backup steps |
 | Final UAT walkthrough | Planned | Conduct final UAT session with customer to sign off |
+| Payment-provider account | Not required | Keep monetisation as a clearly labelled educational mock, per customer decision |
 
 ---
 
@@ -81,7 +82,9 @@ total:17 SP
 
 | Feedback point | Resulting PBI or issue | Status | Response |
 |---|---|---|---|
-| Customer requested monetisation features | [#63](https://github.com/kamillayarullina/hockeyscrapper/issues/63), [#228](https://github.com/kamillayarullina/hockeyscrapper/issues/228), [#229](https://github.com/kamillayarullina/hockeyscrapper/issues/229) | In Progress | Monetisation backend and frontend implemented with subscription tiers |
+| Every team must be paid, including the first | [#63](https://github.com/kamillayarullina/hockeyscrapper/issues/63), [#228](https://github.com/kamillayarullina/hockeyscrapper/issues/228), [#229](https://github.com/kamillayarullina/hockeyscrapper/issues/229) | Implemented | Removed the three-free-team rule; each team has its own subscription |
+| Do not connect real YooKassa/YooMoney payments | [#228](https://github.com/kamillayarullina/hockeyscrapper/issues/228), [#229](https://github.com/kamillayarullina/hockeyscrapper/issues/229) | Implemented | Checkout explicitly simulates success and never charges money or requests card data |
+| Offer monthly and yearly periods | [#63](https://github.com/kamillayarullina/hockeyscrapper/issues/63) | Implemented | Added 39 RUB/30-day and 390 RUB/365-day plans per team |
 | Parsing time should be validated (1–999 range) | [#230](https://github.com/kamillayarullina/hockeyscrapper/issues/230) | In Progress | Input validation added to admin panel settings |
 | Parser does not handle some individual KHL club sites | [#231](https://github.com/kamillayarullina/hockeyscrapper/issues/231) | In Progress | Extended parser coverage for individual club websites |
 | Password requirements should be visible to users | [#232](https://github.com/kamillayarullina/hockeyscrapper/issues/232) | In Progress | Password strength requirements displayed on registration page |
@@ -100,7 +103,7 @@ total:17 SP
 | Quality Requirements | [`docs/quality-requirements.md`](../../docs/quality-requirements.md) | Unchanged (5 QRs stable) |
 | Quality Requirement Tests | [`docs/quality-requirement-tests.md`](../../docs/quality-requirement-tests.md) | Unchanged (5 QRTs stable) |
 | Testing Strategy | [`docs/testing.md`](../../docs/testing.md) | Updated with new test files and coverage targets |
-| User Acceptance Tests | [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md) | 6 UAT scenarios remain active (all passed) |
+| User Acceptance Tests | [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md) | Historical free-subscription UAT marked superseded; mock monetisation UAT added for MVP v3 |
 | Architecture Documentation | [`docs/architecture/README.md`](../../docs/architecture/README.md) | Unchanged |
 | Development Process | [`docs/development-process.md`](../../docs/development-process.md) | Unchanged |
 | Definition of Done | [`docs/definition-of-done.md`](../../docs/definition-of-done.md) | Unchanged |
@@ -111,7 +114,7 @@ total:17 SP
 
 ## UAT / Customer-Trial Results
 
-All 6 UAT scenarios were executed and passed on 3 July 2026 (Week 5). No new UAT scenarios were added in Week 6.
+Six historical UAT scenarios were executed on 3 July 2026 (Week 5). UAT-001 is now superseded because the customer clarified that the first team must be paid. UAT-007 was added for the revised mock monetisation flow and remains to be executed in Week 7.
 
 | UAT | Description | Result | Executed by |
 |---|---|---|---|
@@ -121,6 +124,7 @@ All 6 UAT scenarios were executed and passed on 3 July 2026 (Week 5). No new UAT
 | UAT-004 | Manage parsing time (admin) | Pass | Daniil |
 | UAT-005 | Add proxy (admin) | Pass | Daniil |
 | UAT-006 | Upload avatar | Pass | Daniil |
+| UAT-007 | Monthly/yearly mock subscription for a team | Not executed | Not assigned |
 
 Full details: [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests.md)
 
@@ -156,7 +160,7 @@ Full details: [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests
 
 ## Product Status and Expected Week 7 Follow-Up Work
 
-**Current state:** Sprint 4 (trial release) in progress. Monetisation backend and frontend under active development, parser improvements for individual KHL websites being implemented, parsing time validation and password improvement features being finalised.
+**Current state:** The Week 6 customer trial confirmed the visual direction of monetisation and changed its business rules. The implementation now charges every team from the first subscription, offers monthly and yearly periods, and uses no real payment provider. The customer identified parser-driven ticket-availability notifications as the main remaining readiness blocker.
 
 
 **Expected Week 7 follow-up work:**

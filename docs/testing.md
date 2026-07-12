@@ -23,6 +23,7 @@ All test assets are maintained in the `tests/` directory:
 * `tests/test_security.py` — Unit tests for password hashing correctness and hash matching (`bcrypt`).
 * `tests/test_team_matcher.py` — Unit tests for team name normalization and extraction logic.
 * `tests/test_api_integration.py` — Integration tests for authentication flow and profile endpoints.
+* `tests/test_billing.py` — Integration tests for first-team payment enforcement, 39 RUB monthly and 390 RUB yearly mock plans, per-team access, expiry, resubscription, and mock auto-renewal.
 * `tests/test_fault_tolerance.py` — **[QRT-01]** Verifies the parser's retry mechanisms and isolation under network downtime (5xx errors).
 * `tests/test_auth_confidentiality.py` — **[QRT-02]** Verifies that secure API endpoints block unauthorized actors without JWT credentials.
 * `tests/test_notification_performance.py` — **[QRT-03]** Measures the speed of the notification matching service under load (50 matches simultaneously).

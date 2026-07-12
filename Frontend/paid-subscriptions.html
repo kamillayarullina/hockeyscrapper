@@ -12,8 +12,9 @@
     <main class="profile-container billing-container">
         <a class="back-link" href="main.html">К профилю</a>
         <p class="billing-eyebrow">МОИ ПОДПИСКИ</p>
-        <h1>Команды на месяц</h1>
-        <p class="billing-lead">Здесь указаны срок подписки и настройки автопродления для платных команд.</p>
+        <h1>Мои платные команды</h1>
+        <p class="billing-lead">Здесь указаны выбранный срок, дата окончания и учебная настройка автопродления.</p>
+        <div class="payment-notice">Учебный режим: реальные списания и платёжные сервисы не используются.</div>
         <section id="paidTeams" class="paid-teams-list" aria-live="polite">Загружаем подписки...</section>
     </main>
 
@@ -31,14 +32,16 @@
             });
         }
 
-        async function setAutoRenew(teamName, enabled, input, message) {
-            if (enabled && !window.confirm("Вы подтверждаете ежемесячное списание 39 ₽ за эту команду до отключения автопродления?")) {
+        async function setAutoRenew(subscription, enabled, input, message) {
+            if (enabled && !window.confirm(
+                `Включить учебное автопродление тарифа «${subscription.price_rub} ₽ на ${subscription.period_label}» для команды «${subscription.team_name}»? Реальные деньги не списываются.`
+            )) {
                 input.checked = false;
                 return;
             }
             input.disabled = true;
             try {
-                const response = await fetch(`/billing/subscriptions/${encodeURIComponent(teamName)}/auto-renew`, {
+                const response = await fetch(`/billing/subscriptions/${encodeURIComponent(subscription.team_name)}/auto-renew`, {
                     method: "PATCH",
                     headers: headers(),
                     body: JSON.stringify({ enabled })
@@ -54,12 +57,12 @@
             }
         }
 
-        function render(subscriptions, monthlyPrice) {
+        function render(subscriptions) {
             container.innerHTML = "";
             if (!subscriptions.length) {
                 const empty = document.createElement("article");
                 empty.className = "plan-card";
-                empty.innerHTML = "<h2>Платных подписок пока нет</h2><p>После трёх бесплатных команд здесь появятся команды, подключённые за 39 ₽ в месяц.</p>";
+                empty.innerHTML = "<h2>Платных подписок пока нет</h2><p>Выберите любую команду и оформите учебную подписку на месяц или год.</p>";
                 const link = document.createElement("a");
                 link.className = "btn plan-buy";
                 link.href = "sub.html";
@@ -82,7 +85,7 @@
                     : `Срок закончился ${formatDate(subscription.expires_at)}`;
                 const price = document.createElement("p");
                 price.className = "plan-period";
-                price.textContent = `${monthlyPrice} ₽ в месяц`;
+                price.textContent = `${subscription.price_rub} ₽ на ${subscription.period_label}`;
                 const message = document.createElement("p");
                 message.className = "auto-renew-status";
                 message.textContent = subscription.auto_renew
@@ -98,19 +101,13 @@
                     input.checked = subscription.auto_renew;
                     const text = document.createElement("span");
                     text.textContent = "Автопродление";
-                    input.addEventListener("change", () => setAutoRenew(subscription.team_name, input.checked, input, message));
+                    input.addEventListener("change", () => setAutoRenew(subscription, input.checked, input, message));
                     label.append(input, text);
                     card.append(label);
-                    if (!subscription.can_enable_auto_renew) {
-                        const hint = document.createElement("p");
-                        hint.className = "auto-renew-hint";
-                        hint.textContent = "При включении нужно будет привязать способ оплаты YooKassa.";
-                        card.append(hint);
-                    }
                 } else {
                     const link = document.createElement("a");
                     link.className = "btn plan-buy";
-                    link.href = "sub.html";
+                    link.href = `billing.html?team=${encodeURIComponent(subscription.team_name)}`;
                     link.textContent = "Подключить снова";
                     card.append(link);
                 }
@@ -133,11 +130,11 @@
                     return;
                 }
                 if (!response.headers.get("content-type")?.includes("application/json")) {
-                    throw new Error("Сервер вернул устаревшую страницу вместо данных. Обновите страницу ещё раз.");
+                    throw new Error("Сервер вернул страницу вместо данных. Перезапустите приложение и обновите страницу.");
                 }
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.detail || "Не удалось загрузить подписки");
-                render(data.subscriptions, data.monthly_price_rub);
+                render(data.subscriptions);
             } catch (error) {
                 container.textContent = error.message;
             }

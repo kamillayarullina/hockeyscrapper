@@ -1,7 +1,7 @@
-## UAT-001: Subscribe to a free team
+## UAT-001: Subscribe to a free team (superseded)
 **Linked to:** User Story US-01
 **Type:** old (mvp v1)
-**Status:** Active
+**Status:** Superseded by UAT-007 after Week 6 customer feedback
 
 **User goal:** 
 As a user, I want to use one of my three free team subscriptions, so that I can get notifications about matches with my favourite team without payment.
@@ -27,7 +27,7 @@ After all steps:
 **Result:** Pass
 **Executed by:** Daniil
 **Date:** 3.07.2026
-**Notes:** Change button "Back" to button "Save changes"
+**Notes:** Historical Week 5 result. The customer clarified in Week 6 that the first team must also require a paid plan, so this scenario is no longer valid for MVP v3.
 
 ## UAT-002: Unsubscribe team
 **Linked to:** User Story US-01
@@ -175,44 +175,43 @@ After all steps:
 **Date:** 3.07.2026
 **Notes:** All good, no chages
 
-## UAT-007: Purchase and manage a monthly team subscription
+## UAT-007: Purchase and manage a mock team subscription
 **Linked to:** User Story US-06, Monetisation Backend, Monetisation Frontend
 **Type:** new (mvp v3)
 **Status:** Active
 
 **User goal:**
-As a user who already uses all three free team subscriptions, I want to purchase a 30-day subscription for a specific additional team and manage its auto-renewal.
+As a user, I want to choose a monthly or yearly mock subscription for a specific team and manage its auto-renewal.
 
 **Preconditions:**
 - User is logged in on the website
-- User already has three active free team subscriptions
-- User is not subscribed to the additional team
-- For a production test, YooKassa is configured and available
-- For a local UI test, the application is running with `BILLING_DEMO_MODE=true`
+- User is not subscribed to the selected team and has no active paid period for it
+- The application is running; no payment-provider configuration is required
 
 **Step-by-step instructions:**
 1. User opens the team subscription management page
-2. User pushes "Subscribe" for a fourth team
+2. User pushes "Subscribe" for the first team
 3. The website opens the payment page for that specific team
-4. User sees the price of 39 RUB and a subscription period of 30 days
-5. On the first paid purchase, user accepts saving the payment method in YooKassa; enabling auto-renewal is optional
-6. User pushes "Pay 39 RUB" and completes the payment
+4. User sees two options: 39 RUB for 30 days and 390 RUB for 365 days
+5. User optionally enables auto-renewal for the selected plan
+6. User pushes the mock-payment button and confirms the educational notice
 7. User opens the "My paid teams" page
 8. User switches auto-renewal for this team on or off
 9. User unsubscribes from notifications for the paid team and then subscribes to the same team again before the paid period expires
 
 **Expected outcome:**
-- The fourth team is not added before a successful payment is confirmed
-- The payment applies only to the team selected by the user
-- After successful payment, the team is active for 30 days and appears in the user's subscriptions
-- The paid team appears on the "My paid teams" page with its expiry date, price, and auto-renewal setting
+- The first team is not added before the user confirms a mock plan
+- The mock payment applies only to the team selected by the user
+- The interface clearly states that no real money is charged and no card details are requested
+- The monthly option activates the team for 30 days; the yearly option activates it for 365 days
+- The paid team appears on the "My paid teams" page with its plan, expiry date, price, and auto-renewal setting
 - Auto-renewal can be enabled or disabled separately for each paid team
-- The payment method saved during the first paid purchase can be reused for later team purchases and auto-renewals without entering the card again
+- Auto-renewal is simulated without an external payment provider
 - Unsubscribing stops notifications but does not delete the active paid period
 - Resubscribing to the same paid team before its expiry does not require another payment
-- A paid team does not consume one of the user's three free team slots
+- A different team always requires its own mock subscription, including the user's first team
 
 **Result:** Not executed
 **Executed by:** Not assigned
 **Date:** Not executed
-**Notes:** Production payment acceptance must be tested with YooKassa test credentials. Local demo mode verifies only the HockeyScrapper interface and application logic; it does not verify the real YooKassa integration.
+**Notes:** This is intentionally a mock-only course flow approved by the customer during the Week 6 trial meeting. There is no YooKassa integration to verify.

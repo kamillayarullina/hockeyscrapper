@@ -1,49 +1,44 @@
 # Monetization
 
-HockeyScrapper lets each user follow their first three teams for free. Every additional
-team costs 39 RUB per month. A paid team is added only after the backend verifies a
-successful YooKassa payment and remains active for 30 days.
+HockeyScrapper uses a mock per-team subscription model approved by the customer during the Week 6 trial meeting.
 
-Users can see their paid teams, expiry dates, and auto-renewal settings on
-`paid-subscriptions.html`. At the first paid-team checkout they must explicitly
-consent to YooKassa saving the payment method. The backend stores one YooKassa
-payment-method ID in the user's billing profile, never card data. The same method
-is then used for later team purchases and for any team whose auto-renewal is
-enabled; the card does not need to be linked again. Auto-renewal remains an
-independent setting for each team.
+## Customer Rules
 
-## Configure YooKassa
+- There are no free team subscriptions. The first team and every additional team require a separate subscription.
+- A subscription unlocks only the team selected by the user.
+- The monthly plan costs 39 RUB and lasts 30 days.
+- The yearly plan costs 390 RUB and lasts 365 days.
+- The yearly price is ten times the monthly price, as requested by the customer.
+- Users can unsubscribe from notifications without losing the remaining paid period. They can subscribe to the same team again before expiry without another mock payment.
+- Auto-renewal is configured separately for each team and can be enabled or disabled while the subscription is active.
 
-1. Create a YooKassa shop and first use its test credentials.
-2. Set `YOOKASSA_SHOP_ID`, `YOOKASSA_SECRET_KEY`, and the public HTTPS `APP_BASE_URL` in the deployment environment.
-3. In the YooKassa dashboard, register `https://<your-domain>/payments/yookassa/webhook` for `payment.succeeded` and `payment.canceled`.
-4. Tell your YooKassa manager that the shop will use auto-payments and make sure the
-   shop is approved for them. YooKassa requires both this and the user's consent.
-5. Make a test payment for a fourth team and accept the separate payment-method
-   saving consent. The auto-renewal checkbox is optional. After YooKassa confirms
-   that the method was saved, later paid teams can use the same method.
-6. Schedule the following command on the production server once per hour:
+## Mock Payment Flow
 
-   ```bash
-   python -m Backend.renewals
-   ```
+No real payment provider is connected. The checkout page clearly tells the user that the operation is educational and that no money will be charged. After the user confirms the mock payment, the backend immediately:
 
-   The command starts due auto-renewal payments and turns off notifications for
-   expired subscriptions without auto-renewal. The YooKassa webhook confirms every
-   successful renewal before the next 30 days are granted.
+1. records a successful mock payment;
+2. activates the selected team for the selected period;
+3. adds the team to notification subscriptions;
+4. stores the auto-renewal preference.
 
-Never put YooKassa keys in frontend files or Git. The user is redirected to YooKassa for card entry, so HockeyScrapper does not process or store card data.
+The system does not request bank-card details, save a payment method, redirect to YooKassa or require payment credentials. `APP_BASE_URL`, `YOOKASSA_SHOP_ID`, `YOOKASSA_SECRET_KEY`, webhooks and `BILLING_DEMO_MODE` are not part of this implementation.
 
-## Local Demo
+## Mock Auto-Renewal
 
-To review the interface without YooKassa credentials, start the application with:
+The command below processes expired subscriptions:
 
-```powershell
-$env:APP_BASE_URL = "http://127.0.0.1:8000"
-$env:BILLING_DEMO_MODE = "true"
-.\.venv\Scripts\python.exe -m uvicorn Backend.main:app --host 127.0.0.1 --port 8000
+```bash
+python -m Backend.renewals
 ```
 
-The demo mode only works for `localhost` or `127.0.0.1`. Each checkout is marked as
-successful without contacting YooKassa or charging money. Never enable it on a
-public server.
+For an expired subscription with auto-renewal enabled, it creates a successful mock renewal and extends the same monthly or yearly plan. For an expired subscription without auto-renewal, it stops team notifications. No external charge is attempted in either case.
+
+## Run Locally
+
+No billing-specific environment variables are needed:
+
+```powershell
+.\.venv\Scripts\python.exe -m main --api-only
+```
+
+Open `http://127.0.0.1:8000`, log in, choose a team and press `Подписаться`. The checkout page lets you choose the monthly or yearly mock plan.

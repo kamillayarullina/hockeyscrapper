@@ -36,9 +36,12 @@ HockeyScrapper is a KHL hockey ticket monitoring system. It scrapes ticket avail
 1. Open the web dashboard at your deployment URL.
 2. Register an account (email + password).
 3. Log in — a JWT token is issued for the session.
-4. Navigate to **Manage Subscriptions** and select KHL teams to follow.
-5. On the profile page, optionally upload an avatar or link a Telegram account via a one-time code.
-6. Receive Telegram notifications when tickets for subscribed teams appear, change price, or sell out.
+4. Navigate to **Manage Subscriptions** and select a KHL team to follow.
+5. Choose a mock subscription for that team: 39 RUB for 30 days or 390 RUB for 365 days.
+6. Confirm the educational mock payment. No real money is charged and no card details are requested.
+7. Manage expiry dates and per-team auto-renewal on **My paid teams**.
+8. On the profile page, optionally upload an avatar or link a Telegram account via a one-time code.
+9. Receive Telegram notifications when tickets for subscribed teams appear, change price, or sell out.
 
 ### End Users (Telegram Bot)
 
@@ -97,6 +100,8 @@ Open `http://localhost:8000` in a browser.
 | `MAIL_USERNAME` | Web only | SMTP login for password recovery | Your email address |
 | `MAIL_PASSWORD` | Web only | SMTP app password for recovery | Your email provider's app password |
 | `ADMIN_CHAT_ID` | Worker only | Telegram chat for admin alerts | Your Telegram chat ID (get from @userinfobot) |
+
+Billing does not require environment variables or external payment accounts. The customer explicitly requested a mock-only flow for the course version; YooKassa and YooMoney are not connected.
 
 ### Secrets-Handling Rules
 

@@ -37,6 +37,8 @@ async def cmd_start(message: Message):
         f"Я бот для отслеживания хоккейных билетов. "
         f"Подпишись на любимые команды КХЛ и получай уведомления, "
         f"как только появятся билеты на их матчи!\n\n"
+        f"Каждая команда подключается на сайте через учебную подписку: "
+        f"39 ₽ на месяц или 390 ₽ на год. Реальные деньги не списываются.\n\n"
         f"📋 <b>Команды для управления:</b>\n"
         f"• /subscribe <code>ЦСКА</code> — подписаться на команду\n"
         f"• /unsubscribe <code>ЦСКА</code> — отписаться\n"
@@ -55,8 +57,8 @@ async def cmd_help(message: Message):
     """Справка."""
     text = (
         "🤖 <b>Как пользоваться ботом:</b>\n\n"
-        "1️⃣ Подпишитесь на команды: /subscribe <code>ЦСКА</code>\n"
-        "2️⃣ Можете подписаться на несколько команд\n"
+        "1️⃣ Оформите учебную подписку на команду на сайте\n"
+        "2️⃣ Подключите уведомления: /subscribe <code>ЦСКА</code>\n"
         "3️⃣ Как только появятся билеты на матч с вашей командой — "
         "я пришлю вам уведомление с ценой и ссылкой\n\n"
         "📋 <b>Команды:</b>\n"
@@ -95,6 +97,15 @@ async def cmd_subscribe(message: Message):
         return
 
     db = get_db()
+
+    if not await db.has_active_paid_team_subscription(message.from_user.id, team_canonical):
+        website = os.getenv("DEPLOY_URL", "http://127.0.0.1:8000").rstrip("/")
+        await message.answer(
+            "Для каждой команды нужна отдельная учебная подписка: "
+            "39 ₽ на месяц или 390 ₽ на год. Реальные деньги не списываются.\n"
+            f"Оформить подписку: {website}/sub.html"
+        )
+        return
 
     # Подписка на команду
     is_new_team = await db.subscribe(message.from_user.id, "team", team_canonical.lower())
@@ -272,7 +283,7 @@ async def cmd_teams(message: Message):
     text = (
         f"🏒 <b>Доступные команды ({len(teams)}):</b>\n\n"
         f"{teams_list}\n\n"
-        f"Подписаться: /subscribe <code>ЦСКА</code>"
+        f"После оформления учебной подписки: /subscribe <code>ЦСКА</code>"
     )
     await message.answer(text)
 

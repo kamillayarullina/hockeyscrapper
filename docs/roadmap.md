@@ -43,5 +43,17 @@
   - [PBI] Implement a backend for uploading avatars - https://github.com/kamillayarullina/hockeyscrapper/issues/191
   - [PBI] Improve the design of register and login pages - https://github.com/kamillayarullina/hockeyscrapper/issues/199
 
+## Sprint 4 (MVP v3 trial)
+- **Dates:** July 6, 2026 — July 12, 2026
+- **Sprint Goal:** Deliver a stable customer trial with monetisation, parser improvements, parsing-time validation, and clearer password feedback.
+- **Focus:** Customer trial and transition readiness.
+- **Link to the Sprint Milestone:** https://github.com/kamillayarullina/hockeyscrapper/milestone/4
+- **Customer-confirmed monetisation outcome:**
+  - Every team is paid separately from the first team.
+  - Plans are 39 RUB for 30 days and 390 RUB for 365 days.
+  - Payment is intentionally mocked; no YooKassa or YooMoney account is required.
+  - Per-team expiry and mock auto-renewal management remain available.
+- **Week 7 follow-up:** Complete the parser-driven ticket-availability notifications identified by the customer as the main transition blocker, execute UAT-007, and deploy a stable final build.
+
 
 

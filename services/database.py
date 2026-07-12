@@ -131,6 +131,22 @@ class Database:
             except aiosqlite.IntegrityError:
                 return False
 
+    async def has_active_paid_team_subscription(self, chat_id: int, team_name: str) -> bool:
+        """Return whether a team is unlocked by an unexpired mock paid plan."""
+        async with aiosqlite.connect(self.db_path) as db:
+            async with db.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type = 'table' "
+                    "AND name = 'paid_team_subscriptions'",
+            ) as cursor:
+                if not await cursor.fetchone():
+                    return False
+            async with db.execute(
+                    "SELECT 1 FROM paid_team_subscriptions "
+                    "WHERE chat_id = ? AND team_name = ? AND expires_at > CURRENT_TIMESTAMP",
+                    (chat_id, team_name.lower().strip()),
+            ) as cursor:
+                return await cursor.fetchone() is not None
+
     async def unsubscribe(self, chat_id: int, sub_type: str, value: str) -> bool:
         value = value.lower().strip()
         async with aiosqlite.connect(self.db_path) as db:

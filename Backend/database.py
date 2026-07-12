@@ -59,13 +59,23 @@ def ensure_schema() -> None:
     payment_additions = {
         "team_name": "VARCHAR",
         "auto_renew_requested": "BOOLEAN DEFAULT 0",
-        "save_payment_method_requested": "BOOLEAN DEFAULT 0",
     }
     if "payments" in inspector.get_table_names():
         with engine.begin() as connection:
             for column, definition in payment_additions.items():
                 if column not in payment_columns:
                     connection.execute(text(f"ALTER TABLE payments ADD COLUMN {column} {definition}"))
+
+    if "paid_team_subscriptions" in inspector.get_table_names():
+        subscription_columns = {
+            column["name"] for column in inspector.get_columns("paid_team_subscriptions")
+        }
+        if "plan_code" not in subscription_columns:
+            with engine.begin() as connection:
+                connection.execute(text(
+                    "ALTER TABLE paid_team_subscriptions "
+                    "ADD COLUMN plan_code VARCHAR DEFAULT 'team_monthly'"
+                ))
 
 
 def get_db():
