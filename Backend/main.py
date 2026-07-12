@@ -119,6 +119,14 @@ class LinkCodeRequest(BaseModel):
     chat_id: int
 
 
+FREE_TEAM_LIMIT = 3
+PAID_TEAM_PRICE_KOPEKS = 3900
+PAID_TEAM_PRICE_RUB = PAID_TEAM_PRICE_KOPEKS // 100
+TEAM_SUBSCRIPTION_PAYMENT = "team_subscription"
+TEAM_SUBSCRIPTION_RENEWAL = "team_subscription_renewal"
+TEAM_SUBSCRIPTION_DAYS = 30
+
+
 class CheckoutRequest(BaseModel):
     team_name: str
     plan_code: str = TEAM_SUBSCRIPTION_PAYMENT
@@ -128,14 +136,6 @@ class CheckoutRequest(BaseModel):
 
 class AutoRenewRequest(BaseModel):
     enabled: bool
-
-
-FREE_TEAM_LIMIT = 3
-PAID_TEAM_PRICE_KOPEKS = 3900
-PAID_TEAM_PRICE_RUB = PAID_TEAM_PRICE_KOPEKS // 100
-TEAM_SUBSCRIPTION_PAYMENT = "team_subscription"
-TEAM_SUBSCRIPTION_RENEWAL = "team_subscription_renewal"
-TEAM_SUBSCRIPTION_DAYS = 30
 
 
 def _get_authenticated_user(payload: dict, db: Session) -> models.UserModel:
