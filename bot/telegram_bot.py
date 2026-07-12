@@ -178,7 +178,7 @@ async def cmd_list(message: Message):
     if venues:
         text += f"<b>🏟 Стадионы ({len(venues)}):</b>\n"
         for v in venues:
-            text += f"• {escape(v.title())}\n"
+            text += f"• {escape(_capitalize_russian(v))}\n"
 
     text += "\nЧтобы отписаться: /unsubscribe <code>ЦСКА</code>"
 
@@ -290,6 +290,21 @@ async def cmd_stats(message: Message):
         f"🎟 Матчей в базе: <b>{stats['matches']}</b>"
     )
     await message.answer(text)
+
+
+def _capitalize_russian(name: str) -> str:
+    words = name.split()
+    if not words:
+        return name
+    result = []
+    for w in words:
+        if w and len(w) > 1 and w[0].isalpha():
+            result.append(w[0].upper() + w[1:])
+        elif w and len(w) == 1:
+            result.append(w.upper())
+        else:
+            result.append(w)
+    return " ".join(result)
 
 
 def _is_admin(chat_id: int) -> bool:
@@ -447,7 +462,9 @@ async def cmd_admin_run(message: Message):
         return
     await message.answer("⏳ Запуск принудительного цикла парсинга...")
     from services.parser_runner import ParserRunner
-    runner = ParserRunner()
+    import os as _os
+    _base = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+    runner = ParserRunner(config_path=_os.path.join(_base, "config", "sites.yaml"))
     await runner.load_config()
     await runner.run_cycle()
     await message.answer("✅ Цикл парсинга завершён.")

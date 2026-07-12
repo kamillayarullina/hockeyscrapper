@@ -77,10 +77,13 @@
         }
 
         async function loadSubscriptions() {
+            const token = localStorage.getItem("token");
             await resolveChatId();
             if (!chatId) { render(); return; }
             try {
-                const r = await fetch(`${API}/subscriptions/${chatId}`);
+                const r = await fetch(`${API}/subscriptions/${chatId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
                 if (!r.ok) { render(); return; }
                 const data = await r.json();
                 subscriptions = data.subscriptions || [];
@@ -134,20 +137,23 @@
         }
 
         async function toggleSubscription(team) {
+            const token = localStorage.getItem("token");
             await resolveChatId();
             if (!chatId) { showSubError("Авторизуйтесь"); return; }
             try {
                 const r = await fetch(`${API}/subscription/toggle`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                     body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
                 });
                 const result = await r.json();
                 if (r.ok) {
                     document.getElementById('subError').classList.remove('visible');
                     await loadSubscriptions();
+                } else if (r.status === 402 && result.detail && result.detail.team_name) {
+                    window.location.href = `billing.html?team=${encodeURIComponent(result.detail.team_name)}`;
                 } else {
-                    showSubError(result.message || "Ошибка");
+                    showSubError((result.detail && result.detail.message) || result.message || "Ошибка");
                 }
             } catch (err) {
                 showSubError("Ошибка сети: " + err.message);

@@ -49,7 +49,9 @@ def create_payment(
         timeout=15.0,
     )
     if response.is_error:
-        raise PaymentProviderError("YooKassa could not create the payment")
+        raise PaymentProviderError(
+            f"YooKassa create_payment failed: HTTP {response.status_code} — {response.text[:200]}"
+        )
     return response.json()
 
 
@@ -76,7 +78,9 @@ def create_recurring_payment(
         timeout=15.0,
     )
     if response.is_error:
-        raise PaymentProviderError("YooKassa could not create the renewal payment")
+        raise PaymentProviderError(
+            f"YooKassa create_recurring_payment failed: HTTP {response.status_code} — {response.text[:200]}"
+        )
     return response.json()
 
 
@@ -88,5 +92,7 @@ def get_payment(provider_payment_id: str) -> dict[str, Any]:
         timeout=15.0,
     )
     if response.is_error:
-        raise PaymentProviderError("YooKassa could not verify the payment")
+        raise PaymentProviderError(
+            f"YooKassa get_payment failed: HTTP {response.status_code} — {response.text[:200]}"
+        )
     return response.json()

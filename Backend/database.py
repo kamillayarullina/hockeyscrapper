@@ -6,9 +6,12 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 logger = logging.getLogger(__name__)
 
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+_DEFAULT_DB_URL = f"sqlite:///{_PROJECT_ROOT / 'data' / 'tickets.db'}"
+
 DATABASE_URL = os.environ.get(
     "DATABASE_URL",
-    "sqlite:///data/tickets.db"
+    _DEFAULT_DB_URL,
 )
 
 logger.info("DATABASE_URL = %s", DATABASE_URL)

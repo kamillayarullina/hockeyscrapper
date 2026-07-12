@@ -26,7 +26,7 @@ from Backend.database import engine, ensure_schema, get_db
 from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
 from Backend import payments
-from services.team_matcher import get_team_info
+from services.team_matcher import get_team_info, normalize_team_name
 
 test_code = {}
 _code_created_at = {}
@@ -43,8 +43,7 @@ Path("static/avatars").mkdir(parents=True, exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=os.getenv("CORS_ORIGINS", "*").split(","),
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -156,6 +155,8 @@ def _is_local_billing_demo() -> bool:
 
 
 def _membership(user: models.UserModel, db: Session) -> dict:
+    _disable_expired_nonrenewing_subscriptions(db)
+    db.commit()
     team_count = db.query(models.SubscriptionModel).filter(
         models.SubscriptionModel.chat_id == user.chat_id,
         models.SubscriptionModel.type == "team",
@@ -220,7 +221,8 @@ def _add_team_subscription(db: Session, chat_id: int, team_name: str) -> None:
     """Add the paid or free team and its venue subscription without committing."""
     team_value = team_name.strip().lower()
     db.add(models.SubscriptionModel(chat_id=chat_id, type="team", value=team_value))
-    team_info = get_team_info(team_name)
+    canonical_name = normalize_team_name(team_name) or team_name
+    team_info = get_team_info(canonical_name)
     if not team_info:
         return
 
@@ -406,10 +408,11 @@ def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed = get_password_hash(user_data.password)
-    for attempt in range(3):
+    import time as _time
+    for attempt in range(10):
         try:
-            min_chat = db.query(models.UserModel.chat_id).order_by(models.UserModel.chat_id.asc()).first()
-            new_chat_id = (min_chat[0] - 1) if (min_chat and min_chat[0] < 0) else -1
+            min_chat = db.query(func.min(models.UserModel.chat_id)).scalar()
+            new_chat_id = (min_chat - 1) if (min_chat is not None and min_chat < 0) else -1
 
             user = models.UserModel(
                 chat_id=new_chat_id,
@@ -424,8 +427,9 @@ def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
             break
         except IntegrityError:
             db.rollback()
-            if attempt == 2:
+            if attempt == 9:
                 raise HTTPException(status_code=500, detail="Registration failed, try again")
+            _time.sleep(0.05 * (attempt + 1))
             continue
 
     token = create_token(new_chat_id, user_data.email)
