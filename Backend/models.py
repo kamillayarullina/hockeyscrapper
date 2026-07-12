@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, func
+from sqlalchemy import Column, DateTime, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 from Backend.database import Base
 
@@ -15,7 +15,7 @@ class UserModel(Base):
     telegram: Mapped[str] = mapped_column(nullable=True)
     password_hash: Mapped[str] = mapped_column(nullable=True)
     link_code: Mapped[str] = mapped_column(nullable=True)
-    is_active: Mapped[int] = mapped_column(default=1)
+    is_active: Mapped[int] = mapped_column(default=1, server_default=text("1"))
     avatar_url: Mapped[str] = mapped_column(nullable=True)
     premium_plan: Mapped[str] = mapped_column(default="free")
     premium_until: Mapped[datetime] = mapped_column(nullable=True)

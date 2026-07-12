@@ -98,8 +98,8 @@ class Database:
     async def add_user(self, chat_id: int, username: Optional[str], first_name: Optional[str]) -> None:
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute("""
-                INSERT INTO users (chat_id, username, first_name)
-                VALUES (?, ?, ?)
+                INSERT INTO users (chat_id, username, first_name, is_active)
+                VALUES (?, ?, ?, 1)
                 ON CONFLICT(chat_id) DO UPDATE SET
                     username = excluded.username,
                     first_name = excluded.first_name,
