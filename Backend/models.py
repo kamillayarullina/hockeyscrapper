@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import Column, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 from Backend.database import Base
@@ -15,6 +17,8 @@ class UserModel(Base):
     link_code: Mapped[str] = mapped_column(nullable=True)
     is_active: Mapped[int] = mapped_column(default=1)
     avatar_url: Mapped[str] = mapped_column(nullable=True)
+    premium_plan: Mapped[str] = mapped_column(default="free")
+    premium_until: Mapped[datetime] = mapped_column(nullable=True)
     registered_at = Column(DateTime, server_default=func.now())
 
 
@@ -25,6 +29,33 @@ class SubscriptionModel(Base):
     type: Mapped[str] = mapped_column(primary_key=True)
     value: Mapped[str] = mapped_column(primary_key=True)
     created_at = Column(DateTime, server_default=func.now())
+
+
+class PaidTeamSubscriptionModel(Base):
+    """Monthly access and renewal settings for a paid team subscription."""
+
+    __tablename__ = "paid_team_subscriptions"
+
+    chat_id: Mapped[int] = mapped_column(primary_key=True)
+    team_name: Mapped[str] = mapped_column(primary_key=True)
+    expires_at: Mapped[datetime] = mapped_column(nullable=False, index=True)
+    auto_renew: Mapped[bool] = mapped_column(default=False)
+    payment_method_id: Mapped[str] = mapped_column(nullable=True)
+    auto_renew_consented_at: Mapped[datetime] = mapped_column(nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
+class BillingProfileModel(Base):
+    """A YooKassa payment method saved once for all of a user's paid teams."""
+
+    __tablename__ = "billing_profiles"
+
+    chat_id: Mapped[int] = mapped_column(primary_key=True)
+    payment_method_id: Mapped[str] = mapped_column(nullable=False)
+    consented_at: Mapped[datetime] = mapped_column(nullable=False)
+    saved_at: Mapped[datetime] = mapped_column(nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
 
 class MatchModel(Base):
@@ -71,3 +102,23 @@ class ProxyModel(Base):
     country: Mapped[str] = mapped_column(default="")
     enabled: Mapped[int] = mapped_column(default=1)
     note: Mapped[str] = mapped_column(default="")
+
+
+class PaymentModel(Base):
+    __tablename__ = "payments"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    chat_id: Mapped[int] = mapped_column(index=True)
+    plan_code: Mapped[str] = mapped_column(nullable=False)
+    provider: Mapped[str] = mapped_column(nullable=False)
+    provider_payment_id: Mapped[str] = mapped_column(nullable=True, unique=True)
+    amount_kopeks: Mapped[int] = mapped_column(nullable=False)
+    currency: Mapped[str] = mapped_column(default="RUB")
+    status: Mapped[str] = mapped_column(default="pending", index=True)
+    idempotency_key: Mapped[str] = mapped_column(nullable=False, unique=True)
+    # The team unlocked by this payment. Nullable for payment rows created before this feature.
+    team_name: Mapped[str] = mapped_column(nullable=True)
+    auto_renew_requested: Mapped[bool] = mapped_column(default=False)
+    save_payment_method_requested: Mapped[bool] = mapped_column(default=False)
+    created_at = Column(DateTime, server_default=func.now())
+    paid_at = Column(DateTime, nullable=True)

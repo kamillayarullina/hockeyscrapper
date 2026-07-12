@@ -80,7 +80,9 @@
             await resolveChatId();
             if (!chatId) { render(); return; }
             try {
-                const r = await fetch(`${API}/subscriptions/${chatId}`);
+                const r = await fetch(`${API}/subscriptions/${chatId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
                 if (!r.ok) { render(); return; }
                 const data = await r.json();
                 subscriptions = data.subscriptions || [];
@@ -139,7 +141,10 @@
             try {
                 const r = await fetch(`${API}/subscription/toggle`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
                     body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
                 });
                 const result = await r.json();
@@ -147,7 +152,12 @@
                     document.getElementById('subError').classList.remove('visible');
                     await loadSubscriptions();
                 } else {
-                    showSubError(result.message || "Ошибка");
+                    const errorData = result.detail || result.message || "Ошибка";
+                    if (typeof errorData === "object" && errorData.code === "payment_required") {
+                        window.location.href = `billing.html?team=${encodeURIComponent(errorData.team_name || team)}`;
+                    } else {
+                        showSubError(typeof errorData === "string" ? errorData : "Ошибка");
+                    }
                 }
             } catch (err) {
                 showSubError("Ошибка сети: " + err.message);
