@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>╨Ю╤Д╨╛╤А╨╝╨╗╨╡╨╜╨╕╨╡ ╨┐╨╛╨┤╨┐╨╕╤Б╨║╨╕ HockeyScrapper</title>
+    <title>Оформление подписки HockeyScrapper</title>
     <link rel="stylesheet" href="style_main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <main class="profile-container billing-container">
-        <a class="back-link" href="sub.html">╨Ъ ╨║╨╛╨╝╨░╨╜╨┤╨░╨╝</a>
-        <p class="billing-eyebrow">╨Я╨Ю╨Ф╨Я╨Ш╨б╨Ъ╨Р ╨Э╨Р ╨Ъ╨Ю╨Ь╨Р╨Э╨Ф╨г</p>
-        <h1>╨Т╤Л╨▒╨╡╤А╨╕╤В╨╡ ╤Б╤А╨╛╨║ ╨┐╨╛╨┤╨┐╨╕╤Б╨║╨╕</h1>
-        <p class="billing-lead">╨Ъ╨░╨╢╨┤╨░╤П ╨║╨╛╨╝╨░╨╜╨┤╨░ ╨╛╨┐╨╗╨░╤З╨╕╨▓╨░╨╡╤В╤Б╤П ╨╛╤В╨┤╨╡╨╗╤М╨╜╨╛: 39 тВ╜ ╨╜╨░ ╨╝╨╡╤Б╤П╤Ж ╨╕╨╗╨╕ 390 тВ╜ ╨╜╨░ ╨│╨╛╨┤.</p>
+        <a class="back-link" href="sub.html">К командам</a>
+        <p class="billing-eyebrow">ПОДПИСКА НА КОМАНДУ</p>
+        <h1>Выберите срок подписки</h1>
+        <p class="billing-lead">Каждая команда оплачивается отдельно: 39 ₽ на месяц или 390 ₽ на год.</p>
 
         <div id="billingNotice" class="payment-notice" role="status">
-            ╨г╤З╨╡╨▒╨╜╤Л╨╣ ╤А╨╡╨╢╨╕╨╝: ╤А╨╡╨░╨╗╤М╨╜╤Л╨╡ ╨┤╨╡╨╜╨╡╨╢╨╜╤Л╨╡ ╨╛╨┐╨╡╤А╨░╤Ж╨╕╨╕ ╨╜╨╡ ╨┐╤А╨╛╨╕╨╖╨▓╨╛╨┤╤П╤В╤Б╤П. ╨Я╨╛╤Б╨╗╨╡ ╨┐╨╛╨┤╤В╨▓╨╡╤А╨╢╨┤╨╡╨╜╨╕╤П ╤Б╨╕╤Б╤В╨╡╨╝╨░ ╨╕╨╝╨╕╤В╨╕╤А╤Г╨╡╤В ╤Г╤Б╨┐╨╡╤И╨╜╤Г╤О ╨╛╨┐╨╗╨░╤В╤Г ╨╕ ╨░╨║╤В╨╕╨▓╨╕╤А╤Г╨╡╤В ╨┐╨╛╨┤╨┐╨╕╤Б╨║╤Г.
+            Учебный режим: реальные денежные операции не производятся. После подтверждения система имитирует успешную оплату и активирует подписку.
         </div>
         <section id="membershipSummary" class="membership-summary" aria-live="polite"></section>
         <section id="checkout" class="pricing-grid" aria-live="polite"></section>
-        <p class="billing-security">╨С╨░╨╜╨║╨╛╨▓╤Б╨║╨░╤П ╨║╨░╤А╤В╨░ ╨╕ ╨░╨║╨║╨░╤Г╨╜╤В ╨┐╨╗╨░╤В╤С╨╢╨╜╨╛╨│╨╛ ╤Б╨╡╤А╨▓╨╕╤Б╨░ ╨╜╨╡ ╤В╤А╨╡╨▒╤Г╤О╤В╤Б╤П.</p>
+        <p class="billing-security">Банковская карта и аккаунт платёжного сервиса не требуются.</p>
     </main>
 
     <script>
-        const API = "";
         const token = localStorage.getItem("token");
         const selectedTeam = new URLSearchParams(window.location.search).get("team");
         let plans = [];
@@ -43,9 +42,9 @@
             const summary = document.getElementById("membershipSummary");
             summary.innerHTML = "";
             const title = document.createElement("strong");
-            title.textContent = `╨Р╨║╤В╨╕╨▓╨╜╤Л╤Е ╨║╨╛╨╝╨░╨╜╨┤: ${membership.team_subscription_count}`;
+            title.textContent = `Активных команд: ${membership.team_subscription_count}`;
             const details = document.createElement("span");
-            details.textContent = " ╨С╨╡╤Б╨┐╨╗╨░╤В╨╜╤Л╤Е ╨┐╨╛╨┤╨┐╨╕╤Б╨╛╨║ ╨╜╨╡╤В: ╨┤╨╗╤П ╨║╨░╨╢╨┤╨╛╨╣ ╨╜╨╛╨▓╨╛╨╣ ╨║╨╛╨╝╨░╨╜╨┤╤Л ╨▓╤Л╨▒╨╕╤А╨░╨╡╤В╤Б╤П ╨╛╤В╨┤╨╡╨╗╤М╨╜╤Л╨╣ ╤Б╤А╨╛╨║.";
+            details.textContent = " Бесплатных подписок нет: для каждой новой команды выбирается отдельный срок.";
             summary.append(title, details);
         }
 
@@ -55,11 +54,11 @@
             if (!selectedTeam) {
                 const card = document.createElement("article");
                 card.className = "plan-card";
-                card.innerHTML = "<h2>╨б╨╜╨░╤З╨░╨╗╨░ ╨▓╤Л╨▒╨╡╤А╨╕╤В╨╡ ╨║╨╛╨╝╨░╨╜╨┤╤Г</h2><p>╨Т╨╡╤А╨╜╨╕╤В╨╡╤Б╤М ╨║ ╤Б╨┐╨╕╤Б╨║╤Г ╨╕ ╨╜╨░╨╢╨╝╨╕╤В╨╡ ┬л╨Я╨╛╨┤╨┐╨╕╤Б╨░╤В╤М╤Б╤П┬╗.</p>";
+                card.innerHTML = "<h2>Сначала выберите команду</h2><p>Вернитесь к списку и нажмите «Подписаться».</p>";
                 const link = document.createElement("a");
                 link.className = "btn plan-buy";
                 link.href = "sub.html";
-                link.textContent = "╨Т╤Л╨▒╤А╨░╤В╤М ╨║╨╛╨╝╨░╨╜╨┤╤Г";
+                link.textContent = "Выбрать команду";
                 card.append(link);
                 checkout.append(card);
                 return;
@@ -75,21 +74,21 @@
                 period.textContent = plan.name;
                 const price = document.createElement("p");
                 price.className = "plan-price";
-                price.innerHTML = `<strong>${plan.amount_rub}</strong> тВ╜`;
+                price.innerHTML = `<strong>${plan.amount_rub}</strong> ₽`;
                 const duration = document.createElement("p");
-                duration.textContent = `╨Ф╨╛╤Б╤В╤Г╨┐ ╨╜╨░ ${plan.duration_days} ╨┤╨╜╨╡╨╣ ╨┐╨╛╤Б╨╗╨╡ ╤Г╤З╨╡╨▒╨╜╨╛╨│╨╛ ╨┐╨╛╨┤╤В╨▓╨╡╤А╨╢╨┤╨╡╨╜╨╕╤П.`;
+                duration.textContent = `Доступ на ${plan.duration_days} дней после учебного подтверждения.`;
                 const autoRenew = document.createElement("label");
                 autoRenew.className = "auto-renew-consent";
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.className = "enable-auto-renew";
                 const consentText = document.createElement("span");
-                consentText.textContent = `╨Т╨║╨╗╤О╤З╨╕╤В╤М ╨░╨▓╤В╨╛╨┐╤А╨╛╨┤╨╗╨╡╨╜╨╕╨╡ ╤Н╤В╨╛╨│╨╛ ╤В╨░╤А╨╕╤Д╨░ ╨▓ ╤Г╤З╨╡╨▒╨╜╨╛╨╝ ╤А╨╡╨╢╨╕╨╝╨╡.`;
+                consentText.textContent = `Включить автопродление этого тарифа в учебном режиме.`;
                 autoRenew.append(checkbox, consentText);
                 const button = document.createElement("button");
                 button.className = "btn plan-buy";
                 button.type = "button";
-                button.textContent = `╨б╨╝╨╛╨┤╨╡╨╗╨╕╤А╨╛╨▓╨░╤В╤М ╨╛╨┐╨╗╨░╤В╤Г ${plan.amount_rub} тВ╜`;
+                button.textContent = `Смоделировать оплату ${plan.amount_rub} ₽`;
                 button.addEventListener("click", () => startCheckout(plan, checkbox.checked, button));
                 card.append(title, period, price, duration, autoRenew, button);
                 checkout.append(card);
@@ -98,14 +97,14 @@
 
         async function startCheckout(plan, enableAutoRenew, button) {
             const confirmed = window.confirm(
-                `╨н╤В╨╛ ╤Г╤З╨╡╨▒╨╜╨░╤П ╨╕╨╝╨╕╤В╨░╤Ж╨╕╤П. ╨а╨╡╨░╨╗╤М╨╜╤Л╨╡ ╨┤╨╡╨╜╤М╨│╨╕ ╨╜╨╡ ╤Б╨┐╨╕╤Б╤Л╨▓╨░╤О╤В╤Б╤П. ╨Р╨║╤В╨╕╨▓╨╕╤А╨╛╨▓╨░╤В╤М ╨┐╨╛╨┤╨┐╨╕╤Б╨║╤Г ╨╜╨░ ╨║╨╛╨╝╨░╨╜╨┤╤Г ┬л${selectedTeam}┬╗ ╨╖╨░ ${plan.amount_rub} тВ╜ ╨╜╨░ ${plan.period_label}?`
+                `Это учебная имитация. Реальные деньги не списываются. Активировать подписку на команду «${selectedTeam}» за ${plan.amount_rub} ₽ на ${plan.period_label}?`
             );
             if (!confirmed) return;
 
             button.disabled = true;
-            button.textContent = "╨Р╨║╤В╨╕╨▓╨╕╤А╤Г╨╡╨╝ ╨┐╨╛╨┤╨┐╨╕╤Б╨║╤Г...";
+            button.textContent = "Активируем подписку...";
             try {
-                const response = await fetch(`${API}/billing/checkout`, {
+                const response = await fetch("/billing/checkout", {
                     method: "POST",
                     headers: authHeaders(),
                     body: JSON.stringify({
@@ -115,18 +114,18 @@
                     })
                 });
                 const data = await response.json();
-                if (!response.ok) throw new Error(data.detail || "╨Э╨╡ ╤Г╨┤╨░╨╗╨╛╤Б╤М ╨░╨║╤В╨╕╨▓╨╕╤А╨╛╨▓╨░╤В╤М ╨┐╨╛╨┤╨┐╨╕╤Б╨║╤Г");
-                showNotice(`${data.message} ╨Ъ╨╛╨╝╨░╨╜╨┤╨░ ┬л${selectedTeam}┬╗ ╨┐╨╛╨┤╨║╨╗╤О╤З╨╡╨╜╨░.`, "success");
+                if (!response.ok) throw new Error(data.detail || "Не удалось активировать подписку");
+                showNotice(`${data.message} Команда «${selectedTeam}» подключена.`, "success");
                 document.getElementById("checkout").innerHTML = "";
                 const link = document.createElement("a");
                 link.className = "btn plan-buy";
                 link.href = "paid-subscriptions.html";
-                link.textContent = "╨Я╨╡╤А╨╡╨╣╤В╨╕ ╨║ ╨╝╨╛╨╕╨╝ ╨┐╨╗╨░╤В╨╜╤Л╨╝ ╨║╨╛╨╝╨░╨╜╨┤╨░╨╝";
+                link.textContent = "Перейти к моим платным командам";
                 document.getElementById("checkout").append(link);
             } catch (error) {
                 showNotice(error.message, "error");
                 button.disabled = false;
-                button.textContent = `╨б╨╝╨╛╨┤╨╡╨╗╨╕╤А╨╛╨▓╨░╤В╤М ╨╛╨┐╨╗╨░╤В╤Г ${plan.amount_rub} тВ╜`;
+                button.textContent = `Смоделировать оплату ${plan.amount_rub} ₽`;
             }
         }
 
@@ -137,15 +136,15 @@
             }
             try {
                 const [plansResponse, membershipResponse] = await Promise.all([
-                    fetch(`${API}/billing/plans`),
-                    fetch(`${API}/billing/me`, { headers: authHeaders() })
+                    fetch("/billing/plans"),
+                    fetch("/billing/me", { headers: authHeaders() })
                 ]);
                 if (membershipResponse.status === 401) {
                     window.location.href = "vhod/vhod.html";
                     return;
                 }
                 if (!plansResponse.ok || !membershipResponse.ok) {
-                    throw new Error("╨Э╨╡ ╤Г╨┤╨░╨╗╨╛╤Б╤М ╨╖╨░╨│╤А╤Г╨╖╨╕╤В╤М ╤В╨░╤А╨╕╤Д╤Л");
+                    throw new Error("Не удалось загрузить тарифы");
                 }
                 plans = (await plansResponse.json()).plans;
                 renderMembership(await membershipResponse.json());
