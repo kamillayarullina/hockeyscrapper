@@ -119,7 +119,7 @@ All customer-facing documentation has been reviewed and updated for the trial re
 | Architecture Documentation | [`docs/architecture/README.md`](../../docs/architecture/README.md) | Unchanged |
 | Development Process | [`docs/development-process.md`](../../docs/development-process.md) | Unchanged |
 | Definition of Done | [`docs/definition-of-done.md`](../../docs/definition-of-done.md) | Unchanged |
-| Customer Handover | [`docs/customer-handover.md`](../../docs/customer-handover.md) | Updated with Week 6 trial-release status and transition readiness |
+| Customer Handover | [`docs/customer-handover.md`](../../docs/customer-handover.md) | Updated with Week 6 trial-reease status and transition readiness |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) | Updated with trial-release version |
 
 ---
@@ -146,7 +146,7 @@ Full details: [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests
 
 | Artifact | Link |
 |---|---|
-| SemVer trial release (Week 6) | [v1.3.1](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v1.3.1) *(Week 6 changes will be tagged as a new release upon Sprint completion)* |
+| SemVer trial release (Week 6) | [v1.3.1](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v1.3.1) обнавить ссылку на семвер
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
 
 ---
@@ -199,13 +199,13 @@ Full details: [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests
 
 ### Sprint Milestone
 
-*Screenshot of Sprint 4 milestone view to be inserted.*
+![Milestone](images/Milestone.png)
 
 ### Week 6 Trial Release
 
-*Screenshot of Week 6 SemVer release to be inserted.*
+![Semver](images/Semver.png)
 
 ### Example Reviewed Issue-Linked PR
 
-*Screenshot of a reviewed PR from Sprint 4 to be inserted.*
+![PR](images/PR.png)
 
