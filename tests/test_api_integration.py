@@ -442,7 +442,7 @@ class TestAdmin:
             json={"type": "team", "value": "ЦСКА"},
         )
         assert response.status_code == 400
-        assert "already" in response.json()["detail"].lower()
+        assert "уже существует" in response.json()["detail"]
 
     def test_admin_remove_subscription(self, client):
         resp = self._register_admin(client)
