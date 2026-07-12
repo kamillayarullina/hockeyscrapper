@@ -146,7 +146,7 @@ Full details: [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests
 
 | Artifact | Link |
 |---|---|
-| SemVer trial release (Week 6) | [v1.3.1](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v1.3.1) обнавить ссылку на семвер
+| SemVer trial release (Week 6) | [v2.4.1](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v2.4.1) *(Week 6 changes will be tagged as a new release upon Sprint completion)* |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
 
 ---
