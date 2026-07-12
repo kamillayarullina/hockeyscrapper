@@ -119,7 +119,7 @@ All customer-facing documentation has been reviewed and updated for the trial re
 | Architecture Documentation | [`docs/architecture/README.md`](../../docs/architecture/README.md) | Unchanged |
 | Development Process | [`docs/development-process.md`](../../docs/development-process.md) | Unchanged |
 | Definition of Done | [`docs/definition-of-done.md`](../../docs/definition-of-done.md) | Unchanged |
-| Customer Handover | [`docs/customer-handover.md`](../../docs/customer-handover.md) | Updated with Week 6 trial-reease status and transition readiness |
+| Customer Handover | [`docs/customer-handover.md`](../../docs/customer-handover.md) | Updated with Week 6 trial-release status and transition readiness |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) | Updated with trial-release version |
 
 ---
