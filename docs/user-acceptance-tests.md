@@ -1,15 +1,16 @@
-## UAT-001: Subscribe to a team
+## UAT-001: Subscribe to a free team
 **Linked to:** User Story US-01
 **Type:** old (mvp v1)
 **Status:** Active
 
 **User goal:** 
-As a user, I want to subscribe to a specific hockey team, so that I can get notifications about mathches with my favourite team.
+As a user, I want to use one of my three free team subscriptions, so that I can get notifications about matches with my favourite team without payment.
 
 **Preconditions:**
 - User is logged in in website
 - User is on his profile page
 - The team user wants to subscribe is in KHL
+- User has fewer than three active free team subscriptions
 
 **Step-by-step instructions:**
 1. User push the button "Manage subscriptions"
@@ -20,7 +21,7 @@ As a user, I want to subscribe to a specific hockey team, so that I can get noti
 **Expected outcome:**
 After all steps:
 - On step 3: user see all teams and if he is already subscribed to some team, the button "Unsubscribe" is next to this team 
-- On step 4: the bitton changes to "Unsubscribe"
+- On step 4: no payment is requested and the button changes to "Unsubscribe"
 - On profile page: user see updated list of teams he subscribed.
 
 **Result:** Pass
@@ -173,3 +174,45 @@ After all steps:
 **Executed by:** Daniil
 **Date:** 3.07.2026
 **Notes:** All good, no chages
+
+## UAT-007: Purchase and manage a monthly team subscription
+**Linked to:** User Story US-06, Monetisation Backend, Monetisation Frontend
+**Type:** new (mvp v3)
+**Status:** Active
+
+**User goal:**
+As a user who already uses all three free team subscriptions, I want to purchase a 30-day subscription for a specific additional team and manage its auto-renewal.
+
+**Preconditions:**
+- User is logged in on the website
+- User already has three active free team subscriptions
+- User is not subscribed to the additional team
+- For a production test, YooKassa is configured and available
+- For a local UI test, the application is running with `BILLING_DEMO_MODE=true`
+
+**Step-by-step instructions:**
+1. User opens the team subscription management page
+2. User pushes "Subscribe" for a fourth team
+3. The website opens the payment page for that specific team
+4. User sees the price of 39 RUB and a subscription period of 30 days
+5. On the first paid purchase, user accepts saving the payment method in YooKassa; enabling auto-renewal is optional
+6. User pushes "Pay 39 RUB" and completes the payment
+7. User opens the "My paid teams" page
+8. User switches auto-renewal for this team on or off
+9. User unsubscribes from notifications for the paid team and then subscribes to the same team again before the paid period expires
+
+**Expected outcome:**
+- The fourth team is not added before a successful payment is confirmed
+- The payment applies only to the team selected by the user
+- After successful payment, the team is active for 30 days and appears in the user's subscriptions
+- The paid team appears on the "My paid teams" page with its expiry date, price, and auto-renewal setting
+- Auto-renewal can be enabled or disabled separately for each paid team
+- The payment method saved during the first paid purchase can be reused for later team purchases and auto-renewals without entering the card again
+- Unsubscribing stops notifications but does not delete the active paid period
+- Resubscribing to the same paid team before its expiry does not require another payment
+- A paid team does not consume one of the user's three free team slots
+
+**Result:** Not executed
+**Executed by:** Not assigned
+**Date:** Not executed
+**Notes:** Production payment acceptance must be tested with YooKassa test credentials. Local demo mode verifies only the HockeyScrapper interface and application logic; it does not verify the real YooKassa integration.
