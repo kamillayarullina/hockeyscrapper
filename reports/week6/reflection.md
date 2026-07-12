@@ -20,7 +20,11 @@ Sprint 4 delivered the parser improvements prioritised by the customer: all KHL 
 
 ### Final customer review
 
-будет сделано.
+During the Sprint 4 review, the customer:
+- **Approved the monetisation UI** — complimented the team on rapid progress.
+- **Corrected the pricing model** — clarified that the first subscription should be paid (not 3 free then paid), and suggested monthly/annual tier with proportional pricing.
+- **Agreed to mock payments** — real YooKassa integration requires IP/legal entity, so the team will show a placeholder message instead.
+- **Reiterated that parsing is the #1 priority** — the product is not ready for handover until the parser sends notifications when tickets go on sale.
 
 ---
 
