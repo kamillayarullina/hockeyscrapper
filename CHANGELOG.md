@@ -1,8 +1,41 @@
+## [2.4.1] - 2026-07-12
+
+### Bug Fixes
+
+- Translate premium limit message
+- Remove duplicate team subscription button
+- Remove redundant membership card
+- Preserve paid team subscription access
+- Prevent stale paid subscriptions response
+- Restore billing code + inline error UI fixes
+- Add server_default to is_active column + bot add_user includes is_active
+- Add production server IP to lychee excludes
+- Add missing Authorization header to toggleSubscription
+- Normalize team name before venue lookup + add Metallurg/Kunlun aliases
+- Add auth header to loadSubscriptions + handle 402 redirect to billing
+- Resolve remaining 4 bugs - DB paths, Russian .title(), save_match connection, billing prefix, register redirect
+- Move constants before CheckoutRequest to fix NameError
+- Handle premium_plan in add_user, add subscription limit check in bot, remove BOM from billing.html
+- Suppress bandit B608 on safe introspection query
+- Restore correct UTF-8 encoding in billing.html
+
+### Features
+
+- Add premium monetization with YooKassa
+- Charge for team subscriptions after free limit
+- Add monthly team subscriptions and auto renewal
+- Add safe local billing demo mode
+- Always show auto renewal control
+- Share saved payment method across teams
+- Replace billing frontend with 75-monetization mock-payment UI, adapt backend for demo mode
+
+### Miscellaneous Tasks
+
+- Ignore runtime avatar uploads
 ## [1.3.1] - 2026-07-03
 
 ### Bug Fixes
 
-- Convert requirements.txt to UTF-8 without BOM (was UTF-16 LE, breaking pip install)
 - Connect frontend avatar upload to backend endpoint
 - Correct cryptography version syntax in requirements.txt
 - Set cryptography>=48.0.1
@@ -13,8 +46,9 @@
 - Enable WAL mode + busy timeout for SQLite concurrent access
 - Add avatar_url column to bot's users table
 - Convert admin.html to UTF-8 (was UTF-16LE)
-- Architecture link in index.html
 - Guards for email_sender None
+- Case-insensitive subs, input validation, email normalize, notify form
+- Architecture link in index.html
 
 ### Documentation
 
@@ -30,13 +64,14 @@
 
 ### Bug Fixes
 
-- Make test for expired code independant of language
+- Сделать тест на просроченный код независимым от языка
 - Update fastapi-mail to address a vulnerability
 - Fix test errors and configure CI
 - Restore requirements.txt and test files from main
 - Resolve CI failures - ruff lint, encoding, requirements
 - Lower coverage threshold in CI, fix ruff unused imports
 - Bump cryptography>=48.0.1 for pip-audit vulnerability
+- Convert requirements.txt to UTF-8 without BOM (was UTF-16 LE, breaking pip install)
 - Convert requirements.txt to UTF-8 without BOM (was UTF-16 LE, breaking pip install)
 - Remove cryptography pin, use pip-audit --ignore-vuln instead
 - Install pytest-asyncio for async tests in tests.yml
@@ -68,9 +103,6 @@
 - Check r.ok before r.json() in frontend to avoid JSON parse error on 500
 - Register always uses negative chat_id even if bot users exist in DB
 - Safe JSON parsing in register and login forms, show real error message
-- Check r.ok before r.json() in frontend to avoid JSON parse error on 500
-- Register always uses negative chat_id even if bot users exist in DB
-- Safe JSON parsing in register and login forms, show real error message
 - Add subtype=MessageType.plain to forgot_password
 - Remove venue on team unsubscribe; fix card overflow; improve forgot password error handling
 - Add form styles for recovery pages; fallback SMTP to console
@@ -78,7 +110,6 @@
 - Sync team names with main for PR compatibility
 - Use relative paths for HTML links (CI link checker)
 - Sync team names with main for PR compatibility
-- Use relative paths for HTML links (CI link checker)
 
 ### Documentation
 
