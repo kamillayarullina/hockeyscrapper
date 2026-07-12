@@ -49,6 +49,8 @@ exclude = [
     'https://httpbin\.org/.*',
     # VPS deployment (not accessible from CI)
     'http://139.100.225.113:8000/',
+    # speech2text may be blocked from CI
+    'https://speech2text\.ru/.*',
     # Telegram bot template links
     'https://t\.me/.*',
 ]
