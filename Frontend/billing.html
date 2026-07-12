@@ -1,166 +1,132 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оплата подписки HockeyScrapper</title>
+    <title>╨Ю╤Д╨╛╤А╨╝╨╗╨╡╨╜╨╕╨╡ ╨┐╨╛╨┤╨┐╨╕╤Б╨║╨╕ HockeyScrapper</title>
     <link rel="stylesheet" href="style_main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <main class="profile-container billing-container">
-        <a class="back-link" href="sub.html">К командам</a>
-        <p class="billing-eyebrow">ПОДПИСКА НА КОМАНДУ</p>
-        <h1>Первые 3 команды бесплатно</h1>
-        <p class="billing-lead">Каждая следующая команда стоит 39 ₽ в месяц. Подписка действует 30 дней.</p>
+        <a class="back-link" href="sub.html">╨Ъ ╨║╨╛╨╝╨░╨╜╨┤╨░╨╝</a>
+        <p class="billing-eyebrow">╨Я╨Ю╨Ф╨Я╨Ш╨б╨Ъ╨Р ╨Э╨Р ╨Ъ╨Ю╨Ь╨Р╨Э╨Ф╨г</p>
+        <h1>╨Т╤Л╨▒╨╡╤А╨╕╤В╨╡ ╤Б╤А╨╛╨║ ╨┐╨╛╨┤╨┐╨╕╤Б╨║╨╕</h1>
+        <p class="billing-lead">╨Ъ╨░╨╢╨┤╨░╤П ╨║╨╛╨╝╨░╨╜╨┤╨░ ╨╛╨┐╨╗╨░╤З╨╕╨▓╨░╨╡╤В╤Б╤П ╨╛╤В╨┤╨╡╨╗╤М╨╜╨╛: 39 тВ╜ ╨╜╨░ ╨╝╨╡╤Б╤П╤Ж ╨╕╨╗╨╕ 390 тВ╜ ╨╜╨░ ╨│╨╛╨┤.</p>
 
-        <section class="membership-summary" id="membershipSummary" aria-live="polite">
-            Загружаем информацию о подписках...
-        </section>
-        <p class="payment-notice" id="paymentNotice" hidden></p>
-        <section class="pricing-grid" id="checkout" aria-live="polite"></section>
-        <p class="billing-security">Оплата проходит на защищённой странице YooKassa. Данные карты не попадают в HockeyScrapper.</p>
+        <div id="billingNotice" class="payment-notice" role="status">
+            ╨г╤З╨╡╨▒╨╜╤Л╨╣ ╤А╨╡╨╢╨╕╨╝: ╤А╨╡╨░╨╗╤М╨╜╤Л╨╡ ╨┤╨╡╨╜╨╡╨╢╨╜╤Л╨╡ ╨╛╨┐╨╡╤А╨░╤Ж╨╕╨╕ ╨╜╨╡ ╨┐╤А╨╛╨╕╨╖╨▓╨╛╨┤╤П╤В╤Б╤П. ╨Я╨╛╤Б╨╗╨╡ ╨┐╨╛╨┤╤В╨▓╨╡╤А╨╢╨┤╨╡╨╜╨╕╤П ╤Б╨╕╤Б╤В╨╡╨╝╨░ ╨╕╨╝╨╕╤В╨╕╤А╤Г╨╡╤В ╤Г╤Б╨┐╨╡╤И╨╜╤Г╤О ╨╛╨┐╨╗╨░╤В╤Г ╨╕ ╨░╨║╤В╨╕╨▓╨╕╤А╤Г╨╡╤В ╨┐╨╛╨┤╨┐╨╕╤Б╨║╤Г.
+        </div>
+        <section id="membershipSummary" class="membership-summary" aria-live="polite"></section>
+        <section id="checkout" class="pricing-grid" aria-live="polite"></section>
+        <p class="billing-security">╨С╨░╨╜╨║╨╛╨▓╤Б╨║╨░╤П ╨║╨░╤А╤В╨░ ╨╕ ╨░╨║╨║╨░╤Г╨╜╤В ╨┐╨╗╨░╤В╤С╨╢╨╜╨╛╨│╨╛ ╤Б╨╡╤А╨▓╨╕╤Б╨░ ╨╜╨╡ ╤В╤А╨╡╨▒╤Г╤О╤В╤Б╤П.</p>
     </main>
 
     <script>
         const API = "";
         const token = localStorage.getItem("token");
-        const params = new URLSearchParams(window.location.search);
-        const selectedTeam = params.get("team");
-        let teamPrice = 39;
-        let paymentMethodSaved = false;
+        const selectedTeam = new URLSearchParams(window.location.search).get("team");
+        let plans = [];
 
         function authHeaders() {
             return { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" };
         }
 
-        function showNotice(message, tone = "info") {
-            const notice = document.getElementById("paymentNotice");
+        function showNotice(message, type = "info") {
+            const notice = document.getElementById("billingNotice");
             notice.textContent = message;
-            notice.className = `payment-notice ${tone}`;
-            notice.hidden = false;
+            notice.className = `payment-notice ${type}`;
         }
 
         function renderMembership(membership) {
             const summary = document.getElementById("membershipSummary");
-            const freeLeft = membership.free_team_slots_remaining;
             summary.innerHTML = "";
             const title = document.createElement("strong");
+            title.textContent = `╨Р╨║╤В╨╕╨▓╨╜╤Л╤Е ╨║╨╛╨╝╨░╨╜╨┤: ${membership.team_subscription_count}`;
             const details = document.createElement("span");
-            title.textContent = `Подписок на команды: ${membership.team_subscription_count}`;
-            details.textContent = freeLeft > 0
-                ? `Бесплатно доступно ещё: ${freeLeft}`
-                : `Бесплатные подписки закончились. Новая команда: ${membership.paid_team_price_rub} ₽.`;
+            details.textContent = " ╨С╨╡╤Б╨┐╨╗╨░╤В╨╜╤Л╤Е ╨┐╨╛╨┤╨┐╨╕╤Б╨╛╨║ ╨╜╨╡╤В: ╨┤╨╗╤П ╨║╨░╨╢╨┤╨╛╨╣ ╨╜╨╛╨▓╨╛╨╣ ╨║╨╛╨╝╨░╨╜╨┤╤Л ╨▓╤Л╨▒╨╕╤А╨░╨╡╤В╤Б╤П ╨╛╤В╨┤╨╡╨╗╤М╨╜╤Л╨╣ ╤Б╤А╨╛╨║.";
             summary.append(title, details);
         }
 
         function renderCheckout() {
             const checkout = document.getElementById("checkout");
             checkout.innerHTML = "";
-            const card = document.createElement("article");
-            card.className = "plan-card recommended";
-
             if (!selectedTeam) {
-                const title = document.createElement("h2");
-                title.textContent = "Сначала выберите команду";
-                const text = document.createElement("p");
-                text.textContent = "Вернитесь к списку команд и нажмите «Подписаться» у нужной команды.";
+                const card = document.createElement("article");
+                card.className = "plan-card";
+                card.innerHTML = "<h2>╨б╨╜╨░╤З╨░╨╗╨░ ╨▓╤Л╨▒╨╡╤А╨╕╤В╨╡ ╨║╨╛╨╝╨░╨╜╨┤╤Г</h2><p>╨Т╨╡╤А╨╜╨╕╤В╨╡╤Б╤М ╨║ ╤Б╨┐╨╕╤Б╨║╤Г ╨╕ ╨╜╨░╨╢╨╝╨╕╤В╨╡ ┬л╨Я╨╛╨┤╨┐╨╕╤Б╨░╤В╤М╤Б╤П┬╗.</p>";
                 const link = document.createElement("a");
                 link.className = "btn plan-buy";
                 link.href = "sub.html";
-                link.textContent = "Выбрать команду";
-                card.append(title, text, link);
+                link.textContent = "╨Т╤Л╨▒╤А╨░╤В╤М ╨║╨╛╨╝╨░╨╜╨┤╤Г";
+                card.append(link);
                 checkout.append(card);
                 return;
             }
 
-            const title = document.createElement("h2");
-            title.textContent = "Подписка на команду";
-            const team = document.createElement("p");
-            team.className = "plan-period";
-            team.textContent = selectedTeam;
-            const price = document.createElement("p");
-            price.className = "plan-price";
-            price.innerHTML = `<strong>${teamPrice}</strong> ₽`;
-            const explanation = document.createElement("p");
-            explanation.className = "plan-period";
-            explanation.textContent = "Подписка действует 30 дней. После подтверждения команда добавится в ваши уведомления.";
-            const paymentMethodBlock = document.createElement("div");
-            if (paymentMethodSaved) {
-                paymentMethodBlock.className = "saved-payment-method";
-                paymentMethodBlock.textContent = "Способ оплаты уже привязан. Повторно вводить карту не потребуется.";
-            } else {
-                const saveMethod = document.createElement("label");
-                saveMethod.className = "auto-renew-consent";
-                const saveCheckbox = document.createElement("input");
-                saveCheckbox.type = "checkbox";
-                saveCheckbox.id = "savePaymentMethodConsent";
-                const saveText = document.createElement("span");
-                saveText.textContent = "Я согласен сохранить способ оплаты в YooKassa для будущих покупок и возможности включать автопродление. HockeyScrapper не хранит данные карты.";
-                saveMethod.append(saveCheckbox, saveText);
-                paymentMethodBlock.append(saveMethod);
-            }
-            const autoRenew = document.createElement("label");
-            autoRenew.className = "auto-renew-consent";
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = "enableAutoRenew";
-            const consentText = document.createElement("span");
-            consentText.textContent = "Включить автопродление: 39 ₽ будут списываться раз в месяц, пока я не отключу эту настройку.";
-            autoRenew.append(checkbox, consentText);
-            const button = document.createElement("button");
-            button.className = "btn plan-buy";
-            button.type = "button";
-            button.textContent = `Оплатить ${teamPrice} ₽`;
-            button.addEventListener("click", () => startCheckout(button));
-            card.append(title, team, price, explanation, paymentMethodBlock, autoRenew, button);
-            checkout.append(card);
+            plans.forEach((plan) => {
+                const card = document.createElement("article");
+                card.className = "plan-card";
+                const title = document.createElement("h2");
+                title.textContent = selectedTeam;
+                const period = document.createElement("p");
+                period.className = "plan-period";
+                period.textContent = plan.name;
+                const price = document.createElement("p");
+                price.className = "plan-price";
+                price.innerHTML = `<strong>${plan.amount_rub}</strong> тВ╜`;
+                const duration = document.createElement("p");
+                duration.textContent = `╨Ф╨╛╤Б╤В╤Г╨┐ ╨╜╨░ ${plan.duration_days} ╨┤╨╜╨╡╨╣ ╨┐╨╛╤Б╨╗╨╡ ╤Г╤З╨╡╨▒╨╜╨╛╨│╨╛ ╨┐╨╛╨┤╤В╨▓╨╡╤А╨╢╨┤╨╡╨╜╨╕╤П.`;
+                const autoRenew = document.createElement("label");
+                autoRenew.className = "auto-renew-consent";
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.className = "enable-auto-renew";
+                const consentText = document.createElement("span");
+                consentText.textContent = `╨Т╨║╨╗╤О╤З╨╕╤В╤М ╨░╨▓╤В╨╛╨┐╤А╨╛╨┤╨╗╨╡╨╜╨╕╨╡ ╤Н╤В╨╛╨│╨╛ ╤В╨░╤А╨╕╤Д╨░ ╨▓ ╤Г╤З╨╡╨▒╨╜╨╛╨╝ ╤А╨╡╨╢╨╕╨╝╨╡.`;
+                autoRenew.append(checkbox, consentText);
+                const button = document.createElement("button");
+                button.className = "btn plan-buy";
+                button.type = "button";
+                button.textContent = `╨б╨╝╨╛╨┤╨╡╨╗╨╕╤А╨╛╨▓╨░╤В╤М ╨╛╨┐╨╗╨░╤В╤Г ${plan.amount_rub} тВ╜`;
+                button.addEventListener("click", () => startCheckout(plan, checkbox.checked, button));
+                card.append(title, period, price, duration, autoRenew, button);
+                checkout.append(card);
+            });
         }
 
-        async function startCheckout(button) {
-            const saveConsent = document.getElementById("savePaymentMethodConsent")?.checked || false;
-            if (!paymentMethodSaved && !saveConsent) {
-                showNotice("Подтвердите сохранение способа оплаты для первой платной покупки.", "error");
-                return;
-            }
+        async function startCheckout(plan, enableAutoRenew, button) {
+            const confirmed = window.confirm(
+                `╨н╤В╨╛ ╤Г╤З╨╡╨▒╨╜╨░╤П ╨╕╨╝╨╕╤В╨░╤Ж╨╕╤П. ╨а╨╡╨░╨╗╤М╨╜╤Л╨╡ ╨┤╨╡╨╜╤М╨│╨╕ ╨╜╨╡ ╤Б╨┐╨╕╤Б╤Л╨▓╨░╤О╤В╤Б╤П. ╨Р╨║╤В╨╕╨▓╨╕╤А╨╛╨▓╨░╤В╤М ╨┐╨╛╨┤╨┐╨╕╤Б╨║╤Г ╨╜╨░ ╨║╨╛╨╝╨░╨╜╨┤╤Г ┬л${selectedTeam}┬╗ ╨╖╨░ ${plan.amount_rub} тВ╜ ╨╜╨░ ${plan.period_label}?`
+            );
+            if (!confirmed) return;
+
             button.disabled = true;
-            button.textContent = "Переходим к оплате...";
+            button.textContent = "╨Р╨║╤В╨╕╨▓╨╕╤А╤Г╨╡╨╝ ╨┐╨╛╨┤╨┐╨╕╤Б╨║╤Г...";
             try {
                 const response = await fetch(`${API}/billing/checkout`, {
                     method: "POST",
                     headers: authHeaders(),
                     body: JSON.stringify({
                         team_name: selectedTeam,
-                        enable_auto_renew: document.getElementById("enableAutoRenew")?.checked || false,
-                        save_payment_method_consent: paymentMethodSaved || saveConsent
+                        plan_code: plan.code,
+                        enable_auto_renew: enableAutoRenew
                     })
                 });
                 const data = await response.json();
-                if (!response.ok) throw new Error(data.detail || "Не удалось создать платёж");
-                localStorage.setItem("last_payment_id", data.payment_id);
-                window.location.assign(data.checkout_url);
+                if (!response.ok) throw new Error(data.detail || "╨Э╨╡ ╤Г╨┤╨░╨╗╨╛╤Б╤М ╨░╨║╤В╨╕╨▓╨╕╤А╨╛╨▓╨░╤В╤М ╨┐╨╛╨┤╨┐╨╕╤Б╨║╤Г");
+                showNotice(`${data.message} ╨Ъ╨╛╨╝╨░╨╜╨┤╨░ ┬л${selectedTeam}┬╗ ╨┐╨╛╨┤╨║╨╗╤О╤З╨╡╨╜╨░.`, "success");
+                document.getElementById("checkout").innerHTML = "";
+                const link = document.createElement("a");
+                link.className = "btn plan-buy";
+                link.href = "paid-subscriptions.html";
+                link.textContent = "╨Я╨╡╤А╨╡╨╣╤В╨╕ ╨║ ╨╝╨╛╨╕╨╝ ╨┐╨╗╨░╤В╨╜╤Л╨╝ ╨║╨╛╨╝╨░╨╜╨┤╨░╨╝";
+                document.getElementById("checkout").append(link);
             } catch (error) {
                 showNotice(error.message, "error");
                 button.disabled = false;
-                button.textContent = `Оплатить ${teamPrice} ₽`;
-            }
-        }
-
-        async function checkReturnedPayment() {
-            if (params.get("payment") !== "success") return;
-            const paymentId = localStorage.getItem("last_payment_id");
-            if (!paymentId) {
-                showNotice("Оплата принята. Подписка появится после подтверждения YooKassa.");
-                return;
-            }
-            const response = await fetch(`${API}/billing/payments/${paymentId}`, { headers: authHeaders() });
-            if (!response.ok) return;
-            const payment = await response.json();
-            if (payment.status === "succeeded") {
-                showNotice("Оплата подтверждена. Подписка на команду активна 30 дней.", "success");
-            } else {
-                showNotice("Оплата принята. Подписка появится после подтверждения YooKassa.");
+                button.textContent = `╨б╨╝╨╛╨┤╨╡╨╗╨╕╤А╨╛╨▓╨░╤В╤М ╨╛╨┐╨╗╨░╤В╤Г ${plan.amount_rub} тВ╜`;
             }
         }
 
@@ -178,19 +144,14 @@
                     window.location.href = "vhod/vhod.html";
                     return;
                 }
-                if (!plansResponse.ok || !membershipResponse.ok) throw new Error("Не удалось загрузить данные оплаты");
-                const plans = await plansResponse.json();
-                teamPrice = plans.plans[0].amount_rub;
-                if (plans.demo_mode) {
-                    showNotice("Демо-режим: после нажатия «Оплатить» подписка активируется без настоящего списания денег.");
+                if (!plansResponse.ok || !membershipResponse.ok) {
+                    throw new Error("╨Э╨╡ ╤Г╨┤╨░╨╗╨╛╤Б╤М ╨╖╨░╨│╤А╤Г╨╖╨╕╤В╤М ╤В╨░╤А╨╕╤Д╤Л");
                 }
-                const membership = await membershipResponse.json();
-                paymentMethodSaved = membership.payment_method_saved;
-                renderMembership(membership);
+                plans = (await plansResponse.json()).plans;
+                renderMembership(await membershipResponse.json());
                 renderCheckout();
-                checkReturnedPayment();
             } catch (error) {
-                document.getElementById("membershipSummary").textContent = error.message;
+                showNotice(error.message, "error");
             }
         }
 

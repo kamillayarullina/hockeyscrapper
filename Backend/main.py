@@ -119,22 +119,23 @@ class LinkCodeRequest(BaseModel):
     chat_id: int
 
 
-class CheckoutRequest(BaseModel):
-    team_name: str
-    enable_auto_renew: bool = False
-    save_payment_method_consent: bool = False
-
-
-class AutoRenewRequest(BaseModel):
-    enabled: bool
-
-
 FREE_TEAM_LIMIT = 3
 PAID_TEAM_PRICE_KOPEKS = 3900
 PAID_TEAM_PRICE_RUB = PAID_TEAM_PRICE_KOPEKS // 100
 TEAM_SUBSCRIPTION_PAYMENT = "team_subscription"
 TEAM_SUBSCRIPTION_RENEWAL = "team_subscription_renewal"
 TEAM_SUBSCRIPTION_DAYS = 30
+
+
+class CheckoutRequest(BaseModel):
+    team_name: str
+    plan_code: str = TEAM_SUBSCRIPTION_PAYMENT
+    enable_auto_renew: bool = False
+    save_payment_method_consent: bool = False
+
+
+class AutoRenewRequest(BaseModel):
+    enabled: bool
 
 
 def _get_authenticated_user(payload: dict, db: Session) -> models.UserModel:
@@ -653,6 +654,7 @@ def get_billing_plans():
             "name": "Подписка на команду на месяц",
             "amount_rub": PAID_TEAM_PRICE_RUB,
             "duration_days": TEAM_SUBSCRIPTION_DAYS,
+            "period_label": "30 дней",
         }],
         "free_team_limit": FREE_TEAM_LIMIT,
         "demo_mode": _is_local_billing_demo(),
@@ -755,17 +757,20 @@ def create_checkout(
     if team_value in _active_paid_team_values(db, user.chat_id):
         raise HTTPException(status_code=409, detail="This paid subscription is already active")
 
-    if _free_team_subscription_count(db, user.chat_id) < FREE_TEAM_LIMIT:
-        raise HTTPException(status_code=400, detail="The first three team subscriptions are free")
+    if _is_local_billing_demo():
+        billing_profile = None
+    else:
+        if _free_team_subscription_count(db, user.chat_id) < FREE_TEAM_LIMIT:
+            raise HTTPException(status_code=400, detail="The first three team subscriptions are free")
 
-    billing_profile = _get_or_migrate_billing_profile(db, user.chat_id)
-    if billing_profile:
-        db.commit()
-    elif not request.save_payment_method_consent:
-        raise HTTPException(
-            status_code=400,
-            detail="Подтвердите сохранение способа оплаты в YooKassa для первой платной покупки.",
-        )
+        billing_profile = _get_or_migrate_billing_profile(db, user.chat_id)
+        if billing_profile:
+            db.commit()
+        elif not request.save_payment_method_consent:
+            raise HTTPException(
+                status_code=400,
+                detail="Подтвердите сохранение способа оплаты в YooKassa для первой платной покупки.",
+            )
 
     pending = db.query(models.PaymentModel).filter(
         models.PaymentModel.chat_id == user.chat_id,
@@ -810,6 +815,7 @@ def create_checkout(
         db.commit()
         return {
             "payment_id": payment.id,
+            "message": f"Подписка на команду «{team_name}» активирована на {TEAM_SUBSCRIPTION_DAYS} дней.",
             "checkout_url": f"{app_base_url}/billing.html?{urlencode({'payment': 'success', 'team': team_name})}",
         }
 
