@@ -134,12 +134,13 @@
         }
 
         async function toggleSubscription(team) {
+            const token = localStorage.getItem("token");
             await resolveChatId();
             if (!chatId) { showSubError("Авторизуйтесь"); return; }
             try {
                 const r = await fetch(`${API}/subscription/toggle`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                     body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
                 });
                 const result = await r.json();
