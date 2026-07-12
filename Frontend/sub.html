@@ -8,12 +8,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
           rel="stylesheet">
+    <style>
+        #subError {
+            color: #c62828;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin: 8px 0 16px;
+            display: none;
+        }
+        #subError.visible { display: block; }
+    </style>
 </head>
 <body>
 <div class="profile-container">
 
     <h1>Управление подписками</h1>
 
+    <div id="subError"></div>
     <div class="subscriptions-grid" id="teamsList"></div>
     <script>
         const khlTeams = [
@@ -68,9 +80,7 @@
             await resolveChatId();
             if (!chatId) { render(); return; }
             try {
-                const r = await fetch(`${API}/subscriptions/${chatId}`, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
+                const r = await fetch(`${API}/subscriptions/${chatId}`);
                 if (!r.ok) { render(); return; }
                 const data = await r.json();
                 subscriptions = data.subscriptions || [];
@@ -117,32 +127,30 @@
             });
         }
 
+        function showSubError(msg) {
+            const el = document.getElementById('subError');
+            el.textContent = msg;
+            el.classList.add('visible');
+        }
+
         async function toggleSubscription(team) {
             await resolveChatId();
-            if (!chatId) { alert("Авторизуйтесь"); return; }
+            if (!chatId) { showSubError("Авторизуйтесь"); return; }
             try {
                 const r = await fetch(`${API}/subscription/toggle`, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ chat_id: parseInt(chatId), team_name: team })
                 });
                 const result = await r.json();
                 if (r.ok) {
+                    document.getElementById('subError').classList.remove('visible');
                     await loadSubscriptions();
                 } else {
-                    const error = result.detail || result.message || "Ошибка";
-                    if (error.code === "payment_required") {
-                        alert(error.message);
-                        window.location.href = `billing.html?team=${encodeURIComponent(error.team_name || team)}`;
-                    } else {
-                        alert(typeof error === "string" ? error : "Ошибка");
-                    }
+                    showSubError(result.message || "Ошибка");
                 }
             } catch (err) {
-                alert("Ошибка сети: " + err.message);
+                showSubError("Ошибка сети: " + err.message);
             }
         }
 
