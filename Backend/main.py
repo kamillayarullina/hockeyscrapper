@@ -26,7 +26,7 @@ from Backend.database import engine, ensure_schema, get_db
 from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
 from Backend import payments
-from services.team_matcher import get_team_info
+from services.team_matcher import get_team_info, normalize_team_name
 
 test_code = {}
 _code_created_at = {}
@@ -220,7 +220,8 @@ def _add_team_subscription(db: Session, chat_id: int, team_name: str) -> None:
     """Add the paid or free team and its venue subscription without committing."""
     team_value = team_name.strip().lower()
     db.add(models.SubscriptionModel(chat_id=chat_id, type="team", value=team_value))
-    team_info = get_team_info(team_name)
+    canonical_name = normalize_team_name(team_name) or team_name
+    team_info = get_team_info(canonical_name)
     if not team_info:
         return
 
