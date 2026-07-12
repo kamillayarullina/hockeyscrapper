@@ -99,14 +99,22 @@ class Database:
     # ─────────────────────────────────────────────
     async def add_user(self, chat_id: int, username: Optional[str], first_name: Optional[str]) -> None:
         async with aiosqlite.connect(self.db_path) as db:
-            await db.execute("""
-                INSERT INTO users (chat_id, username, first_name, is_active)
-                VALUES (?, ?, ?, 1)
-                ON CONFLICT(chat_id) DO UPDATE SET
-                    username = excluded.username,
-                    first_name = excluded.first_name,
-                    is_active = 1
-            """, (chat_id, username, first_name))
+            db.row_factory = aiosqlite.Row
+            cols = ["chat_id", "username", "first_name", "is_active"]
+            vals: list = [chat_id, username, first_name, 1]
+            async with db.execute("PRAGMA table_info(users)") as c:
+                existing = {r["name"] for r in await c.fetchall()}
+            for extra, default in [("premium_plan", "free"), ("premium_until", None)]:
+                if extra in existing:
+                    cols.append(extra)
+                    vals.append(default)
+            await db.execute(
+                f"INSERT INTO users ({', '.join(cols)}) "  # nosec B608
+                f"VALUES ({', '.join('?' * len(cols))}) "
+                f"ON CONFLICT(chat_id) DO UPDATE SET "
+                f"username = excluded.username, first_name = excluded.first_name, is_active = 1",
+                vals,
+            )
             await db.commit()
 
     async def get_all_users(self) -> list[dict]:
