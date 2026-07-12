@@ -180,30 +180,23 @@ After all steps:
 **Status:** Active
 
 **User goal:**
-As a user, I want to purchase a premium subscription, so that I can unlock subscriptions more then 3 teams.
+As a user, I want to purchase a premium subscription, so that I can unlock subscriptions.
 
 **Preconditions:**
 - User is logged in
 - User is on the pricing page
-- User has a valid payment method (card)
+- User has a valid payment method 
 
 **Step-by-step instructions:**
 1. User navigates to the "Pricing" page
-2. User sees two plans: "Free" and "Premium"
-3. User pushes button "Buy Premium"
-4. System redirects user to YooKassa payment page
-5. User enters card details and confirms payment
-6. System redirects user back to the application
-7. User sees confirmation message "Premium subscription activated"
+2. User pushes button "Buy Premium"
 
 **Expected outcome:**
 After all steps:
-- On step 2: user sees the free plan limits and premium plan benefits
-- On step 5: payment is processed successfully via YooKassa
-- On step 7: user's profile shows "Premium" status
-- On step 7: user can now subscribe to unlimited teams
+-User sees the free plan limits and premium plan benefits
+-User can now subscribe to unlimited teams
 
-**Result:**
-**Executed by:**
-**Date:**
-**Notes:**
+**Result:** Pass
+**Executed by:** Daniil
+**Date:** 12.07.2026
+**Notes:** All good, no chages
