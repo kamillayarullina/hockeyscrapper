@@ -297,6 +297,123 @@ body {
 .crop-save:hover {
     background: var(--lidark) !important;
 }
+.billing-container {
+    max-width: 960px;
+}
+.back-link {
+    display: inline-block;
+    color: var(--darkblue);
+    font-weight: 800;
+    text-decoration: none;
+    margin-bottom: 24px;
+}
+.billing-eyebrow {
+    color: #bd6a0c;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-align: center;
+}
+.billing-lead {
+    color: #64748b;
+    font-size: 18px;
+    text-align: center;
+    margin: -18px auto 28px;
+    max-width: 520px;
+}
+.membership-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: #edf5ff;
+    border: 1px solid #cde0f7;
+    border-radius: 16px;
+    color: var(--darkblue);
+    padding: 16px 20px;
+    margin-bottom: 18px;
+}
+.membership-summary span {
+    color: #52709b;
+    font-weight: 700;
+}
+.payment-notice {
+    border-radius: 12px;
+    padding: 13px 16px;
+    background: #fff7df;
+    color: #7a510d;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+.payment-notice.success { background: #e7f8ee; color: #13723a; }
+.payment-notice.error { background: #fff0f0; color: #b42318; }
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+.plan-card {
+    position: relative;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 28px;
+}
+.plan-card.recommended { border-color: #e49a20; box-shadow: 0 14px 32px rgba(208, 130, 20, 0.13); }
+.plan-card h2 { color: var(--darkblue); font-size: 24px; }
+.plan-badge {
+    position: absolute;
+    right: 18px;
+    top: -12px;
+    background: #e49a20;
+    border-radius: 999px;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 5px 10px;
+}
+.plan-price { color: #1e3a5f; margin: 18px 0 0; }
+.plan-price strong { font-size: 40px; }
+.plan-period { color: #64748b; font-weight: 700; margin-bottom: 20px; }
+.plan-card ul { color: #334155; line-height: 1.8; margin: 0 0 24px 18px; }
+.plan-buy:disabled { cursor: wait; opacity: 0.7; transform: none; }
+.billing-security { color: #64748b; font-size: 13px; line-height: 1.5; margin-top: 22px; text-align: center; }
+.auto-renew-consent, .renew-switch {
+    align-items: flex-start;
+    color: #334155;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    font-weight: 700;
+    gap: 10px;
+    line-height: 1.45;
+    margin: 0 0 20px;
+}
+.auto-renew-consent input, .renew-switch input { accent-color: #bd6a0c; margin-top: 3px; }
+.saved-payment-method {
+    background: #eef8f1;
+    border: 1px solid #b9dfc4;
+    border-radius: 12px;
+    color: #19713b;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.45;
+    margin: 0 0 18px;
+    padding: 12px 14px;
+}
+.paid-teams-list { display: grid; gap: 16px; margin-top: 24px; }
+.paid-team-card {
+    background: rgba(255, 255, 255, 0.93);
+    border: 1px solid #dce7f4;
+    border-radius: 20px;
+    box-shadow: 0 12px 28px rgba(49, 87, 128, 0.09);
+    padding: 24px;
+}
+.paid-team-card .team-name { margin: 0 0 8px; text-transform: uppercase; }
+.subscription-active { color: #19713b; font-weight: 800; }
+.subscription-expired { color: #9f2e2e; font-weight: 800; }
+.auto-renew-status { color: #52709b; font-weight: 700; }
+.auto-renew-hint { color: #64748b; font-size: 14px; line-height: 1.5; }
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -307,4 +424,6 @@ body {
     .profile-container h1 { font-size: 26px; }
     .profile-header { gap: 30px; }
     .profile-avatar { width: 140px; height: 140px; font-size: 56px; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .membership-summary { align-items: flex-start; flex-direction: column; }
 }

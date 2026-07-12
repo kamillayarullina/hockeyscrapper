@@ -348,8 +348,8 @@ async def cmd_admin_interval(message: Message):
         return
     try:
         minutes = int(args[1])
-        if minutes < 1 or minutes > 1440:
-            await message.answer("❗ Интервал должен быть от 1 до 1440 минут.")
+        if minutes < 1 or minutes > 999:
+            await message.answer("❗ Интервал должен быть от 1 до 999 минут.")
             return
         db = get_db()
         await db.set_setting("parse_interval_minutes", str(minutes))

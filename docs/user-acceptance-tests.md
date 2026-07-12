@@ -173,3 +173,37 @@ After all steps:
 **Executed by:** Daniil
 **Date:** 3.07.2026
 **Notes:** All good, no chages
+
+## UAT-007: Purchase premium subscription
+**Linked to:** US-06 Monetization
+**Type:** new (mvp v3)
+**Status:** Active
+
+**User goal:**
+As a user, I want to purchase a premium subscription, so that I can unlock subscriptions more then 3 teams.
+
+**Preconditions:**
+- User is logged in
+- User is on the pricing page
+- User has a valid payment method (card)
+
+**Step-by-step instructions:**
+1. User navigates to the "Pricing" page
+2. User sees two plans: "Free" and "Premium"
+3. User pushes button "Buy Premium"
+4. System redirects user to YooKassa payment page
+5. User enters card details and confirms payment
+6. System redirects user back to the application
+7. User sees confirmation message "Premium subscription activated"
+
+**Expected outcome:**
+After all steps:
+- On step 2: user sees the free plan limits and premium plan benefits
+- On step 5: payment is processed successfully via YooKassa
+- On step 7: user's profile shows "Premium" status
+- On step 7: user can now subscribe to unlimited teams
+
+**Result:**
+**Executed by:**
+**Date:**
+**Notes:**

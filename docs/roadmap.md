@@ -42,6 +42,21 @@
   - [Testing] Quality-requirements tests - https://github.com/kamillayarullina/hockeyscrapper/issues/186
   - [PBI] Implement a backend for uploading avatars - https://github.com/kamillayarullina/hockeyscrapper/issues/191
   - [PBI] Improve the design of register and login pages - https://github.com/kamillayarullina/hockeyscrapper/issues/199
+ 
+  ## Sprint 4 (MVP v3)
+- **Dates:** July 6, 2026 — July 12, 2026
+- **Sprint Goal:** Make parsrers work better, password input improvements, monetization.
+- **Focus:** Monetization, parsers.
+- **Link to the Sprint Milestone:** - https://github.com/kamillayarullina/hockeyscrapper/milestone/4
+- **Planned Items:**
+  - [PBI] US-06: Monetization - https://github.com/kamillayarullina/hockeyscrapper/issues/75
+  - US-06: Monetization - https://github.com/kamillayarullina/hockeyscrapper/issues/63
+  - [PBI] Parsing time validation - https://github.com/kamillayarullina/hockeyscrapper/issues/230
+  - [PBI] Admin panel: validation to unreal teams - https://github.com/kamillayarullina/hockeyscrapper/issues/244
+  - [PBI] Password improvement - https://github.com/kamillayarullina/hockeyscrapper/issues/232
+  - [PBI] Changing Error notification - https://github.com/kamillayarullina/hockeyscrapper/issues/245
+
+
 
 
 

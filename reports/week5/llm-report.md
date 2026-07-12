@@ -18,3 +18,7 @@ AI tools:
 * Qwen 3.7-Plus
 
 
+## Customer Interview
+
+* AI tool https://any2text.ru was used to make interview transcript
+* Deepseek V3 was used to translate transcript
