@@ -25,5 +25,5 @@ AI assisted:
 
 ## Customer Interview
 
-* AI tool https://speech2text.ru was used to make interview transcript
+* AI tool [https://speech2text.ru](https://speech2text.ru) was used to make interview transcript
 * Deepseek V3 was used to translate transcript
