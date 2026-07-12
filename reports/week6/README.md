@@ -17,31 +17,30 @@
 ### Sprint 4 — Assignment 6 Sprint (Trial Release)
 
 - **Sprint milestone:** [Sprint 4 — Milestone 4](https://github.com/kamillayarullina/hockeyscrapper/milestone/4)
-- [**Sprint 4 Backlog view**](https://github.com/users/kamillayarullina/projects/7)
+- [**Sprint 4 Backlog view**](https://github.com/users/kamillayarullina/projects/8/views/1)
 
 ### Sprint 4 Scope
 
 | PBI | Issue | SP | Status |
 |---|---|---|---|
-| US-06: Monetization | [#63](https://github.com/kamillayarullina/hockeyscrapper/issues/63) | 8 | In Progress |
-| Monetisation Backend | [#228](https://github.com/kamillayarullina/hockeyscrapper/issues/228) | 5 | In Progress |
-| Monetisation Frontend | [#229](https://github.com/kamillayarullina/hockeyscrapper/issues/229) | 3 | In Progress |
-| Parsing time validation | [#230](https://github.com/kamillayarullina/hockeyscrapper/issues/230) | 2 | In Progress |
-| Parser improvements and parsing of KHL websites | [#231](https://github.com/kamillayarullina/hockeyscrapper/issues/231) | 5 | In Progress |
-| Password improvement | [#232](https://github.com/kamillayarullina/hockeyscrapper/issues/232) | 2 | In Progress |
+| US-06: Monetization | [#63](https://github.com/kamillayarullina/hockeyscrapper/issues/63) | 5 | Done |
+| [PBI] US-06: Monetization| [#75](https://github.com/kamillayarullina/hockeyscrapper/issues/75) | 5 | Done |
+| Parsing time validation | [#230](https://github.com/kamillayarullina/hockeyscrapper/issues/230) | 2 | Done |
+| [PBI] Admin panel: validation to unreal teams	| [#244](https://github.com/kamillayarullina/hockeyscrapper/issues/244) | 3 | Done |
+| Password improvement | [#232](https://github.com/kamillayarullina/hockeyscrapper/issues/232) | 2 | Done |
+| [PBI] Changing Error notification | [#245](https://github.com/kamillayarullina/hockeyscrapper/issues/245) | 2 | Done |
 
-total:17 SP
+Total:20 SP
 
 ### Week 6 Trial-Release Changes
 
-| Change | Issue/PR | Summary |
+| Change | PR | Summary |
 |---|---|---|
-| Monetisation Backend | [#228](https://github.com/kamillayarullina/hockeyscrapper/issues/228) | Backend implementation for subscription tiers or payment integration |
-| Monetisation Frontend | [#229](https://github.com/kamillayarullina/hockeyscrapper/issues/229) | Frontend pages for monetisation — pricing, checkout, subscription management |
-| Monetisation (US-06) | [#63](https://github.com/kamillayarullina/hockeyscrapper/issues/63) | Full monetisation user story — subscription tiers, payment processing |
-| Parsing time validation | [#230](https://github.com/kamillayarullina/hockeyscrapper/issues/230) | Frontend and backend validation for parsing time input in admin panel (range 1–999) |
-| Parser improvements | [#231](https://github.com/kamillayarullina/hockeyscrapper/issues/231) | Improved parsing of individual KHL club websites, better CAPTCHA bypass |
-| Password improvement | [#232](https://github.com/kamillayarullina/hockeyscrapper/issues/232) | Password strength requirements display on registration page, stronger backend validation |
+| Changing Error notification | [#247](https://github.com/kamillayarullina/hockeyscrapper/pull/247) | Error messages not from website |
+| Monetisation (US-06) | [#241](https://github.com/kamillayarullina/hockeyscrapper/pull/241) | Full monetisation user story — subscription tiers, payment processing |
+| Parsing time validation | [#243](https://github.com/kamillayarullina/hockeyscrapper/pull/243) | Frontend and backend validation for parsing time input in admin panel (range 1–999) |
+| Validation to unreal teams | [#246](https://github.com/kamillayarullina/hockeyscrapper/pull/246) | Validate to not adding unreal teams in admin panel |
+| Password improvement | [#242](https://github.com/kamillayarullina/hockeyscrapper/pull/242) | Password strength requirements display on registration page, stronger backend validation |
 
 ---
 
@@ -96,10 +95,11 @@ All customer-facing documentation has been reviewed and updated for the trial re
 
 | Feedback point | Resulting PBI or issue | Status | Response |
 |---|---|---|---|
-| Customer requested monetisation features | [#63](https://github.com/kamillayarullina/hockeyscrapper/issues/63), [#228](https://github.com/kamillayarullina/hockeyscrapper/issues/228), [#229](https://github.com/kamillayarullina/hockeyscrapper/issues/229) | In Progress | Monetisation backend and frontend implemented with subscription tiers |
-| Parsing time should be validated (1–999 range) | [#230](https://github.com/kamillayarullina/hockeyscrapper/issues/230) | In Progress | Input validation added to admin panel settings |
-| Parser does not handle some individual KHL club sites | [#231](https://github.com/kamillayarullina/hockeyscrapper/issues/231) | In Progress | Extended parser coverage for individual club websites |
-| Password requirements should be visible to users | [#232](https://github.com/kamillayarullina/hockeyscrapper/issues/232) | In Progress | Password strength requirements displayed on registration page |
+| Customer requested monetisation features | [#75](https://github.com/kamillayarullina/hockeyscrapper/issues/75) | Done | Monetisation backend and frontend implemented with subscription tiers |
+| Parsing time should be validated (1–999 range) | [#230](https://github.com/kamillayarullina/hockeyscrapper/issues/230) | Done | Input validation added to admin panel settings |
+| Restrict the ureal teams adding in admin panel | [#244](https://github.com/kamillayarullina/hockeyscrapper/issues/244) | In Progress | Extended parser coverage for individual club websites |
+| Password requirements should be visible to users | [#232](https://github.com/kamillayarullina/hockeyscrapper/issues/232) | Done | Password strength requirements displayed on registration page |
+| Erors meaage should be not from browser | [#245](https://github.com/kamillayarullina/hockeyscrapper/issues/245) | Done | Error notification from website |
 
 ### Feedback Not Addressed
 
