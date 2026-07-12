@@ -251,7 +251,8 @@ async function loadProxies() {
         <div><label>Тип</label><input class="inp" id="proxyType" placeholder="http/socks5" style="width:100px"></div>
         <div><label>Страна</label><input class="inp" id="proxyCountry" placeholder="RU" style="width:80px"></div>
         <button class="btn btn-success" onclick="addProxy()" style="margin-bottom:2px">+ Добавить</button>
-    </div>`;
+    </div>
+    <div id="proxyError" class="msg msg-err" style="display:none"></div>`;
     if (proxies.length) {
         html += `<div class="table-wrap"><table><thead><tr><th>ID</th><th>URL</th><th>Тип</th><th>Страна</th><th>Статус</th><th>Действия</th></tr></thead><tbody>`;
         for (const p of proxies) {
@@ -270,22 +271,28 @@ async function loadProxies() {
     document.getElementById("tab-proxies").innerHTML = html;
 }
 
+function showProxyError(msg) {
+    const el = document.getElementById("proxyError");
+    if (el) { el.textContent = msg; el.style.display = "flex"; }
+}
+
 async function addProxy() {
+    document.getElementById("proxyError").style.display = "none";
     const url = document.getElementById("proxyUrl").value.trim();
-    if (!url) return alert("Укажите URL прокси");
+    if (!url) return showProxyError("Укажите URL прокси");
     if (!/^https?:\/\/|^socks[45]:\/\//.test(url)) {
-        return alert("URL должен начинаться с http://, https://, socks4:// или socks5://");
+        return showProxyError("URL должен начинаться с http://, https://, socks4:// или socks5://");
     }
     const proxy_type = document.getElementById("proxyType").value.trim() || "http";
     if (!["http", "socks4", "socks5"].includes(proxy_type)) {
-        return alert("Тип прокси должен быть http, socks4 или socks5");
+        return showProxyError("Тип прокси должен быть http, socks4 или socks5");
     }
     const country = document.getElementById("proxyCountry").value.trim() || "";
     try {
-        const res = await api("/admin/proxies", { method: "POST", body: JSON.stringify({ url, proxy_type, country, note: "" }) });
+        await api("/admin/proxies", { method: "POST", body: JSON.stringify({ url, proxy_type, country, note: "" }) });
         loadProxies();
     } catch (e) {
-        alert(e.message);
+        showProxyError(e.message);
     }
 }
 
