@@ -96,6 +96,17 @@ async def cmd_subscribe(message: Message):
 
     db = get_db()
 
+    # Проверка лимита подписок для монетизации
+    user_subs = await db.get_user_subscriptions(message.from_user.id)
+    team_count = len(user_subs.get("team", []))
+    if team_count >= 4:
+        await message.answer(
+            "🚫 Достигнут лимит бесплатных подписок.\n"
+            "Для добавления новой команды оформите платную подписку на сайте:\n"
+            "https://hockeyscrapper.ru/sub.html"
+        )
+        return
+
     # Подписка на команду
     is_new_team = await db.subscribe(message.from_user.id, "team", team_canonical.lower())
 
