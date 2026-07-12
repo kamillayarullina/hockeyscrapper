@@ -1,4 +1,4 @@
-"""Парсер официального сайта КХЛ (khl.ru/tickets)."""
+"""Парсер официального сайта КХЛ (khl.ru/tickets) с Deep Crawl."""
 
 import re
 from typing import Optional
@@ -24,6 +24,83 @@ class KHLParser(BaseParser):
     PRICE_REGEX = re.compile(r'(\d[\d\s]{2,})\s*(?:₽|р\.|руб)', re.IGNORECASE)
     DATE_REGEX = re.compile(r'(\d{1,2})\s+([а-яё]+)\s+(\d{4})', re.IGNORECASE)
     TEAM_VS_REGEX = re.compile(r'([А-Я][а-яё\s\-]+)\s*[–—-]\s*([А-Я][а-яё\s\-]+)', re.IGNORECASE)
+
+    DETAIL_PRICE_SELECTORS = [
+        'table[class*="price"] td',
+        '[class*="price"] [class*="value"]',
+        '[class*="ticket-type"] [class*="cost"]',
+        '[class*="category"] [class*="price"]',
+        '.seat-category .price',
+        '.tariff .price',
+    ]
+
+    async def _run(self) -> list[dict]:
+        """Загружает список матчей, затем углубляется в каждый."""
+        events = await super()._run()
+        deep_crawl = self.params.get("deep_crawl", True)
+        if not deep_crawl:
+            return events
+
+        enriched = []
+        for event in events:
+            link = event.get("link", "")
+            if link and link != self.url and link.startswith("http"):
+                try:
+                    self.logger.info(f"[{self.name}] Deep crawl: {link}")
+                    html = await self.fetch(url=link, wait_selector=None, timeout_ms=20000)
+                    extras = self._deep_parse(html)
+                    event.update(extras)
+                    event["deep_crawled"] = True
+                except Exception as e:
+                    self.logger.debug(f"[{self.name}] Deep crawl failed for {link}: {e}")
+            enriched.append(event)
+
+        dc_count = sum(1 for e in enriched if e.get("deep_crawled"))
+        self.logger.info(f"[{self.name}] Deep crawl: {dc_count}/{len(enriched)} events enriched")
+        return enriched
+
+    def _deep_parse(self, html: str) -> dict:
+        """Извлекает уточнённые данные со страницы матча."""
+        soup = BeautifulSoup(html, "html.parser")
+        text = soup.get_text(separator=" ", strip=True)
+        extras: dict = {}
+
+        price_min, price_max = self._extract_prices(text)
+        if price_min != "Не указана":
+            extras["price_min"] = price_min
+            extras["price_max"] = price_max
+
+        detail_prices = self._extract_detail_prices(soup)
+        if detail_prices:
+            extras["price_min"] = detail_prices[0]
+            extras["price_max"] = detail_prices[1]
+
+        extras["availability"] = self._extract_availability(text)
+
+        place = self._extract_place(soup, text)
+        if place:
+            extras["place"] = place
+
+        return extras
+
+    def _extract_detail_prices(self, soup: BeautifulSoup) -> Optional[tuple[str, str]]:
+        """Пытается найти таблицу цен на странице матча."""
+        prices = []
+        for selector in self.DETAIL_PRICE_SELECTORS:
+            for el in soup.select(selector):
+                m = self.PRICE_REGEX.search(el.get_text())
+                if m:
+                    try:
+                        p = int(m.group(1).replace(" ", ""))
+                        if 100 < p < 1000000:
+                            prices.append(p)
+                    except ValueError:
+                        pass
+            if prices:
+                break
+        if prices:
+            return f"{min(prices)} ₽", f"{max(prices)} ₽"
+        return None
 
     async def parse(self, html: str) -> list[dict]:
         soup = BeautifulSoup(html, "html.parser")

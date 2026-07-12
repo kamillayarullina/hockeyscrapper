@@ -1,10 +1,17 @@
+import logging
 import os
+import warnings
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "hockeyscrapper-secret-change-in-production")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "")
+if not SECRET_KEY:
+    SECRET_KEY = "hockeyscrapper-secret-change-in-production"
+    warnings.warn("JWT_SECRET_KEY is not set! Using insecure default key.")
+    logging.getLogger(__name__).warning("JWT_SECRET_KEY is not set! Using insecure default key.")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 30
 

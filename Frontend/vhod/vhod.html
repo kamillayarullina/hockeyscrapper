@@ -55,6 +55,7 @@ fill="currentColor" viewBox="0 0 24 24" >
         </form>
     </div>
     <script>
+        if (localStorage.getItem("token")) { window.location.href = "../main.html"; }
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 

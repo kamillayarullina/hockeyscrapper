@@ -1,5 +1,5 @@
 """
-Кастомные парсеры для официальных билетных сайтов клубов КХЛ.
+Кастомные парсеры для официальных билетных сайтов клубов КХЛ с Deep Crawl.
 
 Каждый клуб имеет свою вёрстку. Часть сайтов — SPA (JS-рендер через Playwright),
 часть требует авторизации. Универсального решения нет — под каждый клуб свои селекторы.
@@ -12,8 +12,12 @@ from bs4 import BeautifulSoup, Tag
 from parsers.club_parser import ClubParser
 
 
+AUTH_KEYWORDS = ["авторизаци", "личный кабинет", "регистрация", "требуется регистрация"]
+SPA_KEYWORDS = ["spa", "виджет", "внешний"]
+
+
 class ClubSiteParser(ClubParser):
-    """Парсер для клубных сайтов с переопределёнными селекторами."""
+    """Парсер для клубных сайтов с переопределёнными селекторами и Deep Crawl."""
 
     # ───── Селекторы для каждого клуба ─────
     CLUB_SELECTORS = {
@@ -233,6 +237,73 @@ class ClubSiteParser(ClubParser):
         self._sel = self.CLUB_SELECTORS.get(club_name, {})
         if not self._sel:
             self.logger.warning(f"[{club_name}] нет кастомных селекторов — используется ClubParser")
+
+    @property
+    def _can_deep_crawl(self) -> bool:
+        deep_enabled = self.params.get("deep_crawl", True)
+        if not deep_enabled:
+            return False
+        note = self._sel.get("note", "").lower()
+        if any(kw in note for kw in AUTH_KEYWORDS + SPA_KEYWORDS):
+            self.logger.info(f"[{self.name}] Deep crawl skipped (site note: {note})")
+            return False
+        return True
+
+    async def _run(self) -> list[dict]:
+        events = await super()._run()
+        if not self._can_deep_crawl:
+            return events
+
+        enriched = []
+        for event in events:
+            link = event.get("link", "")
+            if link and link != self.url and link.startswith("http"):
+                try:
+                    self.logger.info(f"[{self.name}] Deep crawl: {link}")
+                    html = await self.fetch(url=link, wait_selector=None, timeout_ms=20000)
+                    extras = self._deep_parse(html)
+                    event.update(extras)
+                    event["deep_crawled"] = True
+                except Exception as e:
+                    self.logger.debug(f"[{self.name}] Deep crawl failed for {link}: {e}")
+            enriched.append(event)
+
+        dc_count = sum(1 for e in enriched if e.get("deep_crawled"))
+        self.logger.info(f"[{self.name}] Deep crawl: {dc_count}/{len(enriched)} events enriched")
+        return enriched
+
+    def _deep_parse(self, html: str) -> dict:
+        soup = BeautifulSoup(html, "html.parser")
+        text = soup.get_text(separator=" ", strip=True)
+        extras: dict = {}
+
+        price_min, price_max = self._extract_prices_from_text(text)
+        if price_min != "Не указана":
+            extras["price_min"] = price_min
+            extras["price_max"] = price_max
+
+        text_lower = text.lower()
+        if "распродано" in text_lower or "нет билетов" in text_lower:
+            extras["availability"] = "Нет"
+        elif "в продаже" in text_lower or "купить" in text_lower:
+            extras["availability"] = "Да"
+
+        return extras
+
+    @staticmethod
+    def _extract_prices_from_text(text: str) -> tuple[str, str]:
+        matches = ClubParser.PRICE_REGEX.findall(text)
+        prices = []
+        for match in matches:
+            try:
+                p = int(match.replace(" ", ""))
+                if 100 < p < 1000000:
+                    prices.append(p)
+            except ValueError:
+                continue
+        if not prices:
+            return "Не указана", "Не указана"
+        return f"{min(prices)} ₽", f"{max(prices)} ₽"
 
     def _find_event_cards(self, soup: BeautifulSoup) -> list:
         """Ищет карточки событий по селекторам клуба (если есть), иначе — базовый поиск."""

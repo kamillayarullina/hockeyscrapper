@@ -78,6 +78,7 @@ fill="currentColor" viewBox="0 0 24 24" >
         <button type="submit" class="btn">Зарегистрироваться</button>
         </form>
         <script>
+            if (localStorage.getItem("token")) { window.location.href = "../main.html"; }
             function showError(inputId, errorId, msg) {
                 document.getElementById(inputId).classList.add('error');
                 const el = document.getElementById(errorId);

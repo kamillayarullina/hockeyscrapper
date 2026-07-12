@@ -125,12 +125,25 @@ class BaseParser(abc.ABC):
             return None
         return await self.proxy_rotator.get_next(country=self.proxy_country)
 
-    async def fetch(self) -> str:
+    async def fetch(
+        self,
+        url: Optional[str] = None,
+        wait_selector: Optional[str] = None,
+        timeout_ms: Optional[int] = None,
+    ) -> str:
         """
         Загружает HTML страницы через Playwright.
         Реализует повторные попытки с экспоненциальной задержкой.
         При ошибке — меняет прокси и повторяет.
+
+        :param url: URL для загрузки (по умолчанию self.url).
+        :param wait_selector: Селектор ожидания (по умолчанию из params).
+        :param timeout_ms: Таймаут в мс (по умолчанию из params).
         """
+        target_url = url or self.url
+        target_wait_selector = wait_selector or self.params.get("wait_selector")
+        target_timeout_ms = timeout_ms or int(self.params.get("timeout_ms", 30000))
+
         last_error: Optional[Exception] = None
         used_proxies: list["ProxyServer"] = []
         direct_attempt_done = False
@@ -146,15 +159,13 @@ class BaseParser(abc.ABC):
                             break
 
                 user_agent = self._get_user_agent()
-                timeout_ms = int(self.params.get("timeout_ms", 30000))
-                wait_selector = self.params.get("wait_selector")
 
                 proxy_desc = (
                     f"{proxy.host}:{proxy.port}" if proxy else "direct"
                 )
                 self.logger.info(
                     f"[{self.name}] Попытка {attempt}/{self.retry_attempts}: "
-                    f"загрузка {self.url} через {proxy_desc}"
+                    f"загрузка {target_url} через {proxy_desc}"
                 )
 
                 await self._random_delay()
@@ -162,9 +173,10 @@ class BaseParser(abc.ABC):
 
                 html = await self._fetch_with_playwright(
                     user_agent=user_agent,
-                    timeout_ms=timeout_ms,
-                    wait_selector=wait_selector,
+                    timeout_ms=target_timeout_ms,
+                    wait_selector=target_wait_selector,
                     proxy=proxy,
+                    url=target_url,
                 )
 
                 elapsed_ms = (time.time() - start_time) * 1000
@@ -227,14 +239,13 @@ class BaseParser(abc.ABC):
                 direct_attempt_done = True
                 try:
                     user_agent = self._get_user_agent()
-                    timeout_ms = int(self.params.get("timeout_ms", 30000))
-                    wait_selector = self.params.get("wait_selector")
 
                     html = await self._fetch_with_playwright(
                         user_agent=user_agent,
-                        timeout_ms=timeout_ms,
-                        wait_selector=wait_selector,
+                        timeout_ms=target_timeout_ms,
+                        wait_selector=target_wait_selector,
                         proxy=None,
+                        url=target_url,
                     )
                     if html and len(html.strip()) >= 100:
                         self.logger.info(
@@ -265,8 +276,10 @@ class BaseParser(abc.ABC):
         timeout_ms: int,
         wait_selector: Optional[str],
         proxy: Optional["ProxyServer"] = None,
+        url: Optional[str] = None,
     ) -> str:
         """Внутренний метод: запуск Playwright с указанным прокси."""
+        target_url = url or self.url
         browser: Optional[Browser] = None
         pw = None
         try:
@@ -290,7 +303,7 @@ class BaseParser(abc.ABC):
             page: Page = await context.new_page()
 
             response = await page.goto(
-                self.url,
+                target_url,
                 wait_until="domcontentloaded",
                 timeout=timeout_ms,
             )
@@ -353,12 +366,7 @@ class BaseParser(abc.ABC):
         """Основной метод: загружает страницу и парсит её."""
         self.logger.info(f"[{self.name}] Запуск парсинга {self.url}")
         try:
-            html = await self.fetch()
-            events = await self.parse(html)
-            self.logger.info(
-                f"[{self.name}] Успешно получено {len(events)} событий"
-            )
-            return events
+            return await self._run()
         except ProtectionError as e:
             self.logger.error(f"[{self.name}] Антибот-защита: {e}")
             raise
@@ -373,6 +381,15 @@ class BaseParser(abc.ABC):
                 f"[{self.name}] Неизвестная ошибка при запуске: {e}"
             )
             raise
+
+    async def _run(self) -> list[dict]:
+        """Внутренний метод, переопределяемый наследниками для deep crawl."""
+        html = await self.fetch()
+        events = await self.parse(html)
+        self.logger.info(
+            f"[{self.name}] Успешно получено {len(events)} событий"
+        )
+        return events
 
     def __repr__(self) -> str:
         return (

@@ -2,12 +2,14 @@
 
 import aiosqlite
 import logging
+import os
 from typing import Optional
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-DB_PATH = "data/tickets.db"
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DB_PATH = os.environ.get("DB_PATH", str(_PROJECT_ROOT / "data" / "tickets.db"))
 
 
 class Database:
@@ -207,7 +209,10 @@ class Database:
         """
         match_id = match.get("match_id", "")
         async with aiosqlite.connect(self.db_path) as db:
-            existing = await self.get_match_by_id(match_id)
+            db.row_factory = aiosqlite.Row
+            async with db.execute("SELECT * FROM matches WHERE match_id = ?", (match_id,)) as cursor:
+                existing_row = await cursor.fetchone()
+                existing = dict(existing_row) if existing_row else None
             if existing:
                 existing_sources = existing.get("sources", "")
                 if source_name and source_name not in existing_sources:

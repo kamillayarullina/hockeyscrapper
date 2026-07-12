@@ -24,6 +24,7 @@
     </main>
 
     <script>
+        const API = "";
         const token = localStorage.getItem("token");
         const params = new URLSearchParams(window.location.search);
         const selectedTeam = params.get("team");
@@ -126,7 +127,7 @@
             button.disabled = true;
             button.textContent = "Переходим к оплате...";
             try {
-                const response = await fetch("/billing/checkout", {
+                const response = await fetch(`${API}/billing/checkout`, {
                     method: "POST",
                     headers: authHeaders(),
                     body: JSON.stringify({
@@ -153,7 +154,7 @@
                 showNotice("Оплата принята. Подписка появится после подтверждения YooKassa.");
                 return;
             }
-            const response = await fetch(`/billing/payments/${paymentId}`, { headers: authHeaders() });
+            const response = await fetch(`${API}/billing/payments/${paymentId}`, { headers: authHeaders() });
             if (!response.ok) return;
             const payment = await response.json();
             if (payment.status === "succeeded") {
@@ -170,8 +171,8 @@
             }
             try {
                 const [plansResponse, membershipResponse] = await Promise.all([
-                    fetch("/billing/plans"),
-                    fetch("/billing/me", { headers: authHeaders() })
+                    fetch(`${API}/billing/plans`),
+                    fetch(`${API}/billing/me`, { headers: authHeaders() })
                 ]);
                 if (membershipResponse.status === 401) {
                     window.location.href = "vhod/vhod.html";
