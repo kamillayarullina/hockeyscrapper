@@ -109,7 +109,7 @@ class Database:
                     cols.append(extra)
                     vals.append(default)
             await db.execute(
-                f"INSERT INTO users ({', '.join(cols)}) "
+                f"INSERT INTO users ({', '.join(cols)}) "  # nosec B608
                 f"VALUES ({', '.join('?' * len(cols))}) "
                 f"ON CONFLICT(chat_id) DO UPDATE SET "
                 f"username = excluded.username, first_name = excluded.first_name, is_active = 1",
