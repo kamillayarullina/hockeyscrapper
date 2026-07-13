@@ -140,10 +140,11 @@ async def cmd_subscribe(message: Message):
     if team_count >= 3:
         free_team_count = await db.count_free_teams(message.from_user.id)
         if free_team_count >= 3:
+            site_url = os.environ.get("APP_BASE_URL", "http://89.125.169.128:8000")
             await message.answer(
                 "🚫 Достигнут лимит бесплатных подписок.\n"
                 "Чтобы добавить больше команд, оформите подписку на сайте:\n"
-                "https://hockeyscrapper.ru/sub.html"
+                f"{site_url}/sub.html"
             )
             return
 
