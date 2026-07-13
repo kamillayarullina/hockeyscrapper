@@ -18,6 +18,18 @@
             display: none;
         }
         #subError.visible { display: block; }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .subscription-card.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -26,7 +38,7 @@
     <h1>Управление подписками</h1>
 
     <div id="subError"></div>
-    <div class="subscriptions-grid" id="teamsList"></div>
+    <div class="subscriptions-grid" id="teamsList"><div class="loading-spinner">Загрузка...</div></div>
     <script>
         const khlTeams = [
             { name: "СКА",  logo: "images/SKA.png" },
@@ -57,7 +69,75 @@
         const API = "";
         const token = localStorage.getItem("token");
         let chatId = localStorage.getItem("chat_id");
-        let subscriptions = [];
+
+        function normalizeName(name) {
+            return name.toLowerCase().trim();
+        }
+
+        function getSubscribedSet() {
+            try {
+                return new Set(JSON.parse(localStorage.getItem("subscriptions") || "[]").map(normalizeName));
+            } catch { return new Set(); }
+        }
+
+        let subscribedSet = getSubscribedSet();
+
+        const container = document.getElementById("teamsList");
+
+        function render() {
+            container.innerHTML = "";
+            khlTeams.forEach(team => {
+                const normalized = normalizeName(team.name);
+                const subscribed = subscribedSet.has(normalized);
+
+                const card = document.createElement("div");
+                card.className = "subscription-card";
+                card.dataset.team = normalized;
+
+                const infoDiv = document.createElement("div");
+                infoDiv.className = "card-info";
+
+                const img = document.createElement("img");
+                img.src = team.logo;
+                img.alt = team.name;
+                img.loading = "lazy";
+
+                const nameSpan = document.createElement("span");
+                nameSpan.textContent = team.name;
+
+                infoDiv.appendChild(img);
+                infoDiv.appendChild(nameSpan);
+
+                const btn = document.createElement("button");
+                btn.className = "btn-small" + (subscribed ? " unsubscribe" : "");
+                btn.textContent = subscribed ? "Отписаться" : "Подписаться";
+                btn.onclick = function() { toggleSubscription(team.name); };
+
+                card.appendChild(infoDiv);
+                card.appendChild(btn);
+                container.appendChild(card);
+            });
+        }
+
+        function updateBtnState(teamName, subscribed) {
+            const normalized = normalizeName(teamName);
+            const card = container.querySelector(`.subscription-card[data-team="${normalized}"]`);
+            if (!card) return;
+            const btn = card.querySelector(".btn-small");
+            btn.textContent = subscribed ? "Отписаться" : "Подписаться";
+            btn.className = "btn-small" + (subscribed ? " unsubscribe" : "");
+            card.classList.remove("loading");
+        }
+
+        function showSubError(msg) {
+            const el = document.getElementById("subError");
+            el.textContent = msg;
+            el.classList.add("visible");
+        }
+
+        function hideSubError() {
+            document.getElementById("subError").classList.remove("visible");
+        }
 
         async function resolveChatId() {
             if (token) {
@@ -79,67 +159,37 @@
         async function loadSubscriptions() {
             const token = localStorage.getItem("token");
             await resolveChatId();
-            if (!chatId) { render(); return; }
+            if (!chatId) return;
             try {
                 const r = await fetch(`${API}/subscriptions/${chatId}`, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
-                if (!r.ok) { render(); return; }
+                if (!r.ok) return;
                 const data = await r.json();
-                subscriptions = data.subscriptions || [];
-                localStorage.setItem("subscriptions", JSON.stringify(subscriptions));
+                const subs = data.subscriptions || [];
+                localStorage.setItem("subscriptions", JSON.stringify(subs));
+                subscribedSet = new Set(subs.map(normalizeName));
                 render();
-            } catch { render(); }
-        }
-
-        const container = document.getElementById("teamsList");
-
-        function render() {
-            container.innerHTML = "";
-            khlTeams.forEach(team => {
-                const subscribed = subscriptions.some(sub =>
-                    sub.toLowerCase() === team.name.toLowerCase()
-                );
-
-                const card = document.createElement("div");
-                card.className = "subscription-card";
-
-                const infoDiv = document.createElement("div");
-                infoDiv.className = "card-info";
-
-                const img = document.createElement("img");
-                img.src = team.logo;
-                img.alt = team.name;
-
-                const nameSpan = document.createElement("span");
-                nameSpan.textContent = team.name;
-
-                infoDiv.appendChild(img);
-                infoDiv.appendChild(nameSpan);
-
-                const btn = document.createElement("button");
-                btn.className = `btn-small ${subscribed ? 'unsubscribe' : ''}`;
-                btn.textContent = subscribed ? 'Отписаться' : 'Подписаться';
-                btn.onclick = function() {
-                    toggleSubscription(team.name);
-                };
-
-                card.appendChild(infoDiv);
-                card.appendChild(btn);
-                container.appendChild(card);
-            });
-        }
-
-        function showSubError(msg) {
-            const el = document.getElementById('subError');
-            el.textContent = msg;
-            el.classList.add('visible');
+            } catch {}
         }
 
         async function toggleSubscription(team) {
             const token = localStorage.getItem("token");
             await resolveChatId();
             if (!chatId) { showSubError("Авторизуйтесь"); return; }
+
+            const normalized = normalizeName(team);
+            const wasSubscribed = subscribedSet.has(normalized);
+
+            // optimistic update
+            if (wasSubscribed) {
+                subscribedSet.delete(normalized);
+            } else {
+                subscribedSet.add(normalized);
+            }
+            updateBtnState(team, !wasSubscribed);
+            hideSubError();
+
             try {
                 const r = await fetch(`${API}/subscription/toggle`, {
                     method: "POST",
@@ -148,18 +198,39 @@
                 });
                 const result = await r.json();
                 if (r.ok) {
-                    document.getElementById('subError').classList.remove('visible');
                     await loadSubscriptions();
                 } else if (r.status === 402 && result.detail && result.detail.team_name) {
+                    // revert optimistic update
+                    if (wasSubscribed) {
+                        subscribedSet.add(normalized);
+                    } else {
+                        subscribedSet.delete(normalized);
+                    }
+                    updateBtnState(team, wasSubscribed);
                     window.location.href = `billing.html?team=${encodeURIComponent(result.detail.team_name)}`;
                 } else {
+                    // revert
+                    if (wasSubscribed) {
+                        subscribedSet.add(normalized);
+                    } else {
+                        subscribedSet.delete(normalized);
+                    }
+                    updateBtnState(team, wasSubscribed);
                     showSubError((result.detail && result.detail.message) || result.message || "Ошибка");
                 }
             } catch (err) {
+                // revert
+                if (wasSubscribed) {
+                    subscribedSet.add(normalized);
+                } else {
+                    subscribedSet.delete(normalized);
+                }
+                updateBtnState(team, wasSubscribed);
                 showSubError("Ошибка сети: " + err.message);
             }
         }
 
+        render();
         loadSubscriptions();
     </script>
     <button class="btn"

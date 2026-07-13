@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, func, text
+from sqlalchemy import Column, DateTime, Index, func, text
 from sqlalchemy.orm import Mapped, mapped_column
 from Backend.database import Base
 
@@ -29,6 +29,9 @@ class SubscriptionModel(Base):
     type: Mapped[str] = mapped_column(primary_key=True)
     value: Mapped[str] = mapped_column(primary_key=True)
     created_at = Column(DateTime, server_default=func.now())
+    __table_args__ = (
+        Index("ix_sub_chat_type", "chat_id", "type"),
+    )
 
 
 class PaidTeamSubscriptionModel(Base):
@@ -39,7 +42,10 @@ class PaidTeamSubscriptionModel(Base):
     chat_id: Mapped[int] = mapped_column(primary_key=True)
     team_name: Mapped[str] = mapped_column(primary_key=True)
     expires_at: Mapped[datetime] = mapped_column(nullable=False, index=True)
-    auto_renew: Mapped[bool] = mapped_column(default=False)
+    auto_renew: Mapped[bool] = mapped_column(default=False, index=True)
+    __table_args__ = (
+        Index("ix_paid_team_sub_exp_auto", "expires_at", "auto_renew"),
+    )
     payment_method_id: Mapped[str] = mapped_column(nullable=True)
     auto_renew_consented_at: Mapped[datetime] = mapped_column(nullable=True)
     created_at = Column(DateTime, server_default=func.now())
