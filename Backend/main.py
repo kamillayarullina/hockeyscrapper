@@ -1331,7 +1331,15 @@ async def serve_frontend(full_path: str):
     if not resolved.exists():
         raise HTTPException(status_code=404, detail="Not found")
     media_type, _ = mimetypes.guess_type(str(resolved))
-    return FileResponse(str(resolved), media_type=media_type or "text/html")
+    suffix = resolved.suffix.lower()
+    if suffix in (".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".ico"):
+        cache_max_age = 86400 * 30
+    elif suffix in (".css", ".js", ".woff", ".woff2", ".ttf"):
+        cache_max_age = 86400 * 7
+    else:
+        cache_max_age = 0
+    headers = {"Cache-Control": f"public, max-age={cache_max_age}"} if cache_max_age else {}
+    return FileResponse(str(resolved), media_type=media_type or "text/html", headers=headers)
 
 if __name__ == "__main__":
     import uvicorn
