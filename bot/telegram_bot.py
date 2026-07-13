@@ -8,7 +8,7 @@ from html import escape
 from typing import Optional
 
 from aiogram import Bot, Dispatcher, Router
-from aiogram.filters import Command, CommandStart
+from aiogram.filters import Command, CommandObject, CommandStart
 from aiogram.types import Message, BotCommand
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
@@ -22,15 +22,14 @@ router = Router()
 
 
 @router.message(CommandStart())
-async def cmd_start(message: Message):
+async def cmd_start(message: Message, command: CommandObject):
     """Приветствие и регистрация пользователя. Если передан код привязки — связывает аккаунт."""
-    args = message.get_args()
-    if args:
+    if command.args:
         db = get_db()
         await db.init()
         async with aiosqlite.connect(db.db_path) as conn:
             conn.row_factory = aiosqlite.Row
-            async with conn.execute("SELECT chat_id FROM users WHERE link_code = ?", (args,)) as c:
+            async with conn.execute("SELECT chat_id FROM users WHERE link_code = ?", (command.args,)) as c:
                 row = await c.fetchone()
             if row:
                 old_chat_id = row["chat_id"]
@@ -138,13 +137,16 @@ async def cmd_subscribe(message: Message):
     # Проверка лимита подписок для монетизации
     user_subs = await db.get_user_subscriptions(message.from_user.id)
     team_count = len(user_subs.get("team", []))
-    if team_count >= 4:
-        await message.answer(
-            "🚫 Достигнут лимит бесплатных подписок.\n"
-            "Для добавления новой команды оформите платную подписку на сайте:\n"
-            "https://hockeyscrapper.ru/sub.html"
-        )
-        return
+    if team_count >= 3:
+        free_team_count = await db.count_free_teams(message.from_user.id)
+        if free_team_count >= 3:
+            site_url = os.environ.get("APP_BASE_URL", "http://89.125.169.128:8000")
+            await message.answer(
+                "🚫 Достигнут лимит бесплатных подписок.\n"
+                "Чтобы добавить больше команд, оформите подписку на сайте:\n"
+                f"{site_url}/sub.html"
+            )
+            return
 
     # Подписка на команду
     is_new_team = await db.subscribe(message.from_user.id, "team", team_canonical.lower())

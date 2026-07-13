@@ -49,6 +49,7 @@ def ensure_schema() -> None:
     additions = {
         "premium_plan": "VARCHAR DEFAULT 'free'",
         "premium_until": "TIMESTAMP",
+        "link_code": "VARCHAR",
     }
     with engine.begin() as connection:
         for column, definition in additions.items():
