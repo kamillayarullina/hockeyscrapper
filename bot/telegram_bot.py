@@ -1,6 +1,7 @@
 """Telegram-бот с системой подписок на команды КХЛ."""
 
 import asyncio
+import aiosqlite
 import logging
 import os
 from html import escape
@@ -22,7 +23,45 @@ router = Router()
 
 @router.message(CommandStart())
 async def cmd_start(message: Message):
-    """Приветствие и регистрация пользователя."""
+    """Приветствие и регистрация пользователя. Если передан код привязки — связывает аккаунт."""
+    args = message.get_args()
+    if args:
+        db = get_db()
+        await db.init()
+        async with aiosqlite.connect(db.db_path) as conn:
+            conn.row_factory = aiosqlite.Row
+            async with conn.execute("SELECT chat_id FROM users WHERE link_code = ?", (args,)) as c:
+                row = await c.fetchone()
+            if row:
+                old_chat_id = row["chat_id"]
+                new_chat_id = message.from_user.id
+                async with conn.execute("SELECT chat_id FROM users WHERE chat_id = ?", (new_chat_id,)) as c2:
+                    existing = await c2.fetchone()
+                if existing:
+                    await conn.execute("DELETE FROM subscriptions WHERE chat_id = ?", (new_chat_id,))
+                    await conn.execute("DELETE FROM notified_events WHERE chat_id = ?", (new_chat_id,))
+                    await conn.execute("DELETE FROM users WHERE chat_id = ?", (new_chat_id,))
+                await conn.execute(
+                    "UPDATE users SET chat_id = ?, link_code = NULL, username = ?, first_name = ?, is_active = 1 WHERE chat_id = ?",
+                    (new_chat_id, message.from_user.username, message.from_user.first_name, old_chat_id),
+                )
+                await conn.execute(
+                    "UPDATE subscriptions SET chat_id = ? WHERE chat_id = ?",
+                    (new_chat_id, old_chat_id),
+                )
+                await conn.execute(
+                    "UPDATE notified_events SET chat_id = ? WHERE chat_id = ?",
+                    (new_chat_id, old_chat_id),
+                )
+                await conn.commit()
+                await message.answer(
+                    f"✅ Аккаунт успешно привязан, <b>{escape(message.from_user.first_name or '')}</b>!\n\n"
+                    f"Теперь вы будете получать уведомления о билетах прямо в этом чате."
+                )
+            else:
+                await message.answer("❌ Код привязки не найден. Попробуйте заново на сайте.")
+        return
+
     db = get_db()
     await db.add_user(
         chat_id=message.from_user.id,

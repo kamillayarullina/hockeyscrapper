@@ -210,12 +210,15 @@ def _active_paid_team_values(db: Session, chat_id: int) -> set[str]:
 
 
 def _free_team_subscription_count(db: Session, chat_id: int) -> int:
-    paid_teams = _active_paid_team_values(db, chat_id)
-    teams = db.query(models.SubscriptionModel.value).filter(
+    subq = db.query(models.PaidTeamSubscriptionModel.team_name).filter(
+        models.PaidTeamSubscriptionModel.chat_id == chat_id,
+        models.PaidTeamSubscriptionModel.expires_at > datetime.utcnow(),
+    )
+    return db.query(models.SubscriptionModel).filter(
         models.SubscriptionModel.chat_id == chat_id,
         models.SubscriptionModel.type == "team",
-    ).all()
-    return sum(team_name not in paid_teams for (team_name,) in teams)
+        ~models.SubscriptionModel.value.in_(subq),
+    ).count()
 
 
 def _add_team_subscription(db: Session, chat_id: int, team_name: str) -> None:
@@ -257,12 +260,21 @@ def _remove_team_subscription(db: Session, chat_id: int, team_name: str) -> None
 
 def _disable_expired_nonrenewing_subscriptions(db: Session) -> int:
     """Stop notifications for monthly subscriptions that ended without auto-renewal."""
-    expired = db.query(models.PaidTeamSubscriptionModel).filter(
+    expired = db.query(
+        models.PaidTeamSubscriptionModel.chat_id,
+        models.PaidTeamSubscriptionModel.team_name,
+    ).filter(
         models.PaidTeamSubscriptionModel.expires_at <= datetime.utcnow(),
         models.PaidTeamSubscriptionModel.auto_renew.is_(False),
     ).all()
-    for subscription in expired:
-        _remove_team_subscription(db, subscription.chat_id, subscription.team_name)
+    if not expired:
+        return 0
+    for chat_id, team_name_val in expired:
+        team_val = team_name_val.strip().lower()
+        db.query(models.SubscriptionModel).filter(
+            models.SubscriptionModel.chat_id == chat_id,
+            models.SubscriptionModel.value == team_val,
+        ).delete(synchronize_session=False)
     return len(expired)
 
 
@@ -585,7 +597,7 @@ def generate_link_code(req: LinkCodeRequest, db: Session = Depends(get_db)):
     code = secrets.token_hex(4)
     user.link_code = code
     db.commit()
-    bot_username = os.environ.get("BOT_USERNAME", "HockeyScrAppeer_bot")
+    bot_username = os.environ.get("BOT_USERNAME", "HockeyScrapper_bot")
     return {"code": code, "link": f"https://t.me/{bot_username}?start={code}"}
 
 @app.post("/subscription/toggle")
