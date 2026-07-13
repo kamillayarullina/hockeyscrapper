@@ -29,7 +29,7 @@ async def cmd_start(message: Message, command: CommandObject):
         await db.init()
         async with aiosqlite.connect(db.db_path) as conn:
             conn.row_factory = aiosqlite.Row
-            async with conn.execute("SELECT chat_id FROM users WHERE link_code = ?", (args,)) as c:
+            async with conn.execute("SELECT chat_id FROM users WHERE link_code = ?", (command.args,)) as c:
                 row = await c.fetchone()
             if row:
                 old_chat_id = row["chat_id"]

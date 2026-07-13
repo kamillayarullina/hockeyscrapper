@@ -91,6 +91,12 @@ class Database:
                     note TEXT DEFAULT ''
                 )
             """)
+            try:
+                await db.execute(
+                    "ALTER TABLE users ADD COLUMN link_code TEXT"
+                )
+            except aiosqlite.OperationalError:
+                pass
             await db.commit()
         logger.info(f"База данных инициализирована: {self.db_path}")
 
