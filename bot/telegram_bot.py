@@ -8,7 +8,7 @@ from html import escape
 from typing import Optional
 
 from aiogram import Bot, Dispatcher, Router
-from aiogram.filters import Command, CommandStart
+from aiogram.filters import Command, CommandObject, CommandStart
 from aiogram.types import Message, BotCommand
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
@@ -22,10 +22,9 @@ router = Router()
 
 
 @router.message(CommandStart())
-async def cmd_start(message: Message):
+async def cmd_start(message: Message, command: CommandObject):
     """Приветствие и регистрация пользователя. Если передан код привязки — связывает аккаунт."""
-    args = message.get_args()
-    if args:
+    if command.args:
         db = get_db()
         await db.init()
         async with aiosqlite.connect(db.db_path) as conn:
