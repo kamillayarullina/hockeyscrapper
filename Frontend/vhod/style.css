@@ -105,6 +105,7 @@ a { text-decoration: none; }
 .input-box svg.toggle-password {
     pointer-events: auto;
     cursor: pointer;
+    right: 50px;
 }
 .input-box:focus-within svg {
     fill: var(--darkblue);
