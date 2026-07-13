@@ -585,7 +585,7 @@ def generate_link_code(req: LinkCodeRequest, db: Session = Depends(get_db)):
     code = secrets.token_hex(4)
     user.link_code = code
     db.commit()
-    bot_username = os.environ.get("BOT_USERNAME", "HockeyScrAppeer_bot")
+    bot_username = os.environ.get("BOT_USERNAME", "HockeyScrapper_bot")
     return {"code": code, "link": f"https://t.me/{bot_username}?start={code}"}
 
 @app.post("/subscription/toggle")
