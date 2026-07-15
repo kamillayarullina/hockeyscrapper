@@ -55,7 +55,15 @@
   - [PBI] Admin panel: validation to unreal teams - https://github.com/kamillayarullina/hockeyscrapper/issues/244
   - [PBI] Password improvement - https://github.com/kamillayarullina/hockeyscrapper/issues/232
   - [PBI] Changing Error notification - https://github.com/kamillayarullina/hockeyscrapper/issues/245
-
+ 
+  ## Sprint 5 (MVP v3)
+- **Dates:** July 13, 2026 — July 19, 2026
+- **Sprint Goal:** Logout button, monetization improvements.
+- **Focus:** Monetization, logout button.
+- **Link to the Sprint Milestone:** - https://github.com/kamillayarullina/hockeyscrapper/milestone/5
+- **Planned Items:**
+  - [PBI] Adding "Log out" button - https://github.com/kamillayarullina/hockeyscrapper/issues/266
+  - [PBI] Monetization improvement - https://github.com/kamillayarullina/hockeyscrapper/issues/270
 
 
 
