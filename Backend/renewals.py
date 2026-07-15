@@ -1,4 +1,4 @@
-"""Run once per hour on the server to process paid-team subscription renewals."""
+"""Run periodically to process simulated paid-team subscription renewals."""
 
 import logging
 

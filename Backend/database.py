@@ -70,6 +70,37 @@ def ensure_schema() -> None:
             for column, definition in payment_additions.items():
                 if column not in payment_columns:
                     connection.execute(text(f"ALTER TABLE payments ADD COLUMN {column} {definition}"))
+            if "provider_payment_id" in payment_columns:
+                connection.execute(text(
+                    "UPDATE payments SET provider_payment_id = NULL "
+                    "WHERE provider <> 'simulation'"
+                ))
+            connection.execute(text(
+                "UPDATE payments SET status = 'canceled' "
+                "WHERE status = 'pending' AND provider <> 'simulation'"
+            ))
+
+    if "paid_team_subscriptions" in inspector.get_table_names():
+        paid_columns = {
+            column["name"] for column in inspector.get_columns("paid_team_subscriptions")
+        }
+        if "plan_code" not in paid_columns:
+            with engine.begin() as connection:
+                connection.execute(text(
+                    "ALTER TABLE paid_team_subscriptions "
+                    "ADD COLUMN plan_code VARCHAR DEFAULT 'team_monthly'"
+                ))
+        if "payment_method_id" in paid_columns:
+            with engine.begin() as connection:
+                connection.execute(text(
+                    "UPDATE paid_team_subscriptions SET payment_method_id = NULL"
+                ))
+
+    # The previous real-provider design stored reusable payment method identifiers.
+    # They are neither needed nor retained by the simulation-only model.
+    if "billing_profiles" in inspector.get_table_names():
+        with engine.begin() as connection:
+            connection.execute(text("DROP TABLE billing_profiles"))
 
 
 def get_db():

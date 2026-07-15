@@ -88,7 +88,7 @@
                 const button = document.createElement("button");
                 button.className = "btn plan-buy";
                 button.type = "button";
-                button.textContent = `Смоделировать оплату ${plan.amount_rub} ₽`;
+                button.textContent = `Оплатить ${plan.amount_rub} ₽`;
                 button.addEventListener("click", () => startCheckout(plan, checkbox.checked, button));
                 card.append(title, period, price, duration, autoRenew, button);
                 checkout.append(card);
@@ -125,7 +125,7 @@
             } catch (error) {
                 showNotice(error.message, "error");
                 button.disabled = false;
-                button.textContent = `Смоделировать оплату ${plan.amount_rub} ₽`;
+                button.textContent = `Оплатить ${plan.amount_rub} ₽`;
             }
         }
 

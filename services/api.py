@@ -48,6 +48,14 @@ async def handle_subscribe(request):
         return web.json_response({"error": "Неверные параметры"}, status=400)
 
     db = get_db()
+    if sub_type == "team" and not await db.has_active_paid_team_subscription(chat_id, value):
+        return web.json_response(
+            {
+                "error": "payment_required",
+                "message": "Подписка на команду требует учебной оплаты: 39 ₽ в месяц или 390 ₽ в год.",
+            },
+            status=402,
+        )
     success = await db.subscribe(chat_id, sub_type, value)
 
     if success:

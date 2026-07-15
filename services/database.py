@@ -170,23 +170,25 @@ class Database:
                     result[row[0]].append(row[1])
                 return result
 
-    async def count_free_teams(self, chat_id: int) -> int:
-        """Считает бесплатные команды (не оплаченные через paid_team_subscriptions)."""
+    async def has_active_paid_team_subscription(self, chat_id: int, team_name: str) -> bool:
+        """Check whether notifications for a team have an active paid period."""
+        team_value = team_name.lower().strip()
         async with aiosqlite.connect(self.db_path) as db:
-            async with db.execute(
-                "SELECT value FROM subscriptions WHERE chat_id = ? AND type = 'team'",
-                (chat_id,),
-            ) as c:
-                team_values = {row[0] for row in await c.fetchall()}
             try:
                 async with db.execute(
-                    "SELECT team_name FROM paid_team_subscriptions WHERE chat_id = ? AND expires_at > datetime('now')",
-                    (chat_id,),
-                ) as c:
-                    paid = {row[0].lower() for row in await c.fetchall()}
+                    """
+                    SELECT 1
+                    FROM paid_team_subscriptions
+                    WHERE chat_id = ?
+                      AND lower(team_name) = ?
+                      AND expires_at > datetime('now')
+                    LIMIT 1
+                    """,
+                    (chat_id, team_value),
+                ) as cursor:
+                    return await cursor.fetchone() is not None
             except aiosqlite.OperationalError:
-                paid = set()
-            return len(team_values - paid)
+                return False
 
     async def get_subscribers_for_teams(self, teams: list[str]) -> list[int]:
         """Находит подписчиков на команды."""
