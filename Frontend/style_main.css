@@ -445,3 +445,13 @@ body {
     .pricing-grid { grid-template-columns: 1fr; }
     .membership-summary { align-items: flex-start; flex-direction: column; }
 }
+
+.btn-logout {
+    margin-top: 4px;
+    background: linear-gradient(135deg, #c62828, #e53935);
+    box-shadow: 0 6px 20px rgba(198, 40, 40, 0.22);
+}
+
+.btn-logout:hover {
+    box-shadow: 0 10px 28px rgba(198, 40, 40, 0.32);
+}
