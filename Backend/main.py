@@ -638,7 +638,7 @@ def get_paid_team_subscriptions(payload: dict = Depends(get_current_user), db: S
     for subscription in subscriptions:
         plan = _plan_details(subscription.plan_code)
         items.append({
-            "team_name": subscription.team_name,
+            "team_name": normalize_team_name(subscription.team_name) or subscription.team_name,
             "plan_code": plan["code"],
             "plan_name": plan["name"],
             "period_label": plan["period_label"],

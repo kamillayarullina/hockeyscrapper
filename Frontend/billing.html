@@ -118,7 +118,7 @@
                 showNotice(`${data.message} Команда «${selectedTeam}» подключена.`, "success");
                 document.getElementById("checkout").innerHTML = "";
                 const link = document.createElement("a");
-                link.className = "btn plan-buy";
+                link.className = "btn plan-buy billing-management-link";
                 link.href = "paid-subscriptions.html";
                 link.textContent = "Перейти к моим платным командам";
                 document.getElementById("checkout").append(link);
