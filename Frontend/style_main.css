@@ -376,6 +376,18 @@ body {
 .plan-price strong { font-size: 40px; }
 .plan-period { color: #64748b; font-weight: 700; margin-bottom: 20px; }
 .plan-card ul { color: #334155; line-height: 1.8; margin: 0 0 24px 18px; }
+.plan-buy {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+.billing-management-link {
+    grid-column: 1 / -1;
+    justify-self: center;
+    max-width: 520px;
+}
 .plan-buy:disabled { cursor: wait; opacity: 0.7; transform: none; }
 .billing-security { color: #64748b; font-size: 13px; line-height: 1.5; margin-top: 22px; text-align: center; }
 .auto-renew-consent, .renew-switch {
@@ -400,6 +412,12 @@ body {
     line-height: 1.45;
     margin: 0 0 18px;
     padding: 12px 14px;
+}
+.paid-subscriptions-actions {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 22px;
+    max-width: 420px;
 }
 .paid-teams-list { display: grid; gap: 16px; margin-top: 24px; }
 .paid-team-card {

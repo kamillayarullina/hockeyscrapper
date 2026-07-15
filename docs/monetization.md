@@ -1,49 +1,54 @@
 # Monetization
 
-HockeyScrapper lets each user follow their first three teams for free. Every additional
-team costs 39 RUB per month. A paid team is added only after the backend verifies a
-successful YooKassa payment and remains active for 30 days.
+HockeyScrapper uses paid, per-team subscriptions. There are no free team slots: the
+first team and every additional team require a subscription period.
 
-Users can see their paid teams, expiry dates, and auto-renewal settings on
-`paid-subscriptions.html`. At the first paid-team checkout they must explicitly
-consent to YooKassa saving the payment method. The backend stores one YooKassa
-payment-method ID in the user's billing profile, never card data. The same method
-is then used for later team purchases and for any team whose auto-renewal is
-enabled; the card does not need to be linked again. Auto-renewal remains an
-independent setting for each team.
+| Period | Price | Access granted |
+|---|---:|---:|
+| Monthly | 39 RUB | 30 days |
+| Yearly | 390 RUB | 365 days |
 
-## Configure YooKassa
+The yearly price is exactly ten monthly payments, as requested by the customer.
+A period belongs to one team only; HockeyScrapper does not offer a single premium
+plan that unlocks every team.
 
-1. Create a YooKassa shop and first use its test credentials.
-2. Set `YOOKASSA_SHOP_ID`, `YOOKASSA_SECRET_KEY`, and the public HTTPS `APP_BASE_URL` in the deployment environment.
-3. In the YooKassa dashboard, register `https://<your-domain>/payments/yookassa/webhook` for `payment.succeeded` and `payment.canceled`.
-4. Tell your YooKassa manager that the shop will use auto-payments and make sure the
-   shop is approved for them. YooKassa requires both this and the user's consent.
-5. Make a test payment for a fourth team and accept the separate payment-method
-   saving consent. The auto-renewal checkbox is optional. After YooKassa confirms
-   that the method was saved, later paid teams can use the same method.
-6. Schedule the following command on the production server once per hour:
+## Simulated payment flow
 
-   ```bash
-   python -m Backend.renewals
-   ```
+No real payment provider is connected. Checkout always shows that the operation is
+an educational simulation. After the user confirms and clicks **Pay**, the backend:
 
-   The command starts due auto-renewal payments and turns off notifications for
-   expired subscriptions without auto-renewal. The YooKassa webhook confirms every
-   successful renewal before the next 30 days are granted.
+1. records a successful simulated payment;
+2. activates the selected team for the selected period;
+3. enables ticket notifications for that team and its venue;
+4. returns `real_money_charged: false` to the frontend.
 
-Never put YooKassa keys in frontend files or Git. The user is redirected to YooKassa for card entry, so HockeyScrapper does not process or store card data.
+No card number, payment account, provider token, shop key, or other financial
+credential is requested or stored. The same simulated behavior is used in every
+environment, so production configuration cannot accidentally enable real charges.
 
-## Local Demo
+Direct team subscription attempts through the web toggle, the Telegram bot, or the
+legacy HTTP API are rejected until that user has an active period for the team.
+Rows left by the previous three-free-teams model are disabled when the user next
+loads or changes subscriptions.
 
-To review the interface without YooKassa credentials, start the application with:
+## Auto-renewal
 
-```powershell
-$env:APP_BASE_URL = "http://127.0.0.1:8000"
-$env:BILLING_DEMO_MODE = "true"
-.\.venv\Scripts\python.exe -m uvicorn Backend.main:app --host 127.0.0.1 --port 8000
+Auto-renewal is also simulated. It extends the same monthly or yearly plan without
+contacting an external service and writes another simulated payment record. Run the
+renewal job periodically:
+
+```bash
+python -m Backend.renewals
 ```
 
-The demo mode only works for `localhost` or `127.0.0.1`. Each checkout is marked as
-successful without contacting YooKassa or charging money. Never enable it on a
-public server.
+Users must explicitly confirm enabling auto-renewal and can disable it independently
+for each team. If auto-renewal is disabled, notifications stop when the current
+period expires.
+
+## Billing API
+
+- `GET /billing/plans` — monthly and yearly prices plus the simulation notice.
+- `POST /billing/checkout` — simulates payment and activates one team.
+- `GET /billing/subscriptions` — active and expired per-team periods.
+- `PATCH /billing/subscriptions/{team_name}/auto-renew` — changes renewal settings.
+- `GET /billing/payments/{payment_id}` — reads the simulated payment record.

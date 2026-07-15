@@ -88,7 +88,7 @@
                 const button = document.createElement("button");
                 button.className = "btn plan-buy";
                 button.type = "button";
-                button.textContent = `Смоделировать оплату ${plan.amount_rub} ₽`;
+                button.textContent = `Оплатить ${plan.amount_rub} ₽`;
                 button.addEventListener("click", () => startCheckout(plan, checkbox.checked, button));
                 card.append(title, period, price, duration, autoRenew, button);
                 checkout.append(card);
@@ -118,14 +118,14 @@
                 showNotice(`${data.message} Команда «${selectedTeam}» подключена.`, "success");
                 document.getElementById("checkout").innerHTML = "";
                 const link = document.createElement("a");
-                link.className = "btn plan-buy";
+                link.className = "btn plan-buy billing-management-link";
                 link.href = "paid-subscriptions.html";
                 link.textContent = "Перейти к моим платным командам";
                 document.getElementById("checkout").append(link);
             } catch (error) {
                 showNotice(error.message, "error");
                 button.disabled = false;
-                button.textContent = `Смоделировать оплату ${plan.amount_rub} ₽`;
+                button.textContent = `Оплатить ${plan.amount_rub} ₽`;
             }
         }
 

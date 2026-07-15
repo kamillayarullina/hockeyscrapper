@@ -6,6 +6,7 @@ import logging
 import os
 from html import escape
 from typing import Optional
+from urllib.parse import quote
 
 from aiogram import Bot, Dispatcher, Router
 from aiogram.filters import Command, CommandObject, CommandStart
@@ -134,22 +135,24 @@ async def cmd_subscribe(message: Message):
 
     db = get_db()
 
-    # Проверка лимита подписок для монетизации
+    # Команда доступна только после оформления периода на сайте.
     user_subs = await db.get_user_subscriptions(message.from_user.id)
-    team_count = len(user_subs.get("team", []))
-    if team_count >= 3:
-        free_team_count = await db.count_free_teams(message.from_user.id)
-        if free_team_count >= 3:
-            site_url = os.environ.get("APP_BASE_URL", "http://89.125.169.128:8000")
-            await message.answer(
-                "🚫 Достигнут лимит бесплатных подписок.\n"
-                "Чтобы добавить больше команд, оформите подписку на сайте:\n"
-                f"{site_url}/sub.html"
-            )
-            return
+    team_value = team_canonical.lower()
+    if team_value in user_subs.get("team", []):
+        await message.answer(f"ℹ️ Вы уже подписаны на <b>{escape(team_canonical)}</b>.")
+        return
+    if not await db.has_active_paid_team_subscription(message.from_user.id, team_value):
+        site_url = os.environ.get("APP_BASE_URL", "http://89.125.169.128:8000").rstrip("/")
+        payment_url = f"{site_url}/billing.html?team={quote(team_canonical)}"
+        await message.answer(
+            "💳 Подписка оплачивается уже с первой команды: 39 ₽ в месяц или 390 ₽ в год.\n"
+            "Реальные деньги не списываются — на сайте используется учебная имитация оплаты.\n"
+            f"Оформить подписку на <b>{escape(team_canonical)}</b>:\n{payment_url}"
+        )
+        return
 
     # Подписка на команду
-    is_new_team = await db.subscribe(message.from_user.id, "team", team_canonical.lower())
+    is_new_team = await db.subscribe(message.from_user.id, "team", team_value)
 
     # Автоматическая подписка на стадион
     team_info = get_team_info(team_canonical)
