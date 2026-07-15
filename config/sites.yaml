@@ -67,7 +67,7 @@ sites:
       timeout_ms: 30000
 
   - name: yandex_afisha
-    url: https://afisha.yandex.ru/moscow/sport/khokkej
+    url: https://afisha.yandex.ru/moscow/sport?source=menu
     parser: yandex
     enabled: true
     interval_minutes: 30
