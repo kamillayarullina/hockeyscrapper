@@ -39,7 +39,7 @@ def _patch_base_parser():
     global _original_fetch
     _original_fetch = bp.BaseParser.fetch
 
-    async def mock_fetch(self) -> str:
+    async def mock_fetch(self, url=None, wait_selector=None, timeout_ms=None) -> str:
         mock_map = {
             "ticket_hockey": "club_parser_hockey.html",
             "khl_ru": "khl_tickets_page.html",
