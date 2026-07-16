@@ -257,16 +257,9 @@ class ParserRunner:
                         subscriber_ids = list(set(subscriber_ids + venue_subscribers))
 
                     if not subscriber_ids:
-                        if notify_reason == "new":
-                            all_users = await self.db.get_all_users()
-                            subscriber_ids = [user["chat_id"] for user in all_users]
-                            logger.info(
-                                f"Нет подписчиков на команды/стадион - новый матч, "
-                                f"отправляем всем ({len(subscriber_ids)} пользователей)")
-                        else:
-                            logger.info(
-                                f"Нет подписчиков на команды/стадион, "
-                                f"пропускаем уведомление (причина: {notify_reason})")
+                        logger.info(
+                            f"Нет подписчиков на команды/стадион, "
+                            f"пропускаем уведомление (причина: {notify_reason})")
 
                     if subscriber_ids:
                         sent = await self.notifier.notify_subscribers(
