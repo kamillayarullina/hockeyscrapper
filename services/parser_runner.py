@@ -29,11 +29,11 @@ _ENV_VAR_RE = re.compile(r"\$\{([^}]+)\}")
 
 
 def _resolve_env_vars(value: Any) -> Any:
-    """Заменяет ${VAR} на значение из os.environ."""
+    """Заменяет ${VAR} на значение из os.environ (если нет — пустая строка)."""
     if isinstance(value, str):
         def replacer(m: re.Match) -> str:
             var_name = m.group(1)
-            return os.environ.get(var_name, m.group(0))
+            return os.environ.get(var_name, "")
         return _ENV_VAR_RE.sub(replacer, value)
     if isinstance(value, dict):
         return {k: _resolve_env_vars(v) for k, v in value.items()}
