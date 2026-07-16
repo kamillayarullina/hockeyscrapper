@@ -104,8 +104,8 @@
         <h3>Добавить подписку</h3>
         <div id="subModalError" class="msg msg-err" style="display:none"></div>
         <div class="form-group">
-            <label>Название команды</label>
-            <input id="subValue" placeholder="Например: ЦСКА">
+            <label>Команда</label>
+            <select id="subValue" class="inp" style="width:100%"></select>
         </div>
         <div class="modal-actions">
             <button class="btn btn-cancel" onclick="closeSubModal()">Отмена</button>
@@ -170,7 +170,18 @@ let _subChatId = null;
 
 function openSubModal(chatId) {
     _subChatId = chatId;
-    document.getElementById("subValue").value = "";
+    const sel = document.getElementById("subValue");
+    sel.innerHTML = '<option value="">Выберите команду...</option>';
+    sel.value = "";
+    api("/api/teams").then(teams => {
+        teams.forEach(t => {
+            const opt = document.createElement("option");
+            opt.value = t;
+            opt.textContent = t;
+            sel.appendChild(opt);
+        });
+    }).catch(() => {});
+    document.getElementById("subModalError").style.display = "none";
     document.getElementById("subModal").classList.add("active");
 }
 
@@ -180,16 +191,11 @@ function closeSubModal() {
 }
 
 async function saveSub() {
-    const value = document.getElementById("subValue").value.trim();
+    const value = document.getElementById("subValue").value;
     const errEl = document.getElementById("subModalError");
     errEl.style.display = "none";
     if (!value) {
-        errEl.textContent = "Введите название команды";
-        errEl.style.display = "flex";
-        return;
-    }
-    if (value.length > 100) {
-        errEl.textContent = "Название слишком длинное (макс. 100 символов)";
+        errEl.textContent = "Выберите команду из списка";
         errEl.style.display = "flex";
         return;
     }
@@ -448,12 +454,24 @@ async function loadSites() {
         html += `<tr><td colspan="5"><div class="empty-state">Сайты не настроены</div></td></tr>`;
     }
     for (const s of sites) {
-        html += `<tr><td style="font-weight:700">${s.name}</td><td><span class="badge" style="background:#e8f0fe;color:var(--darkblue);font-weight:700">${s.parser}</span></td><td style="color:#666">${s.interval_minutes} мин</td><td>${s.enabled ? '<span class="badge badge-active">включён</span>' : '<span class="badge badge-banned">отключён</span>'}</td><td>
+        const sid = CSS.escape(s.name);
+        html += `<tr><td style="font-weight:700">${s.name}</td><td><span class="badge" style="background:#e8f0fe;color:var(--darkblue);font-weight:700">${s.parser}</span></td>
+            <td><input class="inp" id="interval-${sid}" type="number" min="1" max="1440" value="${s.interval_minutes}" style="width:70px;padding:5px 10px;display:inline"> мин
+                <button class="btn btn-sm btn-success" onclick="saveSiteInterval('${s.name}')" style="margin-left:4px">Сохранить</button></td>
+            <td>${s.enabled ? '<span class="badge badge-active">включён</span>' : '<span class="badge badge-banned">отключён</span>'}</td><td>
             <button class="btn btn-sm btn-secondary" onclick="toggleSite('${s.name}')">${s.enabled ? "Выключить" : "Включить"}</button>
         </td></tr>`;
     }
     html += "</tbody></table></div>";
     document.getElementById("tab-sites").innerHTML = html;
+}
+
+async function saveSiteInterval(name) {
+    const sid = CSS.escape(name);
+    const val = parseInt(document.getElementById("interval-" + sid).value);
+    if (isNaN(val) || val < 1 || val > 1440) return;
+    await api("/admin/sites/" + encodeURIComponent(name) + "/interval", { method: "PUT", body: JSON.stringify({ minutes: val }) });
+    loadSites();
 }
 
 async function toggleSite(name) {

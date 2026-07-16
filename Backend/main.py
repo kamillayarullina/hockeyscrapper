@@ -24,7 +24,7 @@ from Backend import models
 from Backend.database import engine, ensure_schema, get_db
 from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
-from services.team_matcher import get_team_info, normalize_team_name
+from services.team_matcher import get_team_info, normalize_team_name, get_all_team_names
 
 test_code = {}
 _code_created_at = {}
@@ -784,6 +784,10 @@ def get_stats(db: Session = Depends(get_db)):
     matches = db.query(models.MatchModel).count()
     return {"users": users, "team_subs": team_subs, "venue_subs": venue_subs, "matches": matches}
 
+@app.get("/api/teams")
+def api_teams():
+    return get_all_team_names()
+
 # ─── Admin panel ────────────────────────────────────────────────────────────
 
 ADMIN_EMAILS = [e.strip() for e in os.getenv("ADMIN_EMAILS", "").split(",") if e.strip()]
@@ -1069,6 +1073,20 @@ def admin_toggle_site(name: str, db: Session = Depends(get_db), admin=Depends(_r
         db.add(models.SettingModel(key=key, value=new_val))
     db.commit()
     return {"status": "updated", "enabled": new_val == "true"}
+
+@app.put("/admin/sites/{name}/interval")
+def admin_set_site_interval(name: str, body: dict, db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    minutes = body.get("minutes")
+    if not isinstance(minutes, int) or minutes < 1 or minutes > 1440:
+        raise HTTPException(status_code=400, detail="Minutes must be 1-1440")
+    key = f"site:{name}:interval_minutes"
+    current = db.query(models.SettingModel).filter(models.SettingModel.key == key).first()
+    if current:
+        current.value = str(minutes)
+    else:
+        db.add(models.SettingModel(key=key, value=str(minutes)))
+    db.commit()
+    return {"status": "updated", "interval_minutes": minutes}
 
 @app.post("/admin/trigger-parse")
 def admin_trigger_parse(db: Session = Depends(get_db), admin=Depends(_require_admin)):
