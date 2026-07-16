@@ -62,6 +62,9 @@
                     Привязать Telegram
                 </button>
                 <div class="profile-error" id="tgError"></div>
+                <button class="btn btn-logout" id="logoutBtn" type="button">
+                    Выйти из аккаунта
+                </button>
             </div>
 
         </div>
@@ -447,6 +450,16 @@
                 }
 
                 loadProfile().then(loadSubscriptions);
+
+                document.getElementById("logoutBtn").addEventListener("click", () => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("chat_id");
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("link_code");
+                    localStorage.removeItem("avatar");
+                    localStorage.removeItem("avatar_url");
+                    window.location.href = "vhod/vhod.html";
+                });
             </script>
 
         </div>
