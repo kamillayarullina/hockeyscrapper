@@ -21,3 +21,7 @@ data/
 # OS
 .DS_Store
 Thumbs.db
+
+# Utility scripts
+fix_admin.py
+stash_admin.patch
