@@ -1143,6 +1143,8 @@ async def serve_frontend(full_path: str):
     if not resolved.exists():
         raise HTTPException(status_code=404, detail="Not found")
     media_type, _ = mimetypes.guess_type(str(resolved))
+    if media_type and media_type.startswith("text/"):
+        media_type += "; charset=utf-8"
     suffix = resolved.suffix.lower()
     if suffix in (".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".ico"):
         cache_max_age = 86400 * 30
