@@ -9,6 +9,20 @@ from pathlib import Path
 import shutil
 import uuid
 
+# Load .env before anything else
+_env_path = Path(__file__).resolve().parent.parent / ".env"
+if _env_path.exists():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(_env_path)
+    except ImportError:
+        with open(_env_path, encoding="utf-8") as _f:
+            for _line in _f:
+                _line = _line.strip()
+                if _line and not _line.startswith("#") and "=" in _line:
+                    _k, _, _v = _line.partition("=")
+                    os.environ.setdefault(_k.strip(), _v.strip())
+
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
