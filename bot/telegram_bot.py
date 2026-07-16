@@ -4,6 +4,7 @@ import asyncio
 import aiosqlite
 import logging
 import os
+import atexit
 from html import escape
 from typing import Optional
 from urllib.parse import quote
@@ -547,12 +548,58 @@ async def _notify_admin(text: str, admin_id: Optional[int] = None) -> None:
         pass
 
 
+LOCK_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".bot.lock")
+
+
+def _acquire_lock() -> bool:
+    """Создаёт lock-файл, чтобы второй экземпляр бота не запустился."""
+    try:
+        if os.path.exists(LOCK_FILE):
+            with open(LOCK_FILE) as f:
+                old_pid = f.read().strip()
+            if old_pid:
+                try:
+                    old_pid = int(old_pid)
+                    if os.name == "nt":
+                        import ctypes
+                        handle = ctypes.windll.kernel32.OpenProcess(0x0400, False, old_pid)
+                        if handle:
+                            ctypes.windll.kernel32.CloseHandle(handle)
+                            logger.error(f"Бот уже запущен (PID {old_pid})")
+                            return False
+                    else:
+                        import signal
+                        os.kill(old_pid, 0)
+                        logger.error(f"Бот уже запущен (PID {old_pid})")
+                        return False
+                except (ValueError, OSError, ImportError):
+                    pass
+            os.remove(LOCK_FILE)
+        with open(LOCK_FILE, "w") as f:
+            f.write(str(os.getpid()))
+        atexit.register(_release_lock)
+        return True
+    except Exception:
+        return True
+
+
+def _release_lock() -> None:
+    try:
+        if os.path.exists(LOCK_FILE):
+            os.remove(LOCK_FILE)
+    except Exception:
+        pass
+
+
 class TelegramBot:
     """Обёртка для запуска Telegram-бота."""
 
     def __init__(self, token: str):
         if not token:
             raise ValueError("Не указан токен Telegram-бота. Укажите BOT_TOKEN в .env")
+
+        if not _acquire_lock():
+            raise RuntimeError("Telegram-бот уже запущен в другом процессе")
 
         self.bot = Bot(
             token=token,
@@ -581,16 +628,25 @@ class TelegramBot:
         logger.info("Telegram-бот запущен")
 
         async def _polling_forever():
+            retry_delay = 1
             while not self._stop_event.is_set():
                 try:
                     await self.dp.start_polling(self.bot, handle_signals=False)
                     logger.info("Polling завершился штатно, перезапуск...")
+                    retry_delay = 1
                     await asyncio.sleep(1)
                 except asyncio.CancelledError:
                     break
                 except Exception as e:
-                    logger.warning(f"Polling error: {e}, restarting in 3s...")
-                    await asyncio.sleep(3)
+                    err_str = str(e).lower()
+                    if "conflict" in err_str:
+                        logger.warning(f"Conflict getUpdates — закрываю сессию, жду {retry_delay}с...")
+                        await self.bot.session.close()
+                        retry_delay = min(retry_delay * 2, 30)
+                    else:
+                        logger.warning(f"Polling error: {e}, restarting in {retry_delay}s...")
+                        retry_delay = min(retry_delay + 2, 15)
+                    await asyncio.sleep(retry_delay)
 
         self._polling_task = asyncio.create_task(_polling_forever())
         # Ждём сигнала остановки (start() не завершается)
@@ -606,6 +662,7 @@ class TelegramBot:
             except asyncio.CancelledError:
                 pass
         await self.bot.session.close()
+        _release_lock()
         logger.info("Telegram-бот остановлен")
 
     def get_bot(self) -> Bot:
