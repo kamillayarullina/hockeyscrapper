@@ -57,9 +57,17 @@ class KHLParser(BaseParser):
         'tr[class*="match"]',
     ]
 
+    DETAIL_PRICE_SELECTORS = [
+        'table[class*="price"] td',
+        '[class*="price"] [class*="value"]',
+        '[class*="ticket-type"] [class*="cost"]',
+        '[class*="category"] [class*="price"]',
+        '.seat-category .price',
+        '.tariff .price',
+    ]
+
     async def _fetch_with_playwright(self, user_agent, timeout_ms, wait_selector,
                                       proxy=None, url=None):
-        """Загрузка страницы через Playwright с применением stealth."""
         from playwright.async_api import async_playwright, Browser
         from playwright_stealth import Stealth
 
@@ -80,7 +88,6 @@ class KHLParser(BaseParser):
             browser = await pw.chromium.launch(**launch_kwargs)
             context = await browser.new_context(**context_kwargs)
             page = await context.new_page()
-
             await Stealth().apply_stealth_async(page)
 
             response = await page.goto(
@@ -111,7 +118,6 @@ class KHLParser(BaseParser):
                     pass
 
     def _parse_date(self, raw_date: str) -> str:
-        """Парсит дату вида '5 сен' в '2026-09-05'."""
         m = re.match(r"(\d+)\s*(\w+)", raw_date.strip())
         if not m:
             return ""
@@ -241,7 +247,7 @@ class KHLParser(BaseParser):
         for match in matches:
             try:
                 price = int(match.replace(" ", ""))
-                if 100 < price < 1000000:
+                if 0 < price < 1000000:
                     prices.append(price)
             except ValueError:
                 continue
@@ -278,7 +284,6 @@ class KHLParser(BaseParser):
                 continue
             season_id, game_id = m.group(1), m.group(2)
 
-            # format: "АВТ 5 сен, Сб ДИН Екатеринбург ..."
             parts = text.split()
             if len(parts) < 6:
                 continue
