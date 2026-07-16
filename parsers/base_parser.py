@@ -308,10 +308,15 @@ class BaseParser(abc.ABC):
                 timeout=timeout_ms,
             )
 
-            if response is not None and response.status >= 500:
-                raise NetworkError(
-                    f"Сервер вернул HTTP {response.status}"
-                )
+            if response is not None:
+                if response.status == 403:
+                    raise ProtectionError(
+                        f"Страница защищена (HTTP {response.status})"
+                    )
+                if response.status >= 400:
+                    raise NetworkError(
+                        f"Сервер вернул HTTP {response.status}"
+                    )
 
             if wait_selector:
                 try:
