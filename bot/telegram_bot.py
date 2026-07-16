@@ -5,6 +5,7 @@ import aiosqlite
 import logging
 import os
 import atexit
+import signal
 from html import escape
 from typing import Optional
 from urllib.parse import quote
@@ -568,7 +569,6 @@ def _acquire_lock() -> bool:
                             logger.error(f"Бот уже запущен (PID {old_pid})")
                             return False
                     else:
-                        import signal
                         os.kill(old_pid, 0)
                         logger.error(f"Бот уже запущен (PID {old_pid})")
                         return False
