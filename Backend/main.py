@@ -1144,6 +1144,30 @@ async def admin_notify_all(body: NotifySchema, admin=Depends(_require_admin)):
     await bot.session.close()
     return {"status": "notified", "sent": sent}
 
+@app.post("/admin/test-email")
+def admin_test_email(admin=Depends(_require_admin)):
+    import yaml
+    config_path = Path(__file__).resolve().parent.parent / "config" / "sites.yaml"
+    with open(config_path, encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+    from services.parser_runner import _resolve_env_vars
+    cfg = _resolve_env_vars(cfg)
+    email_cfg = cfg.get("settings", {}).get("email", {})
+    from services.email_sender import EmailSender
+    sender = EmailSender(email_cfg)
+    if not sender.enabled:
+        raise HTTPException(status_code=400, detail="Email sending is disabled in config")
+    import asyncio
+    loop = asyncio.new_event_loop()
+    try:
+        ok = loop.run_until_complete(sender.send_notification("Тестовое письмо", "<h1>Тест</h1><p>Если вы это видите, SMTP работает.</p>"))
+    finally:
+        loop.close()
+    if ok:
+        return {"status": "sent", "message": f"Тестовое письмо отправлено на {sender.to_email}"}
+    else:
+        raise HTTPException(status_code=500, detail="Ошибка отправки. Подробности в логах парсера.")
+
 @app.get("/admin/logs")
 def admin_logs(admin=Depends(_require_admin)):
     return {"logs": list(_log_buffer.buffer)}

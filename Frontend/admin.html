@@ -342,6 +342,10 @@ async function loadSettings() {
                     <button class="btn btn-success" onclick="triggerParse()">▶ Запустить парсинг</button>
                     <button class="btn btn-danger" onclick="clearMatches()">Очистить матчи</button>
                 </div>
+                <div style="margin-top:12px">
+                    <button class="btn btn-secondary" onclick="testEmail()">📧 Тест email</button>
+                    <span id="testEmailMsg" style="margin-left:8px;font-size:13px"></span>
+                </div>
             </div>
             <div style="margin-top:28px;padding-top:24px;border-top:2px solid #d4e0f0">
                 <h3 style="text-align:center;color:var(--darkblue);font-size:20px;margin-bottom:16px;font-weight:800">📨 Уведомление всем пользователям</h3>
@@ -444,6 +448,20 @@ async function clearMatches() {
     if (!confirm("Удалить все матчи? Это действие необратимо.")) return;
     const res = await api("/admin/matches", { method: "DELETE" });
     msg(`Удалено ${res.deleted} матчей`);
+}
+
+async function testEmail() {
+    const el = document.getElementById("testEmailMsg");
+    el.textContent = "⏳ отправка...";
+    el.style.color = "#666";
+    try {
+        const res = await api("/admin/test-email", { method: "POST" });
+        el.textContent = "✅ " + res.message;
+        el.style.color = "#2e7d32";
+    } catch (e) {
+        el.textContent = "❌ " + e.message;
+        el.style.color = "#c62828";
+    }
 }
 
 // Sites
