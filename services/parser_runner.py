@@ -382,6 +382,12 @@ class ParserRunner:
                 sleep_minutes = max(1, min(sleep_minutes, 1440))
                 sleep_seconds = sleep_minutes * 60
 
+                trigger = await self.db.get_setting("parse_trigger_requested_at", "")
+                if trigger:
+                    await self.db.delete_setting("parse_trigger_requested_at")
+                    logger.info("Ручной запуск парсинга — пропускаем ожидание")
+                    continue
+
                 logger.info(f"Следующая проверка через {sleep_minutes} мин (интервал из БД)...")
 
                 try:
