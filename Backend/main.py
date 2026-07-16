@@ -3,7 +3,7 @@ import os
 import time
 import logging
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from collections import deque
 from pathlib import Path
 import shutil
@@ -188,7 +188,7 @@ def _active_paid_team_values(db: Session, chat_id: int) -> set[str]:
     """Return teams with an unexpired monthly or yearly subscription."""
     rows = db.query(models.PaidTeamSubscriptionModel.team_name).filter(
         models.PaidTeamSubscriptionModel.chat_id == chat_id,
-        models.PaidTeamSubscriptionModel.expires_at > datetime.utcnow(),
+        models.PaidTeamSubscriptionModel.expires_at > datetime.now(timezone.utc).replace(tzinfo=None),
     ).all()
     return {team_name for (team_name,) in rows}
 
@@ -263,7 +263,7 @@ def _disable_expired_nonrenewing_subscriptions(db: Session) -> int:
         models.PaidTeamSubscriptionModel.chat_id,
         models.PaidTeamSubscriptionModel.team_name,
     ).filter(
-        models.PaidTeamSubscriptionModel.expires_at <= datetime.utcnow(),
+        models.PaidTeamSubscriptionModel.expires_at <= datetime.now(timezone.utc).replace(tzinfo=None),
         models.PaidTeamSubscriptionModel.auto_renew.is_(False),
     ).all()
     if not expired:
@@ -278,7 +278,7 @@ def _activate_team_subscription(db: Session, payment: models.PaymentModel) -> No
         raise HTTPException(status_code=400, detail="Team name is required")
 
     plan = _plan_details(payment.plan_code)
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     subscription = db.query(models.PaidTeamSubscriptionModel).filter(
         models.PaidTeamSubscriptionModel.chat_id == payment.chat_id,
         models.PaidTeamSubscriptionModel.team_name == payment.team_name,
@@ -314,7 +314,7 @@ def _activate_team_subscription(db: Session, payment: models.PaymentModel) -> No
 
 def process_due_renewals(db: Session) -> dict[str, int]:
     """Simulate renewals for due subscriptions; no external payment is attempted."""
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     result = {"renewed": 0, "expired_disabled": 0}
 
     result["expired_disabled"] = _disable_expired_nonrenewing_subscriptions(db)
@@ -630,7 +630,7 @@ def get_billing_membership(payload: dict = Depends(get_current_user), db: Sessio
 @app.get("/billing/subscriptions")
 def get_paid_team_subscriptions(payload: dict = Depends(get_current_user), db: Session = Depends(get_db)):
     user = _get_authenticated_user(payload, db)
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     subscriptions = db.query(models.PaidTeamSubscriptionModel).filter(
         models.PaidTeamSubscriptionModel.chat_id == user.chat_id,
     ).order_by(models.PaidTeamSubscriptionModel.expires_at.desc()).all()
@@ -670,10 +670,10 @@ def update_auto_renew(
     if not subscription:
         raise HTTPException(status_code=404, detail="Paid subscription not found")
     if request.enabled:
-        if subscription.expires_at <= datetime.utcnow():
+        if subscription.expires_at <= datetime.now(timezone.utc).replace(tzinfo=None):
             raise HTTPException(status_code=400, detail="Renew this subscription before enabling auto-renewal")
         subscription.auto_renew = True
-        subscription.auto_renew_consented_at = datetime.utcnow()
+        subscription.auto_renew_consented_at = datetime.now(timezone.utc).replace(tzinfo=None)
     else:
         subscription.auto_renew = False
     db.commit()
@@ -714,7 +714,7 @@ def create_checkout(
         team_name=team_value,
         auto_renew_requested=request.enable_auto_renew,
         save_payment_method_requested=False,
-        paid_at=datetime.utcnow(),
+        paid_at=datetime.now(timezone.utc).replace(tzinfo=None),
     )
     db.add(payment)
     _activate_team_subscription(db, payment)

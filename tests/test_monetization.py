@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import create_engine, inspect, text
 
@@ -82,7 +82,7 @@ def test_monthly_checkout_immediately_activates_team_without_charging_money(clie
 
 def test_yearly_checkout_uses_ten_month_price_and_365_day_period(client):
     _, headers = _register(client, "yearly")
-    before = datetime.utcnow()
+    before = datetime.now(timezone.utc).replace(tzinfo=None)
 
     response = client.post(
         "/billing/checkout",
@@ -142,7 +142,7 @@ def test_yearly_auto_renewal_is_simulated_with_same_plan(client, db_session):
         chat_id=chat_id,
         team_name="спартак",
     ).one()
-    subscription.expires_at = datetime.utcnow() - timedelta(minutes=1)
+    subscription.expires_at = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(minutes=1)
     db_session.commit()
 
     result = process_due_renewals(db_session)
@@ -150,7 +150,7 @@ def test_yearly_auto_renewal_is_simulated_with_same_plan(client, db_session):
     db_session.refresh(subscription)
     assert result == {"renewed": 1, "expired_disabled": 0}
     assert subscription.plan_code == TEAM_YEARLY_PLAN
-    assert subscription.expires_at > datetime.utcnow() + timedelta(days=364)
+    assert subscription.expires_at > datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(days=364)
     payments = db_session.query(models.PaymentModel).filter_by(chat_id=chat_id).all()
     assert len(payments) == 2
     assert all(payment.provider == "simulation" for payment in payments)

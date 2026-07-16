@@ -22,10 +22,11 @@ class YandexParser(BaseParser):
         "krasnoyarsk", "khabarovsk", "vladivostok",
     ]
 
-    # Паттерны URL для РЕАЛЬНЫХ событий (whitelist)
+    # Паттерны URL для РЕАЛЬНЫХ событий (whitelist) — ловим ВСЕ sport-события,
+    # фильтрация по ключевым словам идёт отдельно (по тексту ссылки).
     EVENT_URL_PATTERNS = [
-        r'/[^/]+/sport/[^/]*(?:хокк|hockey|khokk)[^/]*',
-        r'/event/[\w-]+',
+        r'/[^/]+/sport/[^/]+',   # любой город + любое событие в sport
+        r'/event/[\w-]+',         # прямые ссылки на события
     ]
 
     # Паттерны URL, которые нужно ИСКЛЮЧИТЬ (blacklist)
@@ -35,11 +36,14 @@ class YandexParser(BaseParser):
         r'/discount-event',
         r'/abonement',
         r'/afisha/?$',
-        r'/moscow/sport/?$',
+        r'/[^/]+/sport/?$',       # сами каталоги городов
         r'\?source=',
         r'/support/',
         r'/legal/',
     ]
+
+    # Максимум страниц пагинации в каталоге города
+    MAX_PAGINATION_PAGES = 10
 
     # Черный список доменов
     BLACKLIST_DOMAINS = [
@@ -63,8 +67,12 @@ class YandexParser(BaseParser):
         return path
 
     async def _run(self) -> list[dict]:
-        """Собирает ссылки на хоккейные события со всех городов, парсит каждое."""
+        """Собирает ссылки на хоккейные события со всех городов (с пагинацией), парсит каждое."""
         cities = self.params.get("cities", self.CITIES)
+        keywords = self.params.get("keywords", ["хоккей"])
+        if isinstance(keywords, str):
+            keywords = [keywords]
+
         all_links = set()
         seen = set()
 
@@ -74,19 +82,30 @@ class YandexParser(BaseParser):
                 seen.add(norm)
                 all_links.add(url)
 
-        # Шаг 1: Собираем ссылки на события из /sport всех городов
+        # Шаг 1: Собираем ссылки из /sport всех городов (с пагинацией)
         for i, city in enumerate(cities):
-            city_url = f"https://afisha.yandex.ru/{city}/sport?source=menu"
-            try:
-                html = await self._fetch_city_page(city_url, city)
-                if not html:
-                    continue
-                soup = BeautifulSoup(html, "html.parser")
-                for url in self._find_event_urls(soup):
-                    _add_url(url)
-                self.logger.info(f"[{self.name}] {city}: найдено ссылок")
-            except Exception as e:
-                self.logger.debug(f"[{self.name}] {city}: {e}")
+            page_num = 1
+            while page_num <= self.MAX_PAGINATION_PAGES:
+                city_url = f"https://afisha.yandex.ru/{city}/sport?source=menu"
+                if page_num > 1:
+                    city_url += f"&page={page_num}"
+                try:
+                    html = await self._fetch_city_page(city_url, city)
+                    if not html:
+                        break
+                    soup = BeautifulSoup(html, "html.parser")
+                    found = self._find_event_urls(soup, keywords=keywords)
+                    for url in found:
+                        _add_url(url)
+                    self.logger.info(f"[{self.name}] {city} стр.{page_num}: {len(found)}")
+
+                    if not self._find_next_page_url(soup):
+                        break
+                    page_num += 1
+                    await asyncio.sleep(0.5)
+                except Exception as e:
+                    self.logger.debug(f"[{self.name}] {city} стр.{page_num}: {e}")
+                    break
 
             if i < len(cities) - 1:
                 await asyncio.sleep(0.5)
@@ -221,33 +240,69 @@ class YandexParser(BaseParser):
         self.logger.info(f"[{self.name}] Успешно извлечено {len(events)} событий")
         return events
 
-    def _find_event_urls(self, soup: BeautifulSoup) -> list[str]:
-        """Находит ссылки на реальные события, фильтруя мусор."""
+    def _find_event_urls(self, soup: BeautifulSoup, keywords: Optional[list[str]] = None) -> list[str]:
+        """Находит ссылки на реальные события, фильтруя мусор.
+
+        Если передан keywords — дополнительно отсеивает ссылки,
+        у которых ни текст, ни URL не содержат ни одного ключевого слова.
+        """
         all_links = soup.find_all("a", href=True)
         valid_urls = set()
 
         for link in all_links:
             href = link["href"]
 
-            # Пропускаем внешние ссылки
             if not self._is_internal_link(href):
                 continue
 
-            # Делаем абсолютный URL
             if href.startswith("/"):
                 href = "https://afisha.yandex.ru" + href
 
-            # Проверяем по whitelist паттернам
             if not self._matches_event_pattern(href):
                 continue
 
-            # Проверяем по blacklist паттернам
             if self._matches_blacklist_pattern(href):
                 continue
+
+            # Фильтрация по ключевым словам (текст ссылки + URL)
+            if keywords:
+                link_text = link.get_text(strip=True)
+                if not self._matches_any_keyword(link_text, keywords) and \
+                   not self._matches_any_keyword(href, keywords):
+                    continue
 
             valid_urls.add(href)
 
         return list(valid_urls)
+
+    @staticmethod
+    def _matches_any_keyword(text: str, keywords: list[str]) -> bool:
+        """Проверяет, содержит ли text хотя бы одно ключевое слово (со stem-матчингом для русских окончаний)."""
+        text_lower = text.lower()
+        for kw in keywords:
+            kw_lower = kw.lower()
+            if kw_lower in text_lower:
+                return True
+            stem = kw_lower[:5]
+            if len(stem) >= 4 and stem in text_lower:
+                return True
+        return False
+
+    def _find_next_page_url(self, soup: BeautifulSoup) -> Optional[str]:
+        """Ищет ссылку на следующую страницу каталога."""
+        next_link = soup.find("a", attrs={"rel": "next"})
+        if next_link and next_link.get("href"):
+            href = next_link["href"]
+            return href if not href.startswith("/") else "https://afisha.yandex.ru" + href
+
+        for text in ("дальше", "следующая", "вперед"):
+            for link in soup.find_all("a", href=True):
+                link_text = link.get_text(strip=True).lower()
+                if text in link_text:
+                    href = link["href"]
+                    return href if not href.startswith("/") else "https://afisha.yandex.ru" + href
+
+        return None
 
     def _is_internal_link(self, href: str) -> bool:
         """Проверяет, что ссылка внутренняя."""
@@ -286,16 +341,16 @@ class YandexParser(BaseParser):
 
     async def _fetch_event_page(self, url: str) -> Optional[str]:
         """Загружает страницу отдельного события через Playwright."""
+        old_url = self.url
+        self.url = url
         try:
-            # Используем метод fetch из базового класса, но с другим URL
-            old_url = self.url
-            self.url = url
             html = await self.fetch()
-            self.url = old_url
             return html
         except Exception as e:
             self.logger.error(f"Не удалось загрузить {url}: {e}")
             return None
+        finally:
+            self.url = old_url
 
     def _parse_event_page(self, html: str, url: str) -> Optional[dict]:
         """Извлекает данные со страницы события."""

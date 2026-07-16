@@ -2,7 +2,9 @@
 
 import re
 from datetime import datetime
+from typing import Optional
 
+from bs4 import BeautifulSoup, Tag
 from parsers.base_parser import BaseParser
 
 
@@ -40,9 +42,32 @@ class KHLParser(BaseParser):
         "мая": 5, "июн": 6, "июл": 7, "авг": 8,
     }
 
+    PRICE_REGEX = re.compile(r'(\d[\d\s]{1,})\s*(?:₽|р\.|руб)', re.IGNORECASE)
+    DATE_REGEX = re.compile(r'(\d{1,2})\s+([а-яёa-z]+)\s+(\d{4})', re.IGNORECASE)
+    TEAM_VS_REGEX = re.compile(r'([А-ЯA-Z][а-яёa-z\s\-]+)\s*[–—-]\s*([А-ЯA-Z][а-яёa-z\s\-]+)', re.IGNORECASE)
+
+    MATCH_CARD_SELECTORS = [
+        'div.match-card',
+        'div.ticket-card',
+        'div[class*="match"]',
+        'div[class*="ticket"]',
+        'div[class*="game"]',
+        'div.event-item',
+        'tr.match-row',
+        'tr[class*="match"]',
+    ]
+
+    DETAIL_PRICE_SELECTORS = [
+        'table[class*="price"] td',
+        '[class*="price"] [class*="value"]',
+        '[class*="ticket-type"] [class*="cost"]',
+        '[class*="category"] [class*="price"]',
+        '.seat-category .price',
+        '.tariff .price',
+    ]
+
     async def _fetch_with_playwright(self, user_agent, timeout_ms, wait_selector,
                                       proxy=None, url=None):
-        """Загрузка страницы через Playwright с применением stealth."""
         from playwright.async_api import async_playwright, Browser
         from playwright_stealth import Stealth
 
@@ -63,7 +88,6 @@ class KHLParser(BaseParser):
             browser = await pw.chromium.launch(**launch_kwargs)
             context = await browser.new_context(**context_kwargs)
             page = await context.new_page()
-
             await Stealth().apply_stealth_async(page)
 
             response = await page.goto(
@@ -94,7 +118,6 @@ class KHLParser(BaseParser):
                     pass
 
     def _parse_date(self, raw_date: str) -> str:
-        """Парсит дату вида '5 сен' в '2026-09-05'."""
         m = re.match(r"(\d+)\s*(\w+)", raw_date.strip())
         if not m:
             return ""
@@ -110,7 +133,140 @@ class KHLParser(BaseParser):
             return ""
 
     async def parse(self, html: str) -> list[dict]:
-        """Извлекает матчи из HTML страницы /tickets/."""
+        soup = BeautifulSoup(html, "html.parser")
+        events = []
+        seen_links = set()
+
+        cards = self._find_match_cards(soup)
+        self.logger.info(f"[{self.name}] Найдено {len(cards)} карточек матчей")
+
+        for card in cards:
+            try:
+                event = self._extract_match(card)
+                if event and event.get('link', '') not in seen_links:
+                    events.append(event)
+                    seen_links.add(event.get('link', ''))
+                    self.logger.debug(f"Добавлен матч: {event.get('title')}")
+            except Exception as e:
+                self.logger.debug(f"Ошибка парсинга карточки: {e}")
+                continue
+
+        if not events:
+            events = self._fallback_parse(html)
+
+        self.logger.info(f"[{self.name}] Извлечено {len(events)} матчей")
+        return events
+
+    def _find_match_cards(self, soup: BeautifulSoup) -> list:
+        cards = []
+        seen = set()
+        for selector in self.MATCH_CARD_SELECTORS:
+            try:
+                found = soup.select(selector)
+                for card in found:
+                    cid = id(card)
+                    if cid not in seen:
+                        cards.append(card)
+                        seen.add(cid)
+            except Exception:
+                continue
+        return cards
+
+    def _extract_match(self, card: Tag) -> Optional[dict]:
+        html_text = card.get_text(separator=" ", strip=True)
+
+        teams = self._extract_teams(html_text)
+        if not teams:
+            return None
+
+        title = " — ".join(teams)
+
+        link = self._extract_link(card)
+        if not link:
+            return None
+
+        date = self._extract_date(card, html_text)
+        place = self._extract_place(card, html_text)
+        price_min, price_max = self._extract_prices(html_text)
+        availability = self._extract_availability(html_text)
+
+        return {
+            "source": self.name,
+            "title": title,
+            "date": date or "Дата не указана",
+            "place": place or "Место не указано",
+            "price_min": price_min,
+            "price_max": price_max,
+            "availability": availability,
+            "link": link,
+        }
+
+    def _extract_teams(self, text: str) -> Optional[list[str]]:
+        match = self.TEAM_VS_REGEX.search(text)
+        if match:
+            home = match.group(1).strip()
+            away = match.group(2).strip()
+            if len(home) > 2 and len(away) > 2:
+                return [home, away]
+        return None
+
+    def _extract_link(self, card: Tag) -> Optional[str]:
+        link_tag = card.find('a', href=True)
+        if link_tag:
+            href = link_tag['href']
+            if href.startswith('/'):
+                href = f"https://www.khl.ru{href}"
+            return href
+        return None
+
+    def _extract_date(self, card: Tag, text: str) -> Optional[str]:
+        time_tag = card.find('time')
+        if time_tag:
+            return time_tag.get('datetime') or time_tag.get_text(strip=True)
+
+        date_match = self.DATE_REGEX.search(text)
+        if date_match:
+            day, month, year = date_match.groups()
+            return f"{day} {month} {year}"
+
+        return None
+
+    def _extract_place(self, card: Tag, text: str) -> Optional[str]:
+        for cls in ['place', 'location', 'venue', 'arena', 'address']:
+            el = card.find(class_=lambda x: x and cls in x.lower())
+            if el:
+                return el.get_text(strip=True)
+        place_match = re.search(r'(?:г\.\s*)?([А-ЯA-Z][а-яёa-z]+),\s*([А-ЯA-Z][а-яёa-z\s\-]+)', text)
+        if place_match:
+            return f"{place_match.group(1)}, {place_match.group(2)}"
+        return None
+
+    def _extract_prices(self, text: str) -> tuple[str, str]:
+        matches = self.PRICE_REGEX.findall(text)
+        prices = []
+        for match in matches:
+            try:
+                price = int(match.replace(" ", ""))
+                if 0 < price < 1000000:
+                    prices.append(price)
+            except ValueError:
+                continue
+        if not prices:
+            return "Не указана", "Не указана"
+        return f"{min(prices)} ₽", f"{max(prices)} ₽"
+
+    def _extract_availability(self, text: str) -> str:
+        text_lower = text.lower()
+        if "распродано" in text_lower or "нет билетов" in text_lower or "sold out" in text_lower:
+            return "Нет"
+        if "скоро" in text_lower or "coming soon" in text_lower:
+            return "Скоро"
+        if "в продаже" in text_lower or "купить" in text_lower or "заказать" in text_lower:
+            return "Да"
+        return "Да"
+
+    def _fallback_parse(self, html: str) -> list[dict]:
+        self.logger.info(f"[{self.name}] Использую fallback-парсинг (поиск всех ссылок с командами)")
         events = []
         seen = set()
 
@@ -128,7 +284,6 @@ class KHLParser(BaseParser):
                 continue
             season_id, game_id = m.group(1), m.group(2)
 
-            # format: "АВТ 5 сен, Сб ДИН Екатеринбург ..."
             parts = text.split()
             if len(parts) < 6:
                 continue

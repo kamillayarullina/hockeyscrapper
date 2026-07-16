@@ -49,8 +49,8 @@ class TestVerifyToken:
 
     def test_expired_token(self):
         with patch("Backend.jwt_auth.datetime") as mock_datetime:
-            mock_datetime.utcnow.return_value = __import__("datetime").datetime(
-                2020, 1, 1
+            mock_datetime.now.return_value = __import__("datetime").datetime(
+                2020, 1, 1, tzinfo=__import__("datetime").timezone.utc
             )
             token = create_token(chat_id=123, email="test@example.com")
 
@@ -94,8 +94,8 @@ class TestGetCurrentUser:
 
     def test_with_expired_token(self):
         with patch("Backend.jwt_auth.datetime") as mock_datetime:
-            mock_datetime.utcnow.return_value = __import__("datetime").datetime(
-                2020, 1, 1
+            mock_datetime.now.return_value = __import__("datetime").datetime(
+                2020, 1, 1, tzinfo=__import__("datetime").timezone.utc
             )
             token = create_token(chat_id=123, email="test@example.com")
 

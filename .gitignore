@@ -18,6 +18,9 @@ data/
 *.swp
 *.swo
 
+# Coverage
+.coverage
+
 # OS
 .DS_Store
 Thumbs.db
