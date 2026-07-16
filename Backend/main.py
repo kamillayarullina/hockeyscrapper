@@ -9,20 +9,6 @@ from pathlib import Path
 import shutil
 import uuid
 
-# Load .env before anything else
-_env_path = Path(__file__).resolve().parent.parent / ".env"
-if _env_path.exists():
-    try:
-        from dotenv import load_dotenv
-        load_dotenv(_env_path)
-    except ImportError:
-        with open(_env_path, encoding="utf-8") as _f:
-            for _line in _f:
-                _line = _line.strip()
-                if _line and not _line.startswith("#") and "=" in _line:
-                    _k, _, _v = _line.partition("=")
-                    os.environ.setdefault(_k.strip(), _v.strip())
-
 from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -39,6 +25,16 @@ from Backend.database import engine, ensure_schema, get_db
 from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
 from services.team_matcher import get_team_info, normalize_team_name, get_all_team_names
+
+# Load .env after imports so env vars are available to the whole module
+_env_path = Path(__file__).resolve().parent.parent / ".env"
+if _env_path.exists():
+    with open(_env_path, encoding="utf-8") as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _k, _, _v = _line.partition("=")
+                os.environ.setdefault(_k.strip(), _v.strip())
 
 test_code = {}
 _code_created_at = {}
