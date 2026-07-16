@@ -277,9 +277,16 @@ class YandexParser(BaseParser):
 
     @staticmethod
     def _matches_any_keyword(text: str, keywords: list[str]) -> bool:
-        """Проверяет, содержит ли text хотя бы одно ключевое слово."""
+        """Проверяет, содержит ли text хотя бы одно ключевое слово (со stem-матчингом для русских окончаний)."""
         text_lower = text.lower()
-        return any(kw.lower() in text_lower for kw in keywords)
+        for kw in keywords:
+            kw_lower = kw.lower()
+            if kw_lower in text_lower:
+                return True
+            stem = kw_lower[:5]
+            if len(stem) >= 4 and stem in text_lower:
+                return True
+        return False
 
     def _find_next_page_url(self, soup: BeautifulSoup) -> Optional[str]:
         """Ищет ссылку на следующую страницу каталога."""
@@ -334,16 +341,16 @@ class YandexParser(BaseParser):
 
     async def _fetch_event_page(self, url: str) -> Optional[str]:
         """Загружает страницу отдельного события через Playwright."""
+        old_url = self.url
+        self.url = url
         try:
-            # Используем метод fetch из базового класса, но с другим URL
-            old_url = self.url
-            self.url = url
             html = await self.fetch()
-            self.url = old_url
             return html
         except Exception as e:
             self.logger.error(f"Не удалось загрузить {url}: {e}")
             return None
+        finally:
+            self.url = old_url
 
     def _parse_event_page(self, html: str, url: str) -> Optional[dict]:
         """Извлекает данные со страницы события."""
