@@ -342,7 +342,7 @@ async def test_protection_detector():
 
 
 async def test_khl_parser():
-    """KHLParser: парсинг страницы билетов КХЛ."""
+    """KHLParser: парсинг страницы /tickets/ (мок HTML)."""
     from parsers.khl_parser import KHLParser
 
     config = {
@@ -357,20 +357,27 @@ async def test_khl_parser():
     html = (MOCK_DIR / "khl_tickets_page.html").read_text(encoding="utf-8")
     events = await parser.parse(html)
 
-    assert len(events) == 5, f"Ожидалось 5 матчей, получено {len(events)}"
+    assert len(events) == 24, f"Ожидалось 24 матча, получено {len(events)}"
 
-    match_cska = [e for e in events if "ЦСКА" in e["title"]][0]
-    assert "Спартак" in match_cska["title"]
-    assert match_cska["price_min"] != "Не указана"
-    assert "khl.ru" in match_cska["link"]
+    titles = [e["title"] for e in events]
+    assert any("СКА" in t for t in titles)
+    assert any("ЦСКА" in t for t in titles)
+    assert any("Ак Барс" in t for t in titles)
+    assert any("Локомотив" in t for t in titles)
+    assert any("Трактор" in t for t in titles)
 
-    sold_out = [e for e in events if "Нет" in e["availability"]]
-    assert len(sold_out) == 1, f"Ожидался 1 распроданный, получено {len(sold_out)}"
+    lokomotiv_traktor = [e for e in events if "Локомотив" in e["title"] and "Трактор" in e["title"]]
+    assert len(lokomotiv_traktor) == 1
+    match = lokomotiv_traktor[0]
+    assert match["date"] == "2026-09-05"
+    assert "Ярославль" in match["place"]
+    assert "khl.ru" in match["link"]
+    assert match["source"] == "khl_ru"
+    assert match["availability"] == "Нет"
 
     print(f"  - Всего матчей: {len(events)}")
     for e in events:
-        avail = "распродано" if e["availability"] == "Нет" else "есть билеты"
-        print(f"    • {e['title']} | {e['date']} | {e['place']} | {e['price_min']} | {avail}")
+        print(f"    • {e['title']} | {e['date']} | {e['place']} | {e['availability']}")
 
 
 async def test_match_dedup_cross_source():

@@ -1,35 +1,44 @@
+import asyncio
 import re
 from datetime import datetime, timezone
 from typing import Optional
 from urllib.parse import urlparse
-import asyncio
 
 from bs4 import BeautifulSoup
-from .base_parser import BaseParser
+from playwright.async_api import async_playwright, Browser
+from playwright_stealth import Stealth
+
+from .base_parser import BaseParser, NetworkError
 
 
 class YandexParser(BaseParser):
     """Двухступенчатый парсер: каталог -> страница каждого события."""
 
+    # Города для поиска хоккейных событий
+    CITIES = [
+        "moscow", "saint-petersburg", "kazan", "omsk", "ufa",
+        "nizhny-novgorod", "chelyabinsk", "yaroslavl", "cherepovets",
+        "magnitogorsk", "nizhnekamsk", "astana", "novosibirsk",
+        "krasnoyarsk", "khabarovsk", "vladivostok",
+    ]
+
     # Паттерны URL для РЕАЛЬНЫХ событий (whitelist)
     EVENT_URL_PATTERNS = [
-        r'/moscow/sport/hockey-[\w-]+',  # /moscow/sport/hockey-match-name
-        r'/moscow/sport/[\w-]+-hockey',  # /moscow/sport/cska-hockey
-        r'/event/[\w-]+',  # /event/event-id
-        r'/spb/sport/hockey-[\w-]+',  # /spb/sport/hockey-match-name
+        r'/[^/]+/sport/[^/]*(?:хокк|hockey|khokk)[^/]*',
+        r'/event/[\w-]+',
     ]
 
     # Паттерны URL, которые нужно ИСКЛЮЧИТЬ (blacklist)
     BLACKLIST_URL_PATTERNS = [
-        r'/places/',  # страницы мест
-        r'/pushkin-card',  # пушкинская карта
-        r'/discount-event',  # скидки
-        r'/abonement',  # абонементы
-        r'/afisha/$',  # главная страница
-        r'/moscow/sport/hockey/?$',  # сам каталог
-        r'\?source=',  # навигационные параметры
-        r'/support/',  # поддержка
-        r'/legal/',  # юридические страницы
+        r'/places/',
+        r'/pushkin-card',
+        r'/discount-event',
+        r'/abonement',
+        r'/afisha/?$',
+        r'/moscow/sport/?$',
+        r'\?source=',
+        r'/support/',
+        r'/legal/',
     ]
 
     # Черный список доменов
@@ -38,6 +47,132 @@ class YandexParser(BaseParser):
         'vk.com', 't.me', 'telegram.org', 'youtube.com', 'ok.ru',
         'mail.ru', 'google.com'
     ]
+
+    @staticmethod
+    def _normalize_url(url: str) -> str:
+        """Нормализует URL для дедупликации: убирает ?city=..."""
+        parsed = urlparse(url)
+        # Убираем только ?city параметр, остальное сохраняем
+        qs = parsed.query
+        if qs:
+            params = [p for p in qs.split("&") if not p.startswith("city=")]
+            qs = "&".join(params)
+        path = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+        if qs:
+            path += f"?{qs}"
+        return path
+
+    async def _run(self) -> list[dict]:
+        """Собирает ссылки на хоккейные события со всех городов, парсит каждое."""
+        cities = self.params.get("cities", self.CITIES)
+        all_links = set()
+        seen = set()
+
+        def _add_url(url: str) -> None:
+            norm = self._normalize_url(url)
+            if norm not in seen:
+                seen.add(norm)
+                all_links.add(url)
+
+        # Шаг 1: Собираем ссылки на события из /sport всех городов
+        for i, city in enumerate(cities):
+            city_url = f"https://afisha.yandex.ru/{city}/sport?source=menu"
+            try:
+                html = await self._fetch_city_page(city_url, city)
+                if not html:
+                    continue
+                soup = BeautifulSoup(html, "html.parser")
+                for url in self._find_event_urls(soup):
+                    _add_url(url)
+                self.logger.info(f"[{self.name}] {city}: найдено ссылок")
+            except Exception as e:
+                self.logger.debug(f"[{self.name}] {city}: {e}")
+
+            if i < len(cities) - 1:
+                await asyncio.sleep(0.5)
+
+        self.logger.info(f"[{self.name}] Всего уникальных событий: {len(all_links)}")
+        if not all_links:
+            return []
+
+        # Шаг 2: Парсим каждое событие
+        events = []
+        for i, url in enumerate(all_links, 1):
+            self.logger.info(f"[{self.name}] Событие {i}/{len(all_links)}: {url}")
+            try:
+                event_html = await self._fetch_event_page(url)
+                if not event_html:
+                    continue
+                event_data = self._parse_event_page(event_html, url)
+                if event_data:
+                    events.append(event_data)
+                    self.logger.info(f"  ✅ {event_data.get('title')}")
+                else:
+                    self.logger.warning("  ❌ Не удалось извлечь данные")
+            except Exception as e:
+                self.logger.error(f"  ❌ {e}")
+
+            if i < len(all_links):
+                await asyncio.sleep(1)
+
+        self.logger.info(f"[{self.name}] Успешно извлечено {len(events)} событий")
+        return events
+
+    async def _fetch_city_page(self, url: str, city: str) -> Optional[str]:
+        """Загружает страницу города, возвращает None при ошибке."""
+        try:
+            return await self.fetch(url=url)
+        except Exception:
+            return None
+
+    async def _fetch_with_playwright(self, user_agent, timeout_ms, wait_selector,
+                                      proxy=None, url=None):
+        """Загрузка страницы через Playwright с применением stealth."""
+        target_url = url or self.url
+        browser: Browser | None = None
+        pw = None
+        try:
+            pw = await async_playwright().start()
+            launch_kwargs = {"headless": self.headless}
+            context_kwargs = {
+                "user_agent": user_agent,
+                "viewport": {"width": 1920, "height": 1080},
+                "locale": "ru-RU",
+            }
+            if proxy is not None:
+                context_kwargs["proxy"] = proxy.get_playwright_proxy()
+
+            browser = await pw.chromium.launch(**launch_kwargs)
+            context = await browser.new_context(**context_kwargs)
+            page = await context.new_page()
+
+            await Stealth().apply_stealth_async(page)
+
+            response = await page.goto(
+                target_url,
+                wait_until="domcontentloaded",
+                timeout=timeout_ms,
+            )
+
+            if response is not None and response.status >= 500:
+                raise NetworkError(f"Сервер вернул HTTP {response.status}")
+
+            await page.wait_for_timeout(3000)
+
+            html = await page.content()
+            return html
+
+        finally:
+            if browser is not None:
+                try:
+                    await browser.close()
+                except Exception:
+                    pass
+            if pw is not None:
+                try:
+                    await pw.stop()
+                except Exception:
+                    pass
 
     async def parse(self, html: str) -> list[dict]:
         """Основной метод: находит ссылки на события и парсит каждое отдельно."""
