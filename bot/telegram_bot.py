@@ -5,7 +5,6 @@ import aiosqlite
 import logging
 import os
 import atexit
-import signal
 from html import escape
 from typing import Optional
 from urllib.parse import quote
