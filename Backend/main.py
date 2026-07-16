@@ -961,6 +961,17 @@ def admin_add_subscription(chat_id: int, body: AddSubscriptionSchema,
         raise HTTPException(status_code=400, detail=f"Подписка '{body.value}' уже существует")
     sub = models.SubscriptionModel(chat_id=chat_id, type=body.type, value=normalized)
     db.add(sub)
+    if body.type == "team":
+        paid = db.query(models.PaidTeamSubscriptionModel).filter(
+            models.PaidTeamSubscriptionModel.chat_id == chat_id,
+            models.PaidTeamSubscriptionModel.team_name == normalized,
+        ).first()
+        if not paid:
+            paid = models.PaidTeamSubscriptionModel(
+                chat_id=chat_id, team_name=normalized,
+                expires_at=datetime(2099, 12, 31, 23, 59, 59),
+            )
+            db.add(paid)
     db.commit()
     return {"status": "added", "value": normalized}
 
