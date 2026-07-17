@@ -15,7 +15,7 @@ HockeyScrapper is a KHL hockey ticket monitoring system. It scrapes ticket avail
 | Source code repository | Full access granted — [github.com/kamillayarullina/hockeyscrapper](https://github.com/kamillayarullina/hockeyscrapper) |
 | Documentation site | Published — [kamillayarullina.github.io/hockeyscrapper](https://kamillayarullina.github.io/hockeyscrapper/) |
 | Docker image + Render Blueprint | `render.yaml` defines web service, worker, and PostgreSQL |
-| Telegram bot | `@HockeyScrAppeer_bot` — functional but owned by team account |
+| Telegram bot | `@HockeyScrapper_bot` — functional but owned by team account |
 | Web dashboard | Login, registration, profile, subscriptions, admin panel, avatar upload, password recovery |
 
 ### What Remains Under Team Control (Not Yet Transferred)
@@ -24,8 +24,8 @@ HockeyScrapper is a KHL hockey ticket monitoring system. It scrapes ticket avail
 |---|---|
 | Render account (dashboard, databases, services) | Customer needs their own Render account |
 | Telegram bot ownership | Bot is registered under a team Telegram account; must transfer via BotFather |
-| Gmail SMTP credentials | Hardcoded team member credentials in `Backend/main.py:49-51` |
-| VPS SSH access | `139.100.225.113` is managed by the team |
+| Gmail SMTP credentials | Hardcoded team member credentials in `Backend/main.py` |
+| VPS SSH access | `89.125.169.128` is managed by the team |
 
 ---
 
@@ -42,7 +42,7 @@ HockeyScrapper is a KHL hockey ticket monitoring system. It scrapes ticket avail
 
 ### End Users (Telegram Bot)
 
-Send commands to `@HockeyScrAppeer_bot`:
+Send commands to `@HockeyScrapper_bot`:
 
 | Command | Purpose |
 |---|---|
@@ -78,7 +78,7 @@ python -m venv .venv
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env        # then edit .env with your values
-python -m main --all        # starts API + bot + parser
+python -m main --verbose        # starts API + bot + parser
 ```
 
 Open `http://localhost:8000` in a browser.
