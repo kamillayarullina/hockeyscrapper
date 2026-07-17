@@ -6,7 +6,7 @@
 
 HockeyScrapper is a KHL hockey ticket monitoring system. It scrapes ticket availability and notifies users via a Telegram bot when tickets appear, prices change, or matches sell out. Users manage subscriptions through a web dashboard with JWT-based authentication.
 
-**Current status:** All MVP v1 and MVP v2 features are implemented. UATs (6 scenarios) were passed on 3 July 2026. The product runs on a staging VPS at `http://139.100.225.113:8000/`.
+**Current status:** All MVP v1 and MVP v2 features are implemented. UATs (6 scenarios) were passed on 3 July 2026. The product runs on a staging VPS at `http://89.125.169.128:8000`.
 
 ### What Is Ready for the Customer
 
