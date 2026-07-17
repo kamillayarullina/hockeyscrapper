@@ -82,6 +82,11 @@ python -m main --verbose        # starts API + bot + parser
 
 Open `http://localhost:8000` in a browser.
 
+If this doesn't work, try this:
+
+screen -dmS api bash -c 'ADMIN_EMAILS=sakirovsamir401@gmail.com /opt/hockeyscrapper/.venv/bin/python -c "import uvicorn; uvicorn.run(\"Backend.main:app\", host=\"0.0.0.0\", port=8000)"'
+screen -dmS parser bash -c 'ADMIN_EMAILS=sakirovsamir401@gmail.com /opt/hockeyscrapper/.venv/bin/python -m main'
+
 ---
 
 ## 4. Required Configuration and Secrets-Handling Expectations
