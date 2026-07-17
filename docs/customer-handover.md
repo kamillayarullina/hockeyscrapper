@@ -67,25 +67,52 @@ Full interaction examples are documented in [docs/interface.md](interface.md).
 
 ## 3. Installation or Deployment Instructions
 
-### Local Development
+### Local Development (Windows)
 
 ```bash
 git clone https://github.com/kamillayarullina/hockeyscrapper.git
 cd hockeyscrapper
 python -m venv .venv
-.venv\Scripts\activate      # Windows: .venv\Scripts\activate
+.venv\Scripts\activate
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env        # then edit .env with your values
-python -m main --verbose        # starts API + bot + parser
+```
+
+**Run the API (web dashboard):**
+```bash
+python Backend/main.py
+```
+
+**Run Telegram bot + parser (separate terminal):**
+```bash
+.venv\Scripts\activate
+python -m main -v
 ```
 
 Open `http://localhost:8000` in a browser.
 
-If this doesn't work, try this:
+### Local Development (Linux)
 
+```bash
+git clone https://github.com/kamillayarullina/hockeyscrapper.git
+cd hockeyscrapper
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+playwright install chromium
+cp .env.example .env        # then edit .env with your values
+```
+
+**Run API in background (screen):**
+```bash
 screen -dmS api bash -c 'ADMIN_EMAILS=sakirovsamir401@gmail.com /opt/hockeyscrapper/.venv/bin/python -c "import uvicorn; uvicorn.run(\"Backend.main:app\", host=\"0.0.0.0\", port=8000)"'
+```
+
+**Run bot + parser in background (screen):**
+```bash
 screen -dmS parser bash -c 'ADMIN_EMAILS=sakirovsamir401@gmail.com /opt/hockeyscrapper/.venv/bin/python -m main'
+```
 
 ---
 
