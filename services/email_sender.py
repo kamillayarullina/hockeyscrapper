@@ -49,14 +49,21 @@ class EmailSender:
         msg.attach(html_part)
 
         try:
+            logger.info(f"Подключение к SMTP {self.smtp_server}:{self.smtp_port}...")
             with smtplib.SMTP(self.smtp_server, self.smtp_port, timeout=15) as server:
                 server.starttls()
                 server.login(self.login, self.password)
                 server.sendmail(self.login, [self.to_email], msg.as_string())
             logger.info(f"✅ Email отправлен на {self.to_email}: {subject}")
             return True
+        except smtplib.SMTPAuthenticationError:
+            logger.error(f"❌ SMTP-аутентификация не пройдена для {self.login}. Проверьте логин/пароль (для Gmail нужен пароль приложения).")
+            return False
+        except smtplib.SMTPConnectError:
+            logger.error(f"❌ Не удалось подключиться к SMTP {self.smtp_server}:{self.smtp_port}. Проверьте доступность порта.")
+            return False
         except Exception as e:
-            logger.error(f"❌ Ошибка отправки email: {e}")
+            logger.error(f"❌ Ошибка отправки email: {type(e).__name__}: {e}")
             return False
 
     async def notify_admin_about_event(self, event: dict, teams_str: str, reason: str) -> bool:

@@ -24,7 +24,17 @@ from Backend import models
 from Backend.database import engine, ensure_schema, get_db
 from Backend.security import get_password_hash, verify_password
 from Backend.jwt_auth import create_token, get_current_user
-from services.team_matcher import get_team_info, normalize_team_name
+from services.team_matcher import get_team_info, normalize_team_name, get_all_team_names
+
+# Load .env after imports so env vars are available to the whole module
+_env_path = Path(__file__).resolve().parent.parent / ".env"
+if _env_path.exists():
+    with open(_env_path, encoding="utf-8") as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _k, _, _v = _line.partition("=")
+                os.environ.setdefault(_k.strip(), _v.strip())
 
 test_code = {}
 _code_created_at = {}
@@ -784,6 +794,10 @@ def get_stats(db: Session = Depends(get_db)):
     matches = db.query(models.MatchModel).count()
     return {"users": users, "team_subs": team_subs, "venue_subs": venue_subs, "matches": matches}
 
+@app.get("/api/teams")
+def api_teams():
+    return get_all_team_names()
+
 # ─── Admin panel ────────────────────────────────────────────────────────────
 
 ADMIN_EMAILS = [e.strip() for e in os.getenv("ADMIN_EMAILS", "").split(",") if e.strip()]
@@ -957,6 +971,17 @@ def admin_add_subscription(chat_id: int, body: AddSubscriptionSchema,
         raise HTTPException(status_code=400, detail=f"Подписка '{body.value}' уже существует")
     sub = models.SubscriptionModel(chat_id=chat_id, type=body.type, value=normalized)
     db.add(sub)
+    if body.type == "team":
+        paid = db.query(models.PaidTeamSubscriptionModel).filter(
+            models.PaidTeamSubscriptionModel.chat_id == chat_id,
+            models.PaidTeamSubscriptionModel.team_name == normalized,
+        ).first()
+        if not paid:
+            paid = models.PaidTeamSubscriptionModel(
+                chat_id=chat_id, team_name=normalized,
+                expires_at=datetime(2099, 12, 31, 23, 59, 59),
+            )
+            db.add(paid)
     db.commit()
     return {"status": "added", "value": normalized}
 
@@ -1070,6 +1095,20 @@ def admin_toggle_site(name: str, db: Session = Depends(get_db), admin=Depends(_r
     db.commit()
     return {"status": "updated", "enabled": new_val == "true"}
 
+@app.put("/admin/sites/{name}/interval")
+def admin_set_site_interval(name: str, body: dict, db: Session = Depends(get_db), admin=Depends(_require_admin)):
+    minutes = body.get("minutes")
+    if not isinstance(minutes, int) or minutes < 1 or minutes > 1440:
+        raise HTTPException(status_code=400, detail="Minutes must be 1-1440")
+    key = f"site:{name}:interval_minutes"
+    current = db.query(models.SettingModel).filter(models.SettingModel.key == key).first()
+    if current:
+        current.value = str(minutes)
+    else:
+        db.add(models.SettingModel(key=key, value=str(minutes)))
+    db.commit()
+    return {"status": "updated", "interval_minutes": minutes}
+
 @app.post("/admin/trigger-parse")
 def admin_trigger_parse(db: Session = Depends(get_db), admin=Depends(_require_admin)):
     from datetime import datetime
@@ -1115,6 +1154,30 @@ async def admin_notify_all(body: NotifySchema, admin=Depends(_require_admin)):
     await bot.session.close()
     return {"status": "notified", "sent": sent}
 
+@app.post("/admin/test-email")
+def admin_test_email(admin=Depends(_require_admin)):
+    import yaml
+    config_path = Path(__file__).resolve().parent.parent / "config" / "sites.yaml"
+    with open(config_path, encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+    from services.parser_runner import _resolve_env_vars
+    cfg = _resolve_env_vars(cfg)
+    email_cfg = cfg.get("settings", {}).get("email", {})
+    from services.email_sender import EmailSender
+    sender = EmailSender(email_cfg)
+    if not sender.enabled:
+        raise HTTPException(status_code=400, detail="Email sending is disabled in config")
+    import asyncio
+    loop = asyncio.new_event_loop()
+    try:
+        ok = loop.run_until_complete(sender.send_notification("Тестовое письмо", "<h1>Тест</h1><p>Если вы это видите, SMTP работает.</p>"))
+    finally:
+        loop.close()
+    if ok:
+        return {"status": "sent", "message": f"Тестовое письмо отправлено на {sender.to_email}"}
+    else:
+        raise HTTPException(status_code=500, detail="Ошибка отправки. Подробности в логах парсера.")
+
 @app.get("/admin/logs")
 def admin_logs(admin=Depends(_require_admin)):
     return {"logs": list(_log_buffer.buffer)}
@@ -1143,6 +1206,8 @@ async def serve_frontend(full_path: str):
     if not resolved.exists():
         raise HTTPException(status_code=404, detail="Not found")
     media_type, _ = mimetypes.guess_type(str(resolved))
+    if media_type and media_type.startswith("text/"):
+        media_type += "; charset=utf-8"
     suffix = resolved.suffix.lower()
     if suffix in (".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".ico"):
         cache_max_age = 86400 * 30
