@@ -4,7 +4,7 @@ Track KHL hockey tickets. Scrapes ticket-hockey.ru, khl.ru, and Yandex Afisha fo
 
 ## Quick Links
 
-- **Product access** — Run locally (see [Local Setup](#local-setup)) or deploy via [Render](render.yaml) / [Docker Compose](docker-compose.yml). No public deployment is currently active.
+- **Product access** — [http://139.100.225.113:8000](http://139.100.225.113:8000) (deployed MVP v3 instance). Run locally via [Local Setup](#local-setup) or deploy via [Render](render.yaml) / [Docker Compose](docker-compose.yml).
 - **Hosted documentation** — [kamillayarullina.github.io/hockeyscrapper](https://kamillayarullina.github.io/hockeyscrapper/) — architecture, testing, ADRs, UATs, roadmap
 - **Customer handover** — [docs/customer-handover.md](docs/customer-handover.md) — usage, deployment, troubleshooting, known limitations
 - **Contributing** — [CONTRIBUTING.md](CONTRIBUTING.md) — how to contribute, workflow, review expectations

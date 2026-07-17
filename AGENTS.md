@@ -1,5 +1,7 @@
 # HockeyScrapper — Agent Guidance
 
+> **Project status:** Archived — all MVP milestones (v1, v2, v3) delivered. The repository is maintained for reference and customer handover. See [`docs/customer-handover.md`](docs/customer-handover.md) for deployment and operational instructions.
+
 This file provides operating instructions for coding agents working in this repository. See [README.md](README.md) for a project overview and [CONTRIBUTING.md](CONTRIBUTING.md) for human contributor workflow.
 
 ## Setup and Verification Commands
@@ -56,3 +58,4 @@ python -m main --all               # API + bot + parser
 - [Testing Strategy](docs/testing.md) — test locations, coverage targets, QRTs
 - [Quality Requirements](docs/quality-requirements.md) — QR-01 through QR-05
 - [User Acceptance Tests](docs/user-acceptance-tests.md) — UAT scenarios
+- [Customer Handover](docs/customer-handover.md) — deployment, configuration, troubleshooting, known limitations

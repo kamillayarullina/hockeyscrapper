@@ -1,5 +1,7 @@
 # Contributing to HockeyScrapper
 
+> **Project status:** Archived — all MVP milestones (v1, v2, v3) delivered. The repository is maintained for reference and customer handover. See [`docs/customer-handover.md`](docs/customer-handover.md) for deployment and operational instructions.
+
 ## Setup and Verification
 
 Before submitting changes, ensure your environment is set up and all checks pass:
@@ -49,8 +51,10 @@ lychee .
 
 ## Maintained Documentation
 
+- [Customer Handover](docs/customer-handover.md) — deployment, configuration, troubleshooting, known limitations
 - [Development Process](docs/development-process.md) — full workflow, CI/CD, config management
-- [Architecture](docs/architecture/README.md) — system design, ADRs
-- [Testing Strategy](docs/testing.md) — test locations, coverage targets
+- [Architecture](docs/architecture/README.md) — system design, ADRs, static/dynamic/deployment views
+- [Testing Strategy](docs/testing.md) — test locations, coverage targets, QRTs
+- [User Acceptance Tests](docs/user-acceptance-tests.md) — UAT scenarios
 - [Definition of Done](docs/definition-of-done.md) — completion standard
 - [Quality Requirements](docs/quality-requirements.md) — quality attributes
