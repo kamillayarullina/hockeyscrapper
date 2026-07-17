@@ -12,7 +12,8 @@ Week 7 was the first sprint dedicated entirely to handover. The team learned tha
 
 ### Customer usefulness feedback
 
-будет
+Customer confirmed at the final sprint review that all MVP requirements are met and the product is ready for transfer.
+Minor requests: logout confirmation dialog and padding fix in admin panel. The customer explicitly confirmed the product is fully ready for transfer.
 
 ### Final delivery of MVP v3
 
