@@ -6,7 +6,7 @@
 
 HockeyScrapper is a KHL hockey ticket monitoring system. It scrapes ticket availability and notifies users via a Telegram bot when tickets appear, prices change, or matches sell out. Users manage subscriptions through a web dashboard with JWT-based authentication.
 
-**Current status:** All MVP v1 and MVP v2 features are implemented. UATs (6 scenarios) were passed on 3 July 2026. The product runs on a staging VPS at `http://139.100.225.113:8000/`.
+**Current status:** All MVP v1 and MVP v2 features are implemented. UATs (6 scenarios) were passed on 3 July 2026. The product runs on a staging VPS at `http://89.125.169.128:8000`.
 
 ### What Is Ready for the Customer
 
@@ -15,17 +15,16 @@ HockeyScrapper is a KHL hockey ticket monitoring system. It scrapes ticket avail
 | Source code repository | Full access granted — [github.com/kamillayarullina/hockeyscrapper](https://github.com/kamillayarullina/hockeyscrapper) |
 | Documentation site | Published — [kamillayarullina.github.io/hockeyscrapper](https://kamillayarullina.github.io/hockeyscrapper/) |
 | Docker image + Render Blueprint | `render.yaml` defines web service, worker, and PostgreSQL |
-| Telegram bot | `@HockeyScrAppeer_bot` — functional but owned by team account |
+| Telegram bot | `@HockeyScrapper_bot` — functional but owned by team account |
 | Web dashboard | Login, registration, profile, subscriptions, admin panel, avatar upload, password recovery |
 
 ### What Remains Under Team Control (Not Yet Transferred)
 
 | Asset | Blocker |
 |---|---|
-| Render account (dashboard, databases, services) | Customer needs their own Render account |
 | Telegram bot ownership | Bot is registered under a team Telegram account; must transfer via BotFather |
-| Gmail SMTP credentials | Hardcoded team member credentials in `Backend/main.py:49-51` |
-| VPS SSH access | `139.100.225.113` is managed by the team |
+| Render account (dashboard, databases, services) | Customer needs their own Render account |
+| VPS SSH access | `89.125.169.128` is managed by the team |
 
 ---
 
@@ -42,7 +41,7 @@ HockeyScrapper is a KHL hockey ticket monitoring system. It scrapes ticket avail
 
 ### End Users (Telegram Bot)
 
-Send commands to `@HockeyScrAppeer_bot`:
+Send commands to `@HockeyScrapper_bot`:
 
 | Command | Purpose |
 |---|---|
@@ -78,10 +77,15 @@ python -m venv .venv
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env        # then edit .env with your values
-python -m main --all        # starts API + bot + parser
+python -m main --verbose        # starts API + bot + parser
 ```
 
 Open `http://localhost:8000` in a browser.
+
+If this doesn't work, try this:
+
+screen -dmS api bash -c 'ADMIN_EMAILS=sakirovsamir401@gmail.com /opt/hockeyscrapper/.venv/bin/python -c "import uvicorn; uvicorn.run(\"Backend.main:app\", host=\"0.0.0.0\", port=8000)"'
+screen -dmS parser bash -c 'ADMIN_EMAILS=sakirovsamir401@gmail.com /opt/hockeyscrapper/.venv/bin/python -m main'
 
 ---
 
@@ -104,15 +108,9 @@ Open `http://localhost:8000` in a browser.
 - On Render, set variables via Dashboard → Environment (do not check `sync` for secrets).
 - On a VPS, set them in the shell profile or a systemd override file.
 
-### Known Security Gaps (Hardcoded in Source)
+### Known Security Gaps 
 
-These values are currently committed in code and **must be moved to environment variables** before production use:
-
-- `Backend/jwt_auth.py:7` — default JWT secret key
-- `Backend/main.py:49-51` — SMTP credentials
-- `config/sites.yaml:15` — admin chat ID
-
-The team can assist with this migration.
+- No gaps
 
 
 ---
@@ -174,7 +172,6 @@ The team can assist with this migration.
 
 | Risk | Severity | Mitigation |
 |---|---|---|
-| **Hardcoded secrets** in source code (`JWT_SECRET_KEY`, `MAIL_PASSWORD`, `ADMIN_CHAT_ID`) | **Critical** — anyone with repo access can extract credentials | Move all secrets to environment variables before production |
 | **Telegram bot** registered under team account | **High** — team controls the bot; if team dissolves, customer loses the bot | Transfer bot ownership via BotFather or create a new bot |
 | **Render services** under team account | **High** — team can modify or delete production services | Customer deploys under their own Render account |
 | **VPS** at `139.100.225.113` is team-managed | **Medium** — no SLA for uptime | Migrate to customer-controlled infrastructure |
@@ -190,9 +187,7 @@ The product is feature-complete and all UATs have passed. The customer can clone
 
 - The customer does not yet own their own Render account with deployed services.
 - The Telegram bot token and SMTP credentials still point to team-owned accounts.
-- Hardcoded secrets in the source code must be extracted before a secure independent deployment.
 
-Full transition to **Independently used by customer** requires the remaining actions in Section 9.
 
 ---
 
@@ -200,7 +195,6 @@ Full transition to **Independently used by customer** requires the remaining act
 
 | Action | Blocks Transition? | Priority |
 |---|---|---|
-| Migrate hardcoded secrets to environment variables | **Yes** — without this, the customer's deployment uses insecure shared credentials | Critical |
 | Customer creates their own Render account and deploys via Blueprint | **Yes** — without this, the customer cannot operate independently | Critical | 
 | Customer provides their own SMTP credentials | **Yes** — without this, password recovery depends on team email | Critical |
 | Document backup and recovery procedures | **No** — system is operational without it, but data loss risk exists | Medium |
