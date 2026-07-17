@@ -17,11 +17,11 @@ settings:
   # Email-уведомления админу (опционально)
   email:
     enabled: true
-    smtp_server: "${EMAIL_SMTP_SERVER}"
+    smtp_server: "${MAIL_SERVER}"
     smtp_port: 587
-    login: "${EMAIL_LOGIN}"
-    password: "${EMAIL_PASSWORD}"
-    to_email: "${EMAIL_TO}"
+    login: "${MAIL_USERNAME}"
+    password: "${MAIL_PASSWORD}"
+    to_email: "${MAIL_USERNAME}"
 
 sites:
   # ───── АГРЕГАТОРЫ (проверенные источники) ─────

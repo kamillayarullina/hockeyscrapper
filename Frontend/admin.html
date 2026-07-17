@@ -104,8 +104,8 @@
         <h3>Добавить подписку</h3>
         <div id="subModalError" class="msg msg-err" style="display:none"></div>
         <div class="form-group">
-            <label>Название команды</label>
-            <input id="subValue" placeholder="Например: ЦСКА">
+            <label>Команда</label>
+            <select id="subValue" class="inp" style="width:100%"></select>
         </div>
         <div class="modal-actions">
             <button class="btn btn-cancel" onclick="closeSubModal()">Отмена</button>
@@ -130,7 +130,15 @@ async function api(url, opts = {}) {
 (async () => {
     try {
         await api("/admin/check");
-    } catch { window.location.href = "/vhod/vhod.html"; }
+    } catch {
+        document.body.innerHTML = `
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Nunito',sans-serif;padding:20px;text-align:center">
+                <h1 style="color:#c62828;font-size:48px;margin-bottom:8px">403</h1>
+                <p style="font-size:18px;color:#555;margin-bottom:24px">У вас нет прав администратора</p>
+                <button class="btn btn-primary" onclick="window.location.href='main.html'">На главную</button>
+            </div>
+        `;
+    }
 })();
 
 // Tabs
@@ -162,7 +170,18 @@ let _subChatId = null;
 
 function openSubModal(chatId) {
     _subChatId = chatId;
-    document.getElementById("subValue").value = "";
+    const sel = document.getElementById("subValue");
+    sel.innerHTML = '<option value="">Выберите команду...</option>';
+    sel.value = "";
+    api("/api/teams").then(teams => {
+        teams.forEach(t => {
+            const opt = document.createElement("option");
+            opt.value = t;
+            opt.textContent = t;
+            sel.appendChild(opt);
+        });
+    }).catch(() => {});
+    document.getElementById("subModalError").style.display = "none";
     document.getElementById("subModal").classList.add("active");
 }
 
@@ -172,16 +191,11 @@ function closeSubModal() {
 }
 
 async function saveSub() {
-    const value = document.getElementById("subValue").value.trim();
+    const value = document.getElementById("subValue").value;
     const errEl = document.getElementById("subModalError");
     errEl.style.display = "none";
     if (!value) {
-        errEl.textContent = "Введите название команды";
-        errEl.style.display = "flex";
-        return;
-    }
-    if (value.length > 100) {
-        errEl.textContent = "Название слишком длинное (макс. 100 символов)";
+        errEl.textContent = "Выберите команду из списка";
         errEl.style.display = "flex";
         return;
     }
@@ -328,6 +342,10 @@ async function loadSettings() {
                     <button class="btn btn-success" onclick="triggerParse()">▶ Запустить парсинг</button>
                     <button class="btn btn-danger" onclick="clearMatches()">Очистить матчи</button>
                 </div>
+                <div style="margin-top:12px">
+                    <button class="btn btn-secondary" onclick="testEmail()">📧 Тест email</button>
+                    <span id="testEmailMsg" style="margin-left:8px;font-size:13px"></span>
+                </div>
             </div>
             <div style="margin-top:28px;padding-top:24px;border-top:2px solid #d4e0f0">
                 <h3 style="text-align:center;color:var(--darkblue);font-size:20px;margin-bottom:16px;font-weight:800">📨 Уведомление всем пользователям</h3>
@@ -432,6 +450,20 @@ async function clearMatches() {
     msg(`Удалено ${res.deleted} матчей`);
 }
 
+async function testEmail() {
+    const el = document.getElementById("testEmailMsg");
+    el.textContent = "⏳ отправка...";
+    el.style.color = "#666";
+    try {
+        const res = await api("/admin/test-email", { method: "POST" });
+        el.textContent = "✅ " + res.message;
+        el.style.color = "#2e7d32";
+    } catch (e) {
+        el.textContent = "❌ " + e.message;
+        el.style.color = "#c62828";
+    }
+}
+
 // Sites
 async function loadSites() {
     const sites = await api("/admin/sites");
@@ -440,12 +472,24 @@ async function loadSites() {
         html += `<tr><td colspan="5"><div class="empty-state">Сайты не настроены</div></td></tr>`;
     }
     for (const s of sites) {
-        html += `<tr><td style="font-weight:700">${s.name}</td><td><span class="badge" style="background:#e8f0fe;color:var(--darkblue);font-weight:700">${s.parser}</span></td><td style="color:#666">${s.interval_minutes} мин</td><td>${s.enabled ? '<span class="badge badge-active">включён</span>' : '<span class="badge badge-banned">отключён</span>'}</td><td>
+        const sid = CSS.escape(s.name);
+        html += `<tr><td style="font-weight:700">${s.name}</td><td><span class="badge" style="background:#e8f0fe;color:var(--darkblue);font-weight:700">${s.parser}</span></td>
+            <td><input class="inp" id="interval-${sid}" type="number" min="1" max="1440" value="${s.interval_minutes}" style="width:70px;padding:5px 10px;display:inline"> мин
+                <button class="btn btn-sm btn-success" onclick="saveSiteInterval('${s.name}')" style="margin-left:4px">Сохранить</button></td>
+            <td>${s.enabled ? '<span class="badge badge-active">включён</span>' : '<span class="badge badge-banned">отключён</span>'}</td><td>
             <button class="btn btn-sm btn-secondary" onclick="toggleSite('${s.name}')">${s.enabled ? "Выключить" : "Включить"}</button>
         </td></tr>`;
     }
     html += "</tbody></table></div>";
     document.getElementById("tab-sites").innerHTML = html;
+}
+
+async function saveSiteInterval(name) {
+    const sid = CSS.escape(name);
+    const val = parseInt(document.getElementById("interval-" + sid).value);
+    if (isNaN(val) || val < 1 || val > 1440) return;
+    await api("/admin/sites/" + encodeURIComponent(name) + "/interval", { method: "PUT", body: JSON.stringify({ minutes: val }) });
+    loadSites();
 }
 
 async function toggleSite(name) {

@@ -106,7 +106,7 @@ The diagram illustrates:
 
 ### Secrets Storage
 
-- **Production secrets** (BOT_TOKEN, JWT_SECRET_KEY, MAIL_PASSWORD, DATABASE_URL) are stored in **GitHub Secrets** for CI/CD and in environment variables on the deployment server (Render / Fly.io).
+- **Production secrets** (BOT_TOKEN, JWT_SECRET_KEY, MAIL_PASSWORD, DATABASE_URL) are stored in **GitHub Secrets** for CI/CD.
 - **Local development** uses a `.env` file (gitignored) created from `.env.example`.
 
 ### Ignored Files

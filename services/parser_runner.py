@@ -29,11 +29,11 @@ _ENV_VAR_RE = re.compile(r"\$\{([^}]+)\}")
 
 
 def _resolve_env_vars(value: Any) -> Any:
-    """Заменяет ${VAR} на значение из os.environ."""
+    """Заменяет ${VAR} на значение из os.environ (если нет — пустая строка)."""
     if isinstance(value, str):
         def replacer(m: re.Match) -> str:
             var_name = m.group(1)
-            return os.environ.get(var_name, m.group(0))
+            return os.environ.get(var_name, "")
         return _ENV_VAR_RE.sub(replacer, value)
     if isinstance(value, dict):
         return {k: _resolve_env_vars(v) for k, v in value.items()}
@@ -257,16 +257,9 @@ class ParserRunner:
                         subscriber_ids = list(set(subscriber_ids + venue_subscribers))
 
                     if not subscriber_ids:
-                        if notify_reason == "new":
-                            all_users = await self.db.get_all_users()
-                            subscriber_ids = [user["chat_id"] for user in all_users]
-                            logger.info(
-                                f"Нет подписчиков на команды/стадион - новый матч, "
-                                f"отправляем всем ({len(subscriber_ids)} пользователей)")
-                        else:
-                            logger.info(
-                                f"Нет подписчиков на команды/стадион, "
-                                f"пропускаем уведомление (причина: {notify_reason})")
+                        logger.info(
+                            f"Нет подписчиков на команды/стадион, "
+                            f"пропускаем уведомление (причина: {notify_reason})")
 
                     if subscriber_ids:
                         sent = await self.notifier.notify_subscribers(
@@ -381,6 +374,12 @@ class ParserRunner:
                     sleep_minutes = default_interval
                 sleep_minutes = max(1, min(sleep_minutes, 1440))
                 sleep_seconds = sleep_minutes * 60
+
+                trigger = await self.db.get_setting("parse_trigger_requested_at", "")
+                if trigger:
+                    await self.db.delete_setting("parse_trigger_requested_at")
+                    logger.info("Ручной запуск парсинга — пропускаем ожидание")
+                    continue
 
                 logger.info(f"Следующая проверка через {sleep_minutes} мин (интервал из БД)...")
 
