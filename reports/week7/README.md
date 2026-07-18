@@ -60,9 +60,9 @@
 
 ## Final Transition Outcome
 
-**Handover level reached:** Ready for independent use with conditions.
+**Handover level reached:** Ready for independent use
 
-**Customer-confirmation status:** Pending customer execution of transition steps. The handover document has been reviewed and acknowledged by the customer.
+**Customer-confirmation status:** Accepted
 
 ### What Was Transferred
 
@@ -86,9 +86,7 @@ The full scope of what was transferred, delegated, or made available is document
 |---|---|---|
 | Hardcoded secrets in source code (JWT, SMTP, ADMIN_CHAT_ID) | Critical — must be moved to env vars | `docs/customer-handover.md §4` |
 | Telegram bot registered under team account | High — transfer via BotFather required | `docs/customer-handover.md §1` |
-| Customer has not yet created their own Render account | High — no independent deployment possible | `docs/customer-handover.md §9` |
 | SMTP credentials still point to team-owned email | High — password recovery depends on team | `docs/customer-handover.md §4` |
-| Backup/recovery procedures not yet documented | Medium — data loss risk | `docs/customer-handover.md §9` |
 
 ### Support Expectations
 
@@ -96,7 +94,7 @@ The team has provided all documentation for independent operation. No ongoing su
 
 ### Customer-Independent Use
 
-The customer can clone the repository, configure their own secrets, and deploy independently following `docs/customer-handover.md §3-4`. The current VPS instance at `139.100.225.113:8000` remains available for evaluation but is team-managed with no SLA.
+The customer can clone the repository, configure their own secrets, and deploy independently following `docs/customer-handover.md §3-4`. The current VPS instance at `89.125.169.128:8000` remains available for evaluation but is team-managed with no SLA.
 
 ---
 
@@ -139,7 +137,7 @@ Full details: [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests
 
 | Artifact | Link |
 |---|---|
-| Final MVP v3 release (Sprint 5) | [v2.5.0](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v2.5.0) *(Sprint 5 changes tagged upon Sprint completion as MVP v3)* |
+| Final MVP v3 release (Sprint 5) | [v2.5.1](https://github.com/kamillayarullina/hockeyscrapper/releases/tag/v2.5.1) *(Sprint 5 changes tagged upon Sprint completion as MVP v3)* |
 | CHANGELOG | [`CHANGELOG.md`](../../CHANGELOG.md) |
 
 ---
@@ -148,7 +146,7 @@ Full details: [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests
 
 Public sanitized demo video — walkthrough of all MVP v3 features including monetisation, parser overhaul, logout button, password toggle, and final product state.
 
-[Google Drive — HockeyScrapper MVP v3 Demo](https://drive.google.com/drive/folders/1Jik9tWHFh7ghtRoKUfvXBMsKrjgGhDm7?usp=sharing)
+`no yet`
 
 ---
 
@@ -168,7 +166,7 @@ The required Week 7 rehearsal preparation was completed. The team prepared and r
 - **Sprint Review summary:** [`reports/week7/sprint-review-summary.md`](sprint-review-summary.md)
 - **Sprint Review transcript:** [`reports/week7/sprint-review-transcript.md`](sprint-review-transcript.md)
 
-The Sprint Review recording and transcript were shared privately through the approved instructor channel. Publication of the full transcript was refused; notes are available through the private sharing channel.
+`https://drive.google.com/file/d/1z8kXjNh3el-OxcW7wroENOfUMCmsAlOq/view?usp=sharing`
 
 ---
 
@@ -199,7 +197,7 @@ The product is feature-complete and all 7 UAT scenarios pass. The repository is 
 
 | Team Member | GitHub | Issues Created | PRs/MRs Authored | PRs/MRs Reviewed | Testing/QA | Architecture/Docs | Transition / Deployment | Demo Day Prep |
 |---|---|---|---|---|---|---|---|---|
-| Kamilla Iarullina | [kamillayarullina](https://github.com/kamillayarullina) | [issues](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Aissue+author%3Akamillayarullina) | [PRs](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+author%3Akamillayarullina) | [reviews](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+reviewed-by%3Akamillayarullina) | UAT execution, test review | Roadmap, sprint-review, handover review | Customer handover review, transition coordination | Presentation rehearsal, demo script |
+| Kamilla Iarullina | [kamillayarullina](https://github.com/kamillayarullina) | [issues](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Aissue+author%3Akamillayarullina) | [PRs](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+author%3Akamillayarullina) | [reviews](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+reviewed-by%3Akamillayarullina) | UAT execution, test review | Roadmap, llm-report, product releases | Customer handover review, transition coordination | Presentation rehearsal, demo script |
 | Gleb Shamiev | [xleb-sha](https://github.com/xleb-sha) | [issues](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Aissue+author%3Axleb-sha) | [PRs](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+author%3Axleb-sha) | [reviews](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+reviewed-by%3Axleb-sha) | Parser tests, CI verification | Deployment scripts, architecture diagrams, CHANGELOG | VPS maintenance, deployment stability | Infrastructure setup for demo |
 | Samir Shakirov | [samirshakirov6](https://github.com/samirshakirov6) | [issues](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Aissue+author%3Asamirshakirov6) | [PRs](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+author%3Asamirshakirov6) | [reviews](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+reviewed-by%3Asamirshakirov6) | Monetisation testing, UAT support | customer-handover, reflection, retrospective, sprint-review | Handover document authoring | Presentation slides, demo preparation |
 | Bulat Bulatov | [bulat1223312](https://github.com/bulat1223312) | [issues](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Aissue+author%3Abulat1223312) | [PRs](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+author%3Abulat1223312) | [reviews](https://github.com/kamillayarullina/hockeyscrapper/issues?q=is%3Apr+reviewed-by%3Abulat1223312) | Parser testing, bug verification | — | Parser deployment, bot fix rollout | Feature demonstration |
@@ -215,7 +213,7 @@ The product is feature-complete and all 7 UAT scenarios pass. The repository is 
 
 ### Final MVP v3 Release
 
-![Semver](images/Semver.png)
+![Semver](images/SemVer.png)
 
 ### Final Product Access — Deployed Instance
 
