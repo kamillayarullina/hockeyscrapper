@@ -1,6 +1,44 @@
-## [unreleased]
-## [unreleased]
-## [unreleased]
+## [2.5.1] - 2026-07-17
+
+### Bug Fixes
+
+- Password toggle on vhod/register/new_password, fix telegram binding with link_code
+- Update bot username to HockeyScrapper_bot
+- Use CommandObject.args instead of message.get_args
+- Add link_code migration to bot db init, fix cmd_start arg variable
+- Bot team limit check, add cache headers for static files, add count_free_teams
+- Use APP_BASE_URL env var for bot redirect
+- KHL+Club+Yandex parsers overhaul - stealth, multi-city, team mapping
+- Add playwright-stealth to requirements.txt, add fix_admin.py to gitignore
+- Mock_fetch accepts url param for yandex multi-city _run()
+- Comprehensive yandex search — permissive URL patterns, pagination up to 10 pages, keyword filtering on link text
+- Stem matching for Russian keyword inflections (хоккея→хоккей), restore self.url on _fetch_event_page error
+- KHL parser TEAM_VS_REGEX missing re.IGNORECASE, add missing imports and MATCH_CARD_SELECTORS
+- Utcnow deprecation, .gitignore coverage, KHL parser Latin regex, ClubParser 0 price threshold
+- Telegram bot PID lock + Conflict error backoff + session cleanup
+- Move import signal to top-level, remove duplicate inline import
+- Remove unused import signal
+- Restore Frontend UTF-8 encoding + add charset header
+- Add logout button to Frontend main.html
+- Show 403 message instead of redirect to login on admin page
+- Admin subscription also creates PaidTeamSubscription to avoid cleanup
+- Trigger-parse button actually runs parsing now
+- Stop notifying all users about matches they didn't subscribe to
+- Resolve missing env vars to empty string so EmailSender logs warning instead of silently failing
+- Better SMTP error logging + test email button in admin
+- Load .env in Backend/main.py so env vars are available to API
+- Align sites.yaml email vars with actual .env (MAIL_*)
+- Move .env loading after all imports to fix ruff E402
+
+### Features
+
+- Add password visibility toggle to password reset pages
+- Logout button + fix auto-login redirect
+- Admin team dropdown for subscriptions + per-site interval editing
+
+### Performance
+
+- optimization of subscription speed (bulk delete, one query, optimistic UI, indexes)
 ## [2.4.1] - 2026-07-12
 
 ### Bug Fixes
