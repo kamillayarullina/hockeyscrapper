@@ -1,0 +1,1625 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kamillayarullina.github.io/hockeyscrapper/architecture/">
+      
+      
+        <link rel="prev" href="../definition-of-done/">
+      
+      
+        <link rel="next" href="../user-stories/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Overview - HockeyScrapper Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="HockeyScrapper Documentation" class="md-header__button md-logo" aria-label="HockeyScrapper Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            HockeyScrapper Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Overview
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/kamillayarullina/hockeyscrapper" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../development-process/" class="md-tabs__link">
+          
+  
+  
+  Process
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../user-stories/" class="md-tabs__link">
+          
+  
+  
+  Product
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../testing/" class="md-tabs__link">
+          
+  
+  
+  Testing
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="HockeyScrapper Documentation" class="md-nav__button md-logo" aria-label="HockeyScrapper Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    HockeyScrapper Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/kamillayarullina/hockeyscrapper" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Process
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Process
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../definition-of-done/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Definition of Done
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Decisions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traceability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traceability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#static-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static View
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Static View">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-diagram-shows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Diagram Shows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coupling-and-cohesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coupling and Cohesion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maintainability-implications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maintainability Implications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quality-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quality Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic View
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic View">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-diagram-shows_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Diagram Shows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-this-scenario-is-important" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Scenario Is Important
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture-decisions-and-quality-requirements-illustrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Decisions and Quality Requirements Illustrated
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment View
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment View">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-diagram-shows_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Diagram Shows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-this-deployment-model-was-chosen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Deployment Model Was Chosen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-the-deployment-supports-or-constrains-the-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the Deployment Supports or Constrains the Product
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operational-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Product
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Product
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-stories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Stories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monetization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monetization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quality-requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quality Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quality-requirement-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quality Requirement Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-acceptance-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User Acceptance Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Decisions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#traceability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traceability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#static-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Static View
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Static View">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-diagram-shows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Diagram Shows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coupling-and-cohesion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coupling and Cohesion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maintainability-implications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Maintainability Implications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quality-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quality Requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic View
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dynamic View">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-diagram-shows_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Diagram Shows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-this-scenario-is-important" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Scenario Is Important
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture-decisions-and-quality-requirements-illustrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Decisions and Quality Requirements Illustrated
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment View
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deployment View">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-the-diagram-shows_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the Diagram Shows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-this-deployment-model-was-chosen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Deployment Model Was Chosen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-the-deployment-supports-or-constrains-the-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the Deployment Supports or Constrains the Product
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operational-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="architecture-documentation">Architecture Documentation</h1>
+<h2 id="architecture-decisions">Architecture Decisions</h2>
+<p>The architecture is driven by three key decisions, each documented as an Architecture Decision Record (ADR):</p>
+<table>
+<thead>
+<tr>
+<th>ADR</th>
+<th>Decision</th>
+<th>Key quality impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="adr/ADR-001-modular-parser-architecture/">ADR-001</a></td>
+<td>Modular parser architecture with Strategy pattern</td>
+<td>Enables QR-001 (testability) by isolating each source's parsing logic</td>
+</tr>
+<tr>
+<td><a href="adr/ADR-002-bcrypt-jwt-authentication/">ADR-002</a></td>
+<td>bcrypt password hashing + JWT Bearer tokens</td>
+<td>Satisfies QR-003 (password confidentiality); shapes all authenticated API routes</td>
+</tr>
+<tr>
+<td><a href="adr/ADR-003-dual-service-deployment/">ADR-003</a></td>
+<td>Separate API and bot services sharing one Docker image</td>
+<td>Supports QR-005 (startup reliability) by isolating each service's import chain</td>
+</tr>
+</tbody>
+</table>
+<p>These decisions map to the views below: ADR-001 shapes the static parser structure, ADR-002 defines the authentication boundary visible in the static and dynamic views, and ADR-003 explains the deployment topology.</p>
+<h2 id="traceability">Traceability</h2>
+<p>Architecture elements are traceable to quality requirements, ADRs, and tests:</p>
+<ul>
+<li><code>parsers/</code> (BaseParser + subclasses) ← ADR-001 ← QR-001 → QRT-001 → <code>tests/test_qrt_coverage.py</code></li>
+<li><code>Backend/security.py</code> + <code>Backend/jwt_auth.py</code> ← ADR-002 ← QR-003 → QRT-003 → <code>tests/test_security.py</code></li>
+<li><code>main.py</code> + <code>docker-compose.yml</code> + <code>render.yaml</code> ← ADR-003 ← QR-005 → QRT-005 → <code>tests/test_qrt_startup.py</code></li>
+</ul>
+<h2 id="static-view">Static View</h2>
+<h3 id="what-the-diagram-shows">What the Diagram Shows</h3>
+<p>The component diagram in <a href="../diagrams/src/static.puml"><code>docs/diagrams/src/static.puml</code></a> presents the top-level decomposition of the HockeyScrapper system. It visualises:</p>
+<ul>
+<li><strong>Internal components</strong>: the orchestrator (<code>main.py</code>), FastAPI backend, static frontend, Telegram bot, parser runner with its three site-specific parsers (Club, KHL, Yandex), proxy rotator, notifier, team matcher, and the shared database layer.</li>
+<li><strong>External systems</strong>: Telegram Bot API, three target websites (KHL.ru, ticket-hockey.ru, Yandex Afisha), Gmail SMTP, and the two user roles (Telegram user, web user).</li>
+<li><strong>Communication paths and protocols</strong>: HTTP/HTTPS for scraping and REST API calls, SQL for persistence, SMTP for email, and the Telegram Bot API for messaging.</li>
+<li><strong>Data flows</strong>: periodic scraping → parsing → team matching → change detection → subscriber lookup → notification dispatch, alongside the user-facing web and bot interaction flows.</li>
+</ul>
+<p>The system follows a <strong>modular monolithic</strong> architecture where all components run within a single process (or two Render services) and share a common database and service layer.</p>
+<h3 id="coupling-and-cohesion">Coupling and Cohesion</h3>
+<ul>
+<li><strong>Cohesion</strong> — Each package has a well-defined responsibility: <code>parsers/</code> owns extraction logic, <code>services/</code> owns orchestration and cross-cutting logic, <code>bot/</code> owns Telegram interaction, <code>Backend/</code> and <code>Frontend/</code> own the web experience. Within <code>parsers/</code>, each parser class is cohesive around a single site's scraping logic. The <code>services/database.py</code> module is a single point of truth for storage operations, used by all components.</li>
+<li><strong>Coupling</strong> — The parser runner in <code>services/parser_runner.py</code> couples to all three parsers via <code>ParserFactory</code>, to <code>services/database.py</code>, <code>services/team_matcher.py</code>, and <code>services/notifier.py</code>. This makes the runner a moderately coupled hub. The Telegram bot and the FastAPI backend both depend on <code>services/database.py</code>, creating implicit coupling through the shared schema. The database layer itself is coupled to both the <code>databases</code> library (async, services layer) and SQLAlchemy (sync, backend layer), which adds some duplication risk.</li>
+</ul>
+<h3 id="maintainability-implications">Maintainability Implications</h3>
+<ul>
+<li><strong>Positive</strong>: Separating parsers by site means adding a new data source only requires a new parser class and a <code>sites.yaml</code> entry — no changes to other components. The shared service layer avoids scattered duplication of database or notification logic.</li>
+<li><strong>Negative</strong>: The dual ORM setup (<code>databases</code> for async services, SQLAlchemy for sync Backend) creates two sets of models and migration paths. Schema changes must be mirrored in both layers. The <code>ParserRunner</code> hub is a potential bottleneck — any change to the scraping pipeline or notification flow touches this class.</li>
+<li><strong>Testing</strong>: The separation of parsers from the runner (via the <code>BaseParser</code> interface) makes parsers independently testable. However, the runner itself requires mocking multiple services, making integration tests more involved.</li>
+</ul>
+<h3 id="quality-requirements">Quality Requirements</h3>
+<table>
+<thead>
+<tr>
+<th>Quality Attribute</th>
+<th>How the Structure Supports or Constrains It</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Modifiability</strong></td>
+<td>Adding a new parser requires no changes outside <code>parsers/</code> and <code>config/sites.yaml</code>. Changing the notification channel requires modifying only <code>services/notifier.py</code> and the bot interface.</td>
+</tr>
+<tr>
+<td><strong>Reliability</strong></td>
+<td>The proxy rotator and retry logic (with exponential backoff) in <code>BaseParser</code> isolate scraping failures from the rest of the system. The notifier deduplicates via the <code>notified_events</code> table, preventing duplicate messages.</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>Current single-threaded/scraping-per-site design limits throughput. All parsers run sequentially within each cycle, so scraping N sites takes approximately the sum of their individual run times.</td>
+</tr>
+<tr>
+<td><strong>Security</strong></td>
+<td>JWT authentication in the Backend and bcrypt password hashing follow established patterns. Account linking uses one-time codes with no sensitive data transfer over Telegram.</td>
+</tr>
+<tr>
+<td><strong>Testability</strong></td>
+<td>Parser classes are unit-testable due to the <code>BaseParser</code> abstraction. The shared database service can be replaced with an in-memory SQLite instance for tests.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dynamic-view">Dynamic View</h2>
+<h3 id="what-the-diagram-shows_1">What the Diagram Shows</h3>
+<p>The sequence diagram in <a href="../diagrams/src/dynamic.puml"><code>docs/diagrams/src/dynamic.puml</code></a> traces a complete parser cycle — the central runtime workflow of the system. The scenario covers:</p>
+<ol>
+<li><strong>Config loading</strong> — <code>ParserRunner</code> reads <code>sites.yaml</code> to determine which sites to scrape and how often.</li>
+<li><strong>Parser creation</strong> — <code>ParserFactory</code> instantiates the right parser class for each site (e.g., <code>KHLParser</code>).</li>
+<li><strong>Scraping with proxy</strong> — The parser requests a proxy from <code>ProxyRotator</code>, then uses Playwright to fetch the target website HTML.</li>
+<li><strong>Parsing</strong> — The extracted HTML is parsed into structured <code>MatchEvent</code> objects.</li>
+<li><strong>Change detection &amp; persistence</strong> — New matches are compared against previously stored data; the database is updated and change types (new, sold-out, price-changed, re-available) are recorded.</li>
+<li><strong>Team matching</strong> — <code>TeamMatcher</code> extracts known KHL team names and venues from each event title.</li>
+<li><strong>Subscriber lookup</strong> — The database is queried for users subscribed to the identified teams or venues.</li>
+<li><strong>Notification dispatch</strong> — For each subscriber, <code>Notifier</code> deduplicates against the <code>notified_events</code> table and sends a formatted Telegram message via the Bot API.</li>
+<li><strong>Cycle repeat</strong> — After processing all sites, the runner sleeps for the configured interval before starting the next cycle.</li>
+</ol>
+<h3 id="why-this-scenario-is-important">Why This Scenario Is Important</h3>
+<p>The parser cycle is the <strong>core value-delivery loop</strong> of the product. It is the mechanism that turns third-party ticket data into timely, personalised notifications for end users. Without this flow, the system would be a static database of hockey events with no practical utility. The scenario also exercises the most components in a single transaction, making it a good stress test for the architecture's integration points.</p>
+<h3 id="architecture-decisions-and-quality-requirements-illustrated">Architecture Decisions and Quality Requirements Illustrated</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>What the Diagram Reveals</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Separation of concerns</strong></td>
+<td>The parser never talks to the database or notifier directly — it returns structured data to the runner, which delegates storage and notification. This keeps parsers focused and reusable.</td>
+</tr>
+<tr>
+<td><strong>Deduplication strategy</strong></td>
+<td>The <code>notified_events</code> check before each message prevents duplicate notifications across restarts or multiple change events for the same match.</td>
+</tr>
+<tr>
+<td><strong>Proxy integration</strong></td>
+<td>Proxies are requested per-fetch, allowing the rotator to manage pool health and failure tracking transparently to the parser.</td>
+</tr>
+<tr>
+<td><strong>Sequential site processing</strong></td>
+<td>The loop shows sites are scraped one after another, not in parallel. This is a deliberate simplicity trade-off that limits throughput but avoids resource contention on the Playwright browser instance.</td>
+</tr>
+<tr>
+<td><strong>Modifiability</strong></td>
+<td>Adding a new notification channel (e.g., email, SMS) would require changes only in <code>Notifier</code> and the runner's notification loop — the scraping and matching pipeline stays untouched.</td>
+</tr>
+<tr>
+<td><strong>Reliability</strong></td>
+<td>The diagram highlights two resilience points: proxy rotation (isolates IP bans to individual requests) and deduplication (prevents spam after transient failures).</td>
+</tr>
+<tr>
+<td><strong>Testability</strong></td>
+<td>Each participant (parser, matcher, notifier, proxy rotator) has a narrow contract, making them mockable in isolation for both unit and integration tests.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="deployment-view">Deployment View</h2>
+<h3 id="what-the-diagram-shows_2">What the Diagram Shows</h3>
+<p>The deployment diagram in <a href="../diagrams/src/deployment.puml"><code>docs/diagrams/src/deployment.puml</code></a> shows the runtime structure across three tiers:</p>
+<ul>
+<li><strong>User device</strong> — Browser (web UI) and Telegram App (bot interface).</li>
+<li><strong>Render platform (Frankfurt)</strong> — Two Docker services sharing a managed PostgreSQL database:</li>
+<li><strong>Web service</strong> (<code>hockeyscrapper-api</code>) — runs the FastAPI backend and serves the static frontend on port 8000. Exposed to the internet via HTTPS. Health-checked at <code>/stats</code>.</li>
+<li><strong>Worker service</strong> (<code>hockeyscrapper-bot</code>) — runs the Telegram bot and parser runner. No public HTTP port. Communicates outbound to Telegram Bot API, target websites (via Playwright), and Gmail SMTP.</li>
+<li><strong>Managed PostgreSQL</strong> (<code>hockeyscrapper-db</code>) — shared state store, accessed internally by both services.</li>
+<li><strong>External services</strong> — Telegram Bot API, three scraped websites (KHL.ru, ticket-hockey.ru, Yandex Afisha), and Gmail SMTP for password recovery emails.</li>
+</ul>
+<p>The customer-facing access path is:
+<div class="highlight"><pre><span></span><code>User Browser → Internet (HTTPS) → Render Web Service → PostgreSQL
+User Telegram App → Telegram Bot API → Render Worker → PostgreSQL
+</code></pre></div></p>
+<h3 id="why-this-deployment-model-was-chosen">Why This Deployment Model Was Chosen</h3>
+<p>Render was selected as a <strong>platform-as-a-service</strong> that minimises operational overhead while supporting Docker-based deployments. Key factors:</p>
+<ul>
+<li><strong>Two-service split</strong> — The web service handles user-facing HTTP requests and can scale independently of the background worker that runs the scraper and bot. This prevents a scrape-heavy cycle from degrading API response times.</li>
+<li><strong>Shared Docker image</strong> — Both services use the same <code>Dockerfile</code>; the only difference is the startup command (<code>--api-only</code> vs <code>--bot-only</code>). This simplifies CI/CD — one build produces both artefacts.</li>
+<li><strong>Managed PostgreSQL</strong> — Render provides a free-tier PostgreSQL database with automated backups, offloading DBA concerns from the team.</li>
+<li><strong>Local parity with Docker Compose</strong> — The same image and environment variables work locally with SQLite, enabling development without a cloud account.</li>
+</ul>
+<h3 id="how-the-deployment-supports-or-constrains-the-product">How the Deployment Supports or Constrains the Product</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Support</th>
+<th>Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scalability</strong></td>
+<td>Web and worker can be scaled to different instance sizes.</td>
+<td>Free-tier Render has limited CPU/memory; Playwright (Chromium) is memory-intensive, so the worker may hit resource limits under sustained scraping.</td>
+</tr>
+<tr>
+<td><strong>Latency</strong></td>
+<td>Render Frankfurt region is close to target Russian websites, reducing scrape time.</td>
+<td>User-facing latency from outside Europe may be higher; no CDN is used for the static frontend.</td>
+</tr>
+<tr>
+<td><strong>Reliability</strong></td>
+<td>Render provides auto-restart on failure and managed PostgreSQL with daily backups.</td>
+<td>No built-in redundancy — a single instance per service means downtime during deploys or if the worker crashes mid-cycle.</td>
+</tr>
+<tr>
+<td><strong>Data persistence</strong></td>
+<td>PostgreSQL is a managed service; SQLite file is mounted via Docker volume in dev.</td>
+<td>SQLite in Docker Compose is ephemeral if the volume is not properly persisted.</td>
+</tr>
+<tr>
+<td><strong>Security</strong></td>
+<td>Secrets (BOT_TOKEN, MAIL_PASSWORD) are stored as Render secret env vars, not in the repo.</td>
+<td>JWT_SECRET_KEY is currently hardcoded in <code>render.yaml</code> with a sync: true value — this is a production risk.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operational-considerations">Operational Considerations</h3>
+<ul>
+<li><strong>Playwright resource usage</strong> — The Chromium browser launched by Playwright is the heaviest dependency. On Render's free/starter plans, the worker instance must have enough memory to run both Python and a headless Chromium process concurrently. Monitor for OOM kills.</li>
+<li><strong>Scraping frequency</strong> — The scraping interval in <code>sites.yaml</code> should be tuned to avoid aggressive hitting of target sites (rate limiting / IP bans). Current defaults (every 5–15 minutes per site) are reasonable but should be validated against site tolerance.</li>
+<li><strong>Outbound networking</strong> — Render workers can make outbound HTTPS requests, but some target sites may geo-block or employ anti-bot measures. The proxy rotator is designed to mitigate this, but a proxy pool must be configured and maintained.</li>
+<li><strong>Telegram bot webhook vs polling</strong> — The current implementation uses long-polling, which is simpler but requires the worker to maintain a persistent connection. Switching to a webhook would require a public HTTPS endpoint on the worker, which the current Render setup does not provide.</li>
+<li><strong>Secret rotation</strong> — The hardcoded <code>JWT_SECRET_KEY</code> in <code>render.yaml</code> should be replaced with a sync: false secret before production use. All other secrets (BOT_TOKEN, MAIL_PASSWORD, ADMIN_CHAT_ID) are already managed as Render secrets.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "search"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
