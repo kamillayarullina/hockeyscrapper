@@ -187,16 +187,20 @@ python -m venv .venv
 
 # 3. Dependencies
 pip install -r requirements.txt
-playwright install         # for parsers
+playwright install chromium
 
 # 4. Environment
 cp .env.example .env
-# Edit .env — set BOT_TOKEN (get token from @BotFather)
+# Edit .env — set BOT_TOKEN (get from @BotFather)
 
-# 5. Run 
-# Everything (API + frontend + bot + parser)
-python -m main --all
-# Open in browser
+# 5. Run — need two terminals:
+# Terminal 1: API + frontend
+uvicorn Backend.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Terminal 2: bot + parser
+python main.py --verbose
+
+# 6. Open in browser
 start http://localhost:8000
 ```
 
@@ -204,9 +208,18 @@ start http://localhost:8000
 
 | Command | Starts |
 |---------|--------|
-| `python -m main --all` | API + bot + parser |
-| `python -m main --api-only` | API + frontend only |
-| `python -m main --bot-only` | Telegram bot only |
+| `uvicorn Backend.main:app --host 0.0.0.0 --port 8000` | API + frontend only |
+| `python main.py --bot-only` | Telegram bot only |
+| `python main.py --parser-only` | Parser only |
+| `python main.py --verbose` | Bot + parser (no API) |
+
+To run everything, start API and bot/parser in **two separate terminals**:
+```bash
+# Terminal 1: API + frontend
+uvicorn Backend.main:app --host 0.0.0.0 --port 8000
+
+# Terminal 2: bot + parser
+python main.py --verbose
 
 ### Database
 
