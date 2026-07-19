@@ -16,16 +16,24 @@ Track KHL hockey tickets. Scrapes ticket-hockey.ru, khl.ru, and Yandex Afisha fo
 git clone https://github.com/kamillayarullina/hockeyscrapper.git
 cd hockeyscrapper
 python -m venv .venv
-source .venv/bin/activate    # Linux/macOS — Windows: .venv\Scripts\activate
+
+# Linux/macOS
+source .venv/bin/activate
+# Windows
+.venv\Scripts\activate
+
 pip install -r requirements.txt
 playwright install chromium
-cp .env.example .env          # edit .env with your BOT_TOKEN
-```
+cp .env.example .env          # edit .env, set your BOT_TOKEN
 
-Run everything (API + bot + parser):
+# Option 1 — Telegram bot + parser only (API is NOT started)
+python main.py --verbose
 
-```bash
-# Everything (API + frontend + bot + parser)
+# Option 2 — Everything (API + bot + parser) — two terminals:
+# Terminal 1: API + frontend
+uvicorn Backend.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Terminal 2: bot + parser
 python main.py --verbose
 
 # Open in browser
