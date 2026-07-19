@@ -146,7 +146,7 @@ Full details: [`docs/user-acceptance-tests.md`](../../docs/user-acceptance-tests
 
 Public sanitized demo video — walkthrough of all MVP v3 features including monetisation, parser overhaul, logout button, password toggle, and final product state.
 
-`no yet`
+`https://drive.google.com/file/d/19PDcYunAylQ0KjEQAXFJyGD6O05PfWhE/view?usp=sharing`
 
 ---
 
