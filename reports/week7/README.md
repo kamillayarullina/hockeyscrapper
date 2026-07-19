@@ -166,8 +166,6 @@ The required Week 7 rehearsal preparation was completed. The team prepared and r
 - **Sprint Review summary:** [`reports/week7/sprint-review-summary.md`](sprint-review-summary.md)
 - **Sprint Review transcript:** [`reports/week7/sprint-review-transcript.md`](sprint-review-transcript.md)
 
-`https://drive.google.com/file/d/1z8kXjNh3el-OxcW7wroENOfUMCmsAlOq/view?usp=sharing`
-
 ---
 
 ## Week 7 Reports
